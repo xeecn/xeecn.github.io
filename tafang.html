@@ -1,45 +1,57 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氚-仙 | 塔防游戏</title>
-    <meta name="keywords" content="塔防游戏,策略游戏,免费游戏,在线游戏">
-    <meta name="description" content="策略布局防御塔，引导敌人行进路线，保护基地！">
-    <link rel="shortcut icon" href="/favicon.ico">
+    <title>氚-仙 | 完整塔防游戏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 全局样式 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
-            color: #333;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
             line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.92);
+            background: rgba(13, 19, 33, 0.92);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.7);
             overflow: hidden;
+            border: 1px solid #3498db;
         }
         
         /* 头部样式 */
         header {
             text-align: center;
             padding: 30px 20px;
-            background: linear-gradient(135deg, #3498db, #2c3e50);
+            background: linear-gradient(135deg, #0c2461, #1e3799);
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, transparent 70%);
+            transform: rotate(30deg);
+            z-index: 0;
         }
         
         h1 {
@@ -47,7 +59,12 @@
             font-weight: 800;
             margin-bottom: 10px;
             letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .site-desc {
@@ -56,6 +73,9 @@
             max-width: 600px;
             margin: 0 auto;
             opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            color: #a4d4ff;
         }
         
         /* 游戏区域 */
@@ -69,20 +89,25 @@
         .game-board {
             flex: 1;
             min-width: 300px;
-            background: #f8f9fa;
+            background: rgba(23, 32, 58, 0.7);
             border-radius: 12px;
             padding: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            border: 1px solid #2c3e50;
+            position: relative;
         }
         
         #game-canvas {
             width: 100%;
             height: 500px;
-            background: #eef2f7;
+            background: #0d1a30;
             border-radius: 8px;
             display: block;
             margin: 0 auto;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #1e3c72;
         }
         
         .controls {
@@ -90,6 +115,7 @@
             justify-content: center;
             gap: 15px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
         
         .control-btn {
@@ -102,21 +128,56 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
         
         .control-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+        }
+        
+        .control-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .control-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .control-btn:hover::after {
+            transform: translateX(100%);
+        }
+        
+        .control-btn.upgrade {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+        
+        .control-btn.sell {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
         }
         
         /* 游戏信息面板 */
         .game-info {
             flex: 0 0 300px;
-            background: #f8f9fa;
+            background: rgba(23, 32, 58, 0.7);
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            border: 1px solid #2c3e50;
         }
         
         .stats {
@@ -127,22 +188,30 @@
         }
         
         .stat-card {
-            background: white;
+            background: rgba(30, 44, 80, 0.8);
             padding: 15px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+            border: 1px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.5);
         }
         
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #3498db;
+            color: #4facfe;
             margin: 10px 0;
+            text-shadow: 0 0 10px rgba(79, 172, 254, 0.7);
         }
         
         .stat-label {
-            color: #7f8c8d;
+            color: #7fadeb;
             font-size: 0.9rem;
         }
         
@@ -156,61 +225,75 @@
             align-items: center;
             padding: 12px;
             margin-bottom: 10px;
-            background: white;
+            background: rgba(30, 44, 80, 0.8);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: 1px solid transparent;
         }
         
         .tower-type:hover {
             transform: translateX(5px);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.5);
+            border-color: #3498db;
         }
         
         .tower-type.active {
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(52, 152, 219, 0.2);
             border-left: 4px solid #3498db;
         }
         
         .tower-icon {
             width: 40px;
             height: 40px;
-            background: #eef2f7;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            color: #2c3e50;
+            color: white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
         
         .tower-info h3 {
             margin-bottom: 5px;
-            color: #2c3e50;
+            color: #4facfe;
         }
         
         .tower-info p {
-            color: #7f8c8d;
+            color: #7fadeb;
             font-size: 0.9rem;
+        }
+        
+        .tower-cost {
+            margin-left: auto;
+            background: rgba(155, 89, 182, 0.3);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #d3a4ff;
         }
         
         /* 游戏说明 */
         .game-instruction {
-            background: white;
+            background: rgba(23, 32, 58, 0.7);
             padding: 30px;
             margin: 20px;
             border-radius: 16px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            border: 1px solid #2c3e50;
         }
         
         .section-title {
-            color: #2c3e50;
+            color: #4facfe;
             font-size: 1.8rem;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 2px solid rgba(52, 152, 219, 0.2);
+            border-bottom: 2px solid rgba(79, 172, 254, 0.3);
+            text-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
         }
         
         .instruction-content {
@@ -220,13 +303,21 @@
         }
         
         .instruction-card {
-            background: #f8f9fa;
+            background: rgba(30, 44, 80, 0.8);
             padding: 20px;
             border-radius: 10px;
+            border: 1px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .instruction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.5);
         }
         
         .instruction-card h3 {
-            color: #3498db;
+            color: #e74c3c;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -234,19 +325,21 @@
         
         .instruction-card h3 i {
             margin-right: 10px;
+            color: #4facfe;
         }
         
         .instruction-card p {
             line-height: 1.7;
-            color: #555;
+            color: #a4d4ff;
         }
         
         /* 页脚 */
         footer {
             text-align: center;
             padding: 30px 20px;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: linear-gradient(135deg, #0c2461, #1e3799);
             color: white;
+            position: relative;
         }
         
         .footer-nav {
@@ -258,20 +351,41 @@
         }
         
         .footer-nav a {
-            color: #e0e0e0;
+            color: #a4d4ff;
             text-decoration: none;
             font-size: 1.1rem;
             transition: color 0.3s ease;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: rgba(30, 44, 80, 0.5);
         }
         
         .footer-nav a:hover {
             color: #5dade2;
+            background: rgba(52, 152, 219, 0.3);
         }
         
         .copyright {
             margin-top: 20px;
             font-size: 0.9rem;
-            color: #bdc3c7;
+            color: #7fadeb;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%23429af5"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%23429af5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23429af5"/></svg>');
+            background-size: 1200px 100px;
+            animation: wave 12s linear infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
         }
         
         /* 响应式设计 */
@@ -288,9 +402,73 @@
                 font-size: 2.2rem;
             }
         }
+        
+        /* 粒子效果 */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: rgba(79, 172, 254, 0.7);
+            border-radius: 50%;
+            animation: float 5s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(20px);
+                opacity: 0;
+            }
+        }
+        
+        /* 游戏状态消息 */
+        .game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            border: 2px solid #e74c3c;
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.7);
+        }
+        
+        .game-message.win {
+            color: #2ecc71;
+            border-color: #2ecc71;
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.7);
+        }
     </style>
 </head>
 <body>
+    <div class="particles" id="particles"></div>
+    
     <div class="container">
         <header>
             <h1>氚-仙 | 塔防游戏</h1>
@@ -299,74 +477,87 @@
         
         <div class="game-container">
             <div class="game-board">
-                <canvas id="game-canvas"></canvas>
+                <canvas id="game-canvas" width="800" height="500"></canvas>
                 <div class="controls">
-                    <button class="control-btn">开始游戏</button>
-                    <button class="control-btn">暂停</button>
-                    <button class="control-btn">重置</button>
+                    <button class="control-btn" id="start-btn">开始游戏</button>
+                    <button class="control-btn" id="pause-btn">暂停</button>
+                    <button class="control-btn" id="reset-btn">重置</button>
+                    <button class="control-btn upgrade" id="upgrade-btn">升级防御塔 ($50)</button>
+                    <button class="control-btn sell" id="sell-btn">出售防御塔</button>
                 </div>
             </div>
             
             <div class="game-info">
-                <h2 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">游戏状态</h2>
+                <h2 style="color: #4facfe; margin-bottom: 20px; text-align: center;">游戏状态</h2>
                 
                 <div class="stats">
                     <div class="stat-card">
-                        <div class="stat-value">100</div>
+                        <div class="stat-value" id="health-value">100</div>
                         <div class="stat-label">生命值</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">500</div>
+                        <div class="stat-value" id="gold-value">200</div>
                         <div class="stat-label">金币</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">5</div>
+                        <div class="stat-value" id="wave-value">1</div>
                         <div class="stat-label">当前波数</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">32</div>
+                        <div class="stat-value" id="kills-value">0</div>
                         <div class="stat-label">消灭敌人</div>
                     </div>
                 </div>
                 
-                <h2 style="color: #2c3e50; margin: 30px 0 15px; text-align: center;">选择防御塔</h2>
+                <h2 style="color: #4facfe; margin: 30px 0 15px; text-align: center;">选择防御塔</h2>
                 
                 <div class="tower-types">
-                    <div class="tower-type active">
+                    <div class="tower-type active" data-type="machinegun">
                         <div class="tower-icon">LM</div>
                         <div class="tower-info">
                             <h3>轻机枪</h3>
                             <p>攻击: 中等 | 范围: 中等</p>
                         </div>
+                        <div class="tower-cost">$100</div>
                     </div>
                     
-                    <div class="tower-type">
-                        <div class="tower-icon">HM</div>
-                        <div class="tower-info">
-                            <h3>重机枪</h3>
-                            <p>攻击: 高 | 范围: 短</p>
-                        </div>
-                    </div>
-                    
-                    <div class="tower-type">
+                    <div class="tower-type" data-type="cannon">
                         <div class="tower-icon">CN</div>
                         <div class="tower-info">
                             <h3>加农炮</h3>
-                            <p>攻击: 很高 | 范围: 长</p>
+                            <p>攻击: 高 | 范围: 长</p>
                         </div>
+                        <div class="tower-cost">$200</div>
                     </div>
                     
-                    <div class="tower-type">
+                    <div class="tower-type" data-type="barrier">
                         <div class="tower-icon">BL</div>
                         <div class="tower-info">
                             <h3>路障</h3>
                             <p>改变敌人路线</p>
                         </div>
+                        <div class="tower-cost">$75</div>
                     </div>
                 </div>
                 
-                <div style="margin-top: 30px; text-align: center;">
-                    <button class="control-btn" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">升级防御塔</button>
+                <div class="tower-types" style="margin-top: 20px;">
+                    <div class="tower-type" data-type="sniper">
+                        <div class="tower-icon">SN</div>
+                        <div class="tower-info">
+                            <h3>狙击塔</h3>
+                            <p>攻击: 极高 | 范围: 很长</p>
+                        </div>
+                        <div class="tower-cost">$300</div>
+                    </div>
+                    
+                    <div class="tower-type" data-type="missile">
+                        <div class="tower-icon">MS</div>
+                        <div class="tower-info">
+                            <h3>导弹塔</h3>
+                            <p>范围伤害 | 攻击慢</p>
+                        </div>
+                        <div class="tower-cost">$350</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -376,34 +567,35 @@
             
             <div class="instruction-content">
                 <div class="instruction-card">
-                    <h3><i>🏗️</i> 基础玩法</h3>
+                    <h3><i class="fas fa-hard-hat"></i> 基础玩法</h3>
                     <p>从空白地图开始，通过建造防御塔和路障来引导敌人行进路线。策略性地建造和出售防御塔，延长敌人行进距离，让防御塔有更多时间攻击敌人。</p>
                 </div>
                 
                 <div class="instruction-card">
-                    <h3><i>🎯</i> 防御塔类型</h3>
-                    <p>轻机枪：平衡的攻击和范围；重机枪：高伤害但范围短；加农炮：高伤害长范围但攻击慢；路障：改变敌人路线，不造成伤害。</p>
+                    <h3><i class="fas fa-crosshairs"></i> 防御塔类型</h3>
+                    <p>轻机枪：平衡的攻击和范围；加农炮：高伤害长范围但攻击慢；路障：改变敌人路线；狙击塔：单发高伤害；导弹塔：范围伤害但攻击慢。</p>
                 </div>
                 
                 <div class="instruction-card">
-                    <h3><i>💰</i> 资源管理</h3>
+                    <h3><i class="fas fa-coins"></i> 资源管理</h3>
                     <p>击败敌人获得金币，用于建造和升级防御塔。拆除防御塔可获得50%金币返还。合理分配资源是获胜关键。</p>
                 </div>
                 
                 <div class="instruction-card">
-                    <h3><i>🏆</i> 高级技巧</h3>
+                    <h3><i class="fas fa-trophy"></i> 高级技巧</h3>
                     <p>创建迷宫式路线最大化敌人行进距离。组合不同类型防御塔（如路障+加农炮）。优先升级关键位置的防御塔。注意敌人类型变化调整策略。</p>
                 </div>
             </div>
         </div>
         
         <footer>
+            <div class="wave"></div>
             <div class="footer-nav">
-                <a href="index.html">首页</a>
-                <a href="working.html">效率工具</a>
-                <a href="coding.html">开发工具</a>
-                <a href="alipay.html">赞助支持</a>
-                <a href="news.txt">更新日志</a>
+                <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+                <a href="working.html"><i class="fas fa-tools"></i> 效率工具</a>
+                <a href="coding.html"><i class="fas fa-code"></i> 开发工具</a>
+                <a href="alipay.html"><i class="fas fa-donate"></i> 赞助支持</a>
+                <a href="news.txt"><i class="fas fa-newspaper"></i> 更新日志</a>
             </div>
             
             <p>xeecn-本站暂未备案（站主实名：王**圣）</p>
@@ -415,22 +607,448 @@
         </footer>
     </div>
     
+    <div class="game-message" id="game-message"></div>
+    
     <script>
-        // 模拟游戏画布
+        // 游戏核心变量
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas.getContext('2d');
-        
-        // 设置画布尺寸
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        
-        // 绘制网格背景
-        function drawGrid() {
-            const gridSize = 40;
+        const gameState = {
+            health: 100,
+            gold: 200,
+            wave: 1,
+            kills: 0,
+            gameOver: false,
+            gameStarted: false,
+            paused: false,
+            selectedTowerType: 'machinegun',
+            towers: [],
+            enemies: [],
+            projectiles: [],
+            path: [],
+            buildMode: false,
+            selectedTower: null,
+            lastSpawn: 0,
+            enemySpawnRate: 2000
+        };
+
+        // 防御塔类型配置
+        const towerTypes = {
+            machinegun: {
+                name: "轻机枪",
+                cost: 100,
+                color: "#3498db",
+                range: 100,
+                damage: 10,
+                fireRate: 800,
+                projectileSpeed: 8,
+                projectileColor: "#3498db"
+            },
+            cannon: {
+                name: "加农炮",
+                cost: 200,
+                color: "#e74c3c",
+                range: 150,
+                damage: 30,
+                fireRate: 1500,
+                projectileSpeed: 5,
+                projectileColor: "#e74c3c"
+            },
+            barrier: {
+                name: "路障",
+                cost: 75,
+                color: "#2c3e50",
+                range: 0,
+                damage: 0,
+                fireRate: 0,
+                projectileSpeed: 0,
+                projectileColor: ""
+            },
+            sniper: {
+                name: "狙击塔",
+                cost: 300,
+                color: "#9b59b6",
+                range: 250,
+                damage: 50,
+                fireRate: 2500,
+                projectileSpeed: 15,
+                projectileColor: "#9b59b6"
+            },
+            missile: {
+                name: "导弹塔",
+                cost: 350,
+                color: "#f39c12",
+                range: 120,
+                damage: 40,
+                fireRate: 3000,
+                projectileSpeed: 4,
+                projectileColor: "#f39c12",
+                splashDamage: 20,
+                splashRadius: 40
+            }
+        };
+
+        // 敌人类
+        class Enemy {
+            constructor(path, health, speed, goldValue) {
+                this.path = path;
+                this.pathIndex = 0;
+                this.x = path[0].x;
+                this.y = path[0].y;
+                this.health = health;
+                this.maxHealth = health;
+                this.speed = speed;
+                this.goldValue = goldValue;
+                this.radius = 12;
+                this.reachedEnd = false;
+            }
+
+            update() {
+                if (this.pathIndex < this.path.length - 1) {
+                    const target = this.path[this.pathIndex + 1];
+                    const dx = target.x - this.x;
+                    const dy = target.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < this.speed) {
+                        this.pathIndex++;
+                    } else {
+                        this.x += (dx / distance) * this.speed;
+                        this.y += (dy / distance) * this.speed;
+                    }
+                } else {
+                    this.reachedEnd = true;
+                }
+            }
+
+            draw() {
+                // 绘制敌人
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#9b59b6";
+                ctx.fill();
+                
+                // 绘制血条背景
+                ctx.fillStyle = "#e74c3c";
+                ctx.fillRect(this.x - 15, this.y - 25, 30, 5);
+                
+                // 绘制血条
+                ctx.fillStyle = "#2ecc71";
+                ctx.fillRect(this.x - 15, this.y - 25, 30 * (this.health / this.maxHealth), 5);
+                
+                // 绘制敌人细节
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = "#8e44ad";
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(this.x - 4, this.y - 3, this.radius * 0.3, 0, Math.PI * 2);
+                ctx.arc(this.x + 4, this.y - 3, this.radius * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = "white";
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(this.x - 4, this.y - 3, this.radius * 0.15, 0, Math.PI * 2);
+                ctx.arc(this.x + 4, this.y - 3, this.radius * 0.15, 0, Math.PI * 2);
+                ctx.fillStyle = "#2c3e50";
+                ctx.fill();
+            }
+        }
+
+        // 防御塔类
+        class Tower {
+            constructor(x, y, type) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.level = 1;
+                this.cooldown = 0;
+                this.config = towerTypes[type];
+                this.radius = 15;
+                this.target = null;
+            }
+
+            update() {
+                // 冷却时间更新
+                if (this.cooldown > 0) {
+                    this.cooldown--;
+                }
+                
+                // 寻找目标
+                if (!this.target || this.target.health <= 0 || 
+                    this.distanceTo(this.target) > this.config.range) {
+                    this.findTarget();
+                }
+                
+                // 攻击目标
+                if (this.target && this.cooldown <= 0) {
+                    this.attack();
+                    this.cooldown = this.config.fireRate / 16; // 转换为帧数
+                }
+            }
+
+            findTarget() {
+                let closest = null;
+                let closestDist = Infinity;
+                
+                for (const enemy of gameState.enemies) {
+                    const dist = this.distanceTo(enemy);
+                    if (dist <= this.config.range && dist < closestDist) {
+                        closest = enemy;
+                        closestDist = dist;
+                    }
+                }
+                
+                this.target = closest;
+            }
+
+            distanceTo(obj) {
+                const dx = this.x - obj.x;
+                const dy = this.y - obj.y;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            attack() {
+                if (this.target) {
+                    gameState.projectiles.push({
+                        x: this.x,
+                        y: this.y,
+                        target: this.target,
+                        damage: this.config.damage * this.level,
+                        speed: this.config.projectileSpeed,
+                        color: this.config.projectileColor,
+                        splashDamage: this.config.splashDamage ? this.config.splashDamage * this.level : 0,
+                        splashRadius: this.config.splashRadius || 0
+                    });
+                }
+            }
+
+            draw() {
+                // 绘制塔基
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.config.color;
+                ctx.fill();
+                
+                // 绘制塔顶
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.7, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+                ctx.fill();
+                
+                // 绘制等级标识
+                ctx.fillStyle = "white";
+                ctx.font = "bold 12px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                let text;
+                switch(this.type) {
+                    case 'machinegun': text = 'LM'; break;
+                    case 'cannon': text = 'CN'; break;
+                    case 'barrier': text = 'BL'; break;
+                    case 'sniper': text = 'SN'; break;
+                    case 'missile': text = 'MS'; break;
+                }
+                
+                ctx.fillText(text, this.x, this.y);
+                
+                // 绘制等级星星
+                ctx.fillStyle = "#f1c40f";
+                for (let i = 0; i < this.level; i++) {
+                    ctx.beginPath();
+                    ctx.arc(this.x - 6 + i * 6, this.y + 15, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 绘制攻击范围（选中时）
+                if (this === gameState.selectedTower) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.config.range, 0, Math.PI * 2);
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // 初始化游戏
+        function initGame() {
+            // 创建路径
+            gameState.path = [
+                {x: 40, y: 40},
+                {x: canvas.width - 100, y: 40},
+                {x: canvas.width - 100, y: canvas.height - 100},
+                {x: 100, y: canvas.height - 100},
+                {x: 100, y: 200},
+                {x: canvas.width - 40, y: 200},
+                {x: canvas.width - 40, y: canvas.height - 40}
+            ];
+            
+            // 初始化状态
+            gameState.health = 100;
+            gameState.gold = 200;
+            gameState.wave = 1;
+            gameState.kills = 0;
+            gameState.gameOver = false;
+            gameState.gameStarted = false;
+            gameState.paused = false;
+            gameState.towers = [];
+            gameState.enemies = [];
+            gameState.projectiles = [];
+            gameState.selectedTower = null;
+            
+            // 创建初始防御塔
+            gameState.towers.push(new Tower(canvas.width - 100, 80, 'machinegun'));
+            gameState.towers.push(new Tower(canvas.width - 180, canvas.height - 100, 'cannon'));
+            gameState.towers.push(new Tower(140, canvas.height - 100, 'barrier'));
+            gameState.towers.push(new Tower(140, 140, 'sniper'));
+            
+            updateUI();
+        }
+
+        // 生成敌人波次
+        function spawnWave() {
+            const waveSize = 5 + gameState.wave * 2;
+            const enemyHealth = 20 + gameState.wave * 5;
+            const enemySpeed = 1 + gameState.wave * 0.1;
+            
+            for (let i = 0; i < waveSize; i++) {
+                setTimeout(() => {
+                    if (!gameState.paused && !gameState.gameOver) {
+                        gameState.enemies.push(new Enemy(
+                            gameState.path, 
+                            enemyHealth, 
+                            enemySpeed, 
+                            10 + gameState.wave * 2
+                        ));
+                    }
+                }, i * 1500);
+            }
+        }
+
+        // 游戏主循环
+        function gameLoop() {
+            if (gameState.gameOver || gameState.paused) return;
+            
+            // 清除画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // 绘制网格
-            ctx.strokeStyle = '#d5d8dc';
+            drawGrid();
+            
+            // 绘制路径
+            drawPath();
+            
+            // 更新并绘制敌人
+            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                const enemy = gameState.enemies[i];
+                enemy.update();
+                enemy.draw();
+                
+                // 检查敌人是否到达终点
+                if (enemy.reachedEnd) {
+                    gameState.health -= 10;
+                    gameState.enemies.splice(i, 1);
+                    
+                    if (gameState.health <= 0) {
+                        gameState.health = 0;
+                        gameOver(false);
+                    }
+                    
+                    updateUI();
+                }
+                
+                // 移除死亡敌人
+                if (enemy.health <= 0) {
+                    gameState.gold += enemy.goldValue;
+                    gameState.kills++;
+                    gameState.enemies.splice(i, 1);
+                    updateUI();
+                }
+            }
+            
+            // 更新并绘制防御塔
+            for (const tower of gameState.towers) {
+                tower.update();
+                tower.draw();
+            }
+            
+            // 更新并绘制子弹
+            for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
+                const proj = gameState.projectiles[i];
+                
+                // 如果目标已消失，移除子弹
+                if (!proj.target || proj.target.health <= 0) {
+                    gameState.projectiles.splice(i, 1);
+                    continue;
+                }
+                
+                // 移动子弹
+                const dx = proj.target.x - proj.x;
+                const dy = proj.target.y - proj.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < proj.speed) {
+                    // 子弹击中目标
+                    proj.target.health -= proj.damage;
+                    
+                    // 处理范围伤害
+                    if (proj.splashDamage > 0 && proj.splashRadius > 0) {
+                        for (const enemy of gameState.enemies) {
+                            if (enemy !== proj.target) {
+                                const splashDist = Math.sqrt(
+                                    Math.pow(enemy.x - proj.target.x, 2) + 
+                                    Math.pow(enemy.y - proj.target.y, 2)
+                                );
+                                
+                                if (splashDist <= proj.splashRadius) {
+                                    enemy.health -= proj.splashDamage * (1 - splashDist / proj.splashRadius);
+                                }
+                            }
+                        }
+                    }
+                    
+                    gameState.projectiles.splice(i, 1);
+                } else {
+                    proj.x += (dx / dist) * proj.speed;
+                    proj.y += (dy / dist) * proj.speed;
+                    
+                    // 绘制子弹
+                    ctx.beginPath();
+                    ctx.arc(proj.x, proj.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = proj.color;
+                    ctx.fill();
+                    
+                    // 绘制导弹尾迹
+                    if (proj.splashDamage > 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(proj.x, proj.y);
+                        ctx.lineTo(proj.x - dx * 0.1, proj.y - dy * 0.1);
+                        ctx.strokeStyle = proj.color;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            // 检查是否完成当前波次
+            if (gameState.gameStarted && gameState.enemies.length === 0 && 
+                Date.now() - gameState.lastSpawn > gameState.enemySpawnRate * 15) {
+                gameState.wave++;
+                gameState.lastSpawn = Date.now();
+                spawnWave();
+                updateUI();
+            }
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 绘制网格
+        function drawGrid() {
+            const gridSize = 40;
+            ctx.strokeStyle = 'rgba(52, 152, 219, 0.1)';
             ctx.lineWidth = 1;
             
             for (let x = 0; x <= canvas.width; x += gridSize) {
@@ -446,136 +1064,212 @@
                 ctx.lineTo(canvas.width, y);
                 ctx.stroke();
             }
+        }
+
+        // 绘制路径
+        function drawPath() {
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 30;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            
+            for (let i = 0; i < gameState.path.length; i++) {
+                if (i === 0) {
+                    ctx.moveTo(gameState.path[i].x, gameState.path[i].y);
+                } else {
+                    ctx.lineTo(gameState.path[i].x, gameState.path[i].y);
+                }
+            }
+            
+            ctx.stroke();
             
             // 绘制起点和终点
             ctx.fillStyle = '#3498db';
             ctx.beginPath();
-            ctx.arc(40, 40, 15, 0, Math.PI * 2);
+            ctx.arc(gameState.path[0].x, gameState.path[0].y, 15, 0, Math.PI * 2);
             ctx.fill();
             
             ctx.fillStyle = '#2c3e50';
             ctx.beginPath();
-            ctx.arc(canvas.width - 40, canvas.height - 40, 15, 0, Math.PI * 2);
+            ctx.arc(gameState.path[gameState.path.length-1].x, 
+                   gameState.path[gameState.path.length-1].y, 15, 0, Math.PI * 2);
             ctx.fill();
             
-            // 绘制路径
-            ctx.strokeStyle = '#e74c3c';
-            ctx.lineWidth = 4;
+            // 绘制路径边框
+            ctx.strokeStyle = '#c0392b';
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.moveTo(40, 40);
-            ctx.lineTo(canvas.width - 100, 40);
-            ctx.lineTo(canvas.width - 100, canvas.height - 100);
-            ctx.lineTo(100, canvas.height - 100);
-            ctx.lineTo(100, 200);
-            ctx.lineTo(canvas.width - 40, 200);
-            ctx.lineTo(canvas.width - 40, canvas.height - 40);
+            
+            for (let i = 0; i < gameState.path.length; i++) {
+                if (i === 0) {
+                    ctx.moveTo(gameState.path[i].x, gameState.path[i].y);
+                } else {
+                    ctx.lineTo(gameState.path[i].x, gameState.path[i].y);
+                }
+            }
+            
             ctx.stroke();
-            
-            // 绘制防御塔
-            const towers = [
-                {x: canvas.width - 100, y: 80, type: 'machinegun'},
-                {x: canvas.width - 180, y: canvas.height - 100, type: 'cannon'},
-                {x: 140, y: canvas.height - 100, type: 'barrier'},
-                {x: 140, y: 140, type: 'machinegun'}
-            ];
-            
-            towers.forEach(tower => {
-                let color;
-                switch(tower.type) {
-                    case 'machinegun':
-                        color = '#3498db';
-                        break;
-                    case 'cannon':
-                        color = '#e74c3c';
-                        break;
-                    case 'barrier':
-                        color = '#2c3e50';
-                        break;
-                }
-                
-                ctx.fillStyle = color;
-                ctx.beginPath();
-                ctx.arc(tower.x, tower.y, 12, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 12px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
-                let text;
-                switch(tower.type) {
-                    case 'machinegun':
-                        text = 'LM';
-                        break;
-                    case 'cannon':
-                        text = 'CN';
-                        break;
-                    case 'barrier':
-                        text = 'BL';
-                        break;
-                }
-                
-                ctx.fillText(text, tower.x, tower.y);
-                
-                // 绘制攻击范围
-                ctx.strokeStyle = color + '40';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(tower.x, tower.y, 50, 0, Math.PI * 2);
-                ctx.stroke();
-            });
-            
-            // 绘制敌人
-            const enemies = [
-                {x: 40, y: 40, progress: 0.2},
-                {x: canvas.width - 180, y: 40, progress: 0.5},
-                {x: canvas.width - 180, y: canvas.height - 180, progress: 0.7}
-            ];
-            
-            enemies.forEach(enemy => {
-                ctx.fillStyle = '#9b59b6';
-                ctx.beginPath();
-                ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 血条
-                ctx.fillStyle = '#e74c3c';
-                ctx.fillRect(enemy.x - 15, enemy.y - 20, 30, 4);
-                
-                ctx.fillStyle = '#2ecc71';
-                ctx.fillRect(enemy.x - 15, enemy.y - 20, 30 * (1 - enemy.progress), 4);
-            });
         }
-        
-        // 初始绘制
-        drawGrid();
-        
-        // 防御塔选择交互
-        const towerTypes = document.querySelectorAll('.tower-type');
-        towerTypes.forEach(type => {
+
+        // 游戏结束
+        function gameOver(isWin) {
+            gameState.gameOver = true;
+            const message = document.getElementById('game-message');
+            message.textContent = isWin ? "胜利！" : "游戏结束！";
+            message.className = isWin ? "game-message win" : "game-message";
+            message.style.display = "block";
+        }
+
+        // 更新UI
+        function updateUI() {
+            document.getElementById('health-value').textContent = gameState.health;
+            document.getElementById('gold-value').textContent = gameState.gold;
+            document.getElementById('wave-value').textContent = gameState.wave;
+            document.getElementById('kills-value').textContent = gameState.kills;
+            
+            // 更新按钮状态
+            const upgradeBtn = document.getElementById('upgrade-btn');
+            upgradeBtn.disabled = !gameState.selectedTower || gameState.gold < 50;
+            upgradeBtn.textContent = `升级防御塔 ($${50})`;
+            
+            const sellBtn = document.getElementById('sell-btn');
+            sellBtn.disabled = !gameState.selectedTower;
+        }
+
+        // 创建粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${5 + Math.random() * 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.opacity = Math.random() * 0.7 + 0.3;
+                particle.style.width = `${Math.random() * 3 + 1}px`;
+                particle.style.height = particle.style.width;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 事件监听器
+        document.getElementById('start-btn').addEventListener('click', () => {
+            if (!gameState.gameStarted) {
+                gameState.gameStarted = true;
+                gameState.paused = false;
+                gameState.lastSpawn = Date.now();
+                spawnWave();
+                gameLoop();
+            } else if (gameState.paused) {
+                gameState.paused = false;
+                gameLoop();
+            }
+        });
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            gameState.paused = !gameState.paused;
+            if (!gameState.paused) {
+                gameLoop();
+            }
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            initGame();
+            document.getElementById('game-message').style.display = "none";
+            if (gameState.gameStarted) {
+                gameLoop();
+            }
+        });
+
+        document.getElementById('upgrade-btn').addEventListener('click', () => {
+            if (gameState.selectedTower && gameState.gold >= 50) {
+                gameState.selectedTower.level++;
+                gameState.gold -= 50;
+                updateUI();
+            }
+        });
+
+        document.getElementById('sell-btn').addEventListener('click', () => {
+            if (gameState.selectedTower) {
+                const index = gameState.towers.indexOf(gameState.selectedTower);
+                if (index !== -1) {
+                    gameState.gold += Math.floor(towerTypes[gameState.selectedTower.type].cost * 0.5);
+                    gameState.towers.splice(index, 1);
+                    gameState.selectedTower = null;
+                    updateUI();
+                }
+            }
+        });
+
+        // 防御塔选择
+        document.querySelectorAll('.tower-type').forEach(type => {
             type.addEventListener('click', () => {
-                towerTypes.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tower-type').forEach(t => t.classList.remove('active'));
                 type.classList.add('active');
+                gameState.selectedTowerType = type.dataset.type;
+                gameState.selectedTower = null;
+                updateUI();
             });
         });
-        
-        // 按钮交互
-        const buttons = document.querySelectorAll('.control-btn');
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                button.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    button.style.transform = '';
-                }, 100);
-            });
+
+        // 在画布上放置防御塔
+        canvas.addEventListener('click', (e) => {
+            if (gameState.gameOver) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // 检查是否点击了现有的防御塔
+            for (const tower of gameState.towers) {
+                const dx = tower.x - x;
+                const dy = tower.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < tower.radius) {
+                    gameState.selectedTower = tower;
+                    updateUI();
+                    return;
+                }
+            }
+            
+            // 放置新防御塔
+            const towerCost = towerTypes[gameState.selectedTowerType].cost;
+            if (gameState.gold >= towerCost) {
+                gameState.towers.push(new Tower(x, y, gameState.selectedTowerType));
+                gameState.gold -= towerCost;
+                gameState.selectedTower = gameState.towers[gameState.towers.length - 1];
+                updateUI();
+            }
         });
-        
-        // 响应窗口大小变化
+
+        // 初始化游戏
+        window.addEventListener('load', () => {
+            initGame();
+            createParticles();
+            drawGrid();
+            drawPath();
+            
+            // 绘制初始防御塔
+            for (const tower of gameState.towers) {
+                tower.draw();
+            }
+        });
+
+        // 窗口大小调整
         window.addEventListener('resize', () => {
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
             drawGrid();
+            drawPath();
+            
+            for (const tower of gameState.towers) {
+                tower.draw();
+            }
         });
     </script>
 </body>
