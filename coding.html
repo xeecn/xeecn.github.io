@@ -22,68 +22,43 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            position: relative;
+            background-color: #f8f9fa;
             min-height: 100vh;
-            background-color: #0f172a;
-            overflow-x: hidden;
-        }
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.92);
-            z-index: -1;
         }
         .container {
             max-width: 1300px;
             margin: 0 auto;
             padding: 20px;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
         }
         
         /* 头部样式 */
         header {
             text-align: center;
-            padding: 60px 0 40px;
-            position: relative;
-        }
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
+            padding: 50px 0 30px;
         }
         h1 {
-            color: #e2e8f0;
+            color: #2c3e50;
             margin-bottom: 15px;
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             font-weight: 800;
             letter-spacing: 1px;
-            text-shadow: 0 0 20px rgba(94, 234, 212, 0.5);
             position: relative;
             display: inline-block;
-            background: linear-gradient(45deg, #5eead4, #0ea5e9);
+            background: linear-gradient(45deg, #3498db, #2c3e50);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: glow 3s ease-in-out infinite alternate;
         }
         .site-desc {
-            color: #94a3b8;
+            color: #4a6b8b;
             font-size: 1.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-weight: 300;
             max-width: 700px;
-            margin: 0 auto 25px;
+            margin: 0 auto 20px;
             line-height: 1.8;
-            padding: 0 20px;
         }
         .subtitle {
-            color: #64748b;
+            color: #7f8c8d;
             font-size: 1.2rem;
             margin-bottom: 40px;
             font-weight: 400;
@@ -102,37 +77,21 @@
         }
         .category-btn {
             padding: 12px 28px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 2px solid #0ea5e9;
+            background: #fff;
+            border: 2px solid #3498db;
             border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #3498db;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        .category-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3), transparent);
-            transition: 0.5s;
-        }
-        .category-btn:hover::before {
-            left: 100%;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.1);
         }
         .category-btn:hover, .category-btn.active {
-            background: linear-gradient(135deg, #0ea5e9, #5eead4);
-            color: #0f172a;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(94, 234, 212, 0.4);
-            border-color: transparent;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.2);
         }
         
         /* 工具网格 */
@@ -143,12 +102,12 @@
             margin-top: 20px;
         }
         .tool-card {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
+            background: #ffffff;
             padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             transition: all 0.4s ease;
-            border: 1px solid rgba(94, 234, 212, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.2);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -162,35 +121,34 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(to right, #5eead4, #0ea5e9);
+            background: linear-gradient(to right, #3498db, #2c3e50);
         }
         .tool-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.25);
-            border-color: rgba(94, 234, 212, 0.3);
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.15);
         }
         .tool-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #0ea5e9, #5eead4);
+            background: linear-gradient(135deg, #3498db, #2c3e50);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 25px;
             font-size: 36px;
-            color: #0f172a;
-            box-shadow: 0 5px 20px rgba(94, 234, 212, 0.3);
+            color: white;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.2);
         }
         .tool-card h3 {
-            color: #e2e8f0;
+            color: #2c3e50;
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 1.7rem;
             font-weight: 700;
         }
         .tool-card p {
-            color: #94a3b8;
+            color: #555;
             line-height: 1.7;
             margin-bottom: 25px;
             flex-grow: 1;
@@ -204,12 +162,11 @@
         }
         .tool-tag {
             padding: 6px 15px;
-            background: rgba(94, 234, 212, 0.1);
-            color: #5eead4;
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: 500;
-            border: 1px solid rgba(94, 234, 212, 0.2);
         }
         
         /* 按钮样式 */
@@ -218,8 +175,8 @@
             align-items: center;
             justify-content: center;
             padding: 14px 28px;
-            background: linear-gradient(135deg, #0ea5e9, #5eead4);
-            color: #0f172a;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
             text-decoration: none;
             border-radius: 10px;
             font-size: 1.1rem;
@@ -227,7 +184,7 @@
             border: none;
             cursor: pointer;
             font-weight: 600;
-            box-shadow: 0 5px 20px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
             width: 100%;
             text-align: center;
         }
@@ -237,18 +194,18 @@
         }
         .tool-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(94, 234, 212, 0.5);
-            background: linear-gradient(135deg, #5eead4, #0ea5e9);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+            background: linear-gradient(135deg, #2c3e50, #3498db);
         }
         
         /* 页脚样式 */
         footer {
             text-align: center;
-            margin-top: 100px;
-            padding: 50px 20px 40px;
-            color: #64748b;
-            border-top: 1px solid rgba(94, 234, 212, 0.1);
-            background-color: rgba(15, 23, 42, 0.7);
+            margin-top: 80px;
+            padding: 40px 20px;
+            color: #555;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 20px;
         }
         .footer-nav {
@@ -259,7 +216,7 @@
             flex-wrap: wrap;
         }
         .footer-nav a {
-            color: #94a3b8;
+            color: #2c3e50;
             text-decoration: none;
             font-weight: 600;
             font-size: 1.1rem;
@@ -269,14 +226,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(94, 234, 212, 0.1);
+            background: rgba(52, 152, 219, 0.05);
         }
         .footer-nav a:hover {
-            background: rgba(94, 234, 212, 0.1);
-            color: #5eead4;
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
             transform: translateY(-3px);
-            border-color: #5eead4;
         }
         footer p {
             margin: 15px 0;
@@ -287,10 +242,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes glow {
-            0% { text-shadow: 0 0 10px rgba(94, 234, 212, 0.5); }
-            100% { text-shadow: 0 0 30px rgba(94, 234, 212, 0.8); }
         }
         .tool-card {
             animation: fadeIn 0.6s ease forwards;
@@ -323,28 +274,15 @@
         
         /* 特色部分 */
         .featured-section {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(94, 234, 212, 0.1));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(44, 62, 80, 0.05));
             border-radius: 20px;
             padding: 40px 30px;
             margin: 70px 0 50px;
             text-align: center;
-            border: 2px dashed #5eead4;
-            position: relative;
-            overflow: hidden;
-        }
-        .featured-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;
-            opacity: 0.05;
-            z-index: -1;
+            border: 2px dashed #3498db;
         }
         .featured-title {
-            color: #e2e8f0;
+            color: #2c3e50;
             font-size: 2.5rem;
             margin-bottom: 40px;
             position: relative;
@@ -358,7 +296,7 @@
             transform: translateX(-50%);
             width: 120px;
             height: 4px;
-            background: linear-gradient(90deg, #5eead4, #0ea5e9);
+            background: linear-gradient(90deg, #3498db, #2c3e50);
             border-radius: 3px;
         }
         .featured-grid {
@@ -368,31 +306,30 @@
             margin-top: 40px;
         }
         .featured-card {
-            background: rgba(15, 23, 42, 0.8);
+            background: white;
             padding: 30px 25px;
             border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             transition: all 0.4s ease;
-            border: 1px solid rgba(94, 234, 212, 0.2);
+            border: 1px solid rgba(52, 152, 219, 0.2);
         }
         .featured-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(94, 234, 212, 0.2);
-            border-color: #5eead4;
+            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.15);
         }
         .featured-card i {
             font-size: 50px;
-            color: #5eead4;
+            color: #3498db;
             margin-bottom: 20px;
         }
         .featured-card h4 {
-            color: #e2e8f0;
+            color: #2c3e50;
             margin-top: 15px;
             font-size: 1.6rem;
             margin-bottom: 15px;
         }
         .featured-card p {
-            color: #94a3b8;
+            color: #555;
             line-height: 1.7;
             font-size: 1.1rem;
         }
@@ -401,20 +338,13 @@
 <body>
     <div class="container">
         <header>
-            <div class="header-content">
-                <h1>氚-仙</h1>
-                <p class="site-desc">精选开发工具合集，提升您的编程效率与开发体验</p>
-                <p class="subtitle">精心挑选的15+款专业开发工具，助力您的开发工作流</p>
-            </div>
+            <h1>氚-仙</h1>
+            <p class="site-desc">精选开发工具合集，提升您的编程效率与开发体验</p>
+            <p class="subtitle">精心挑选的15+款专业开发工具，助力您的开发工作流</p>
         </header>
         
         <div class="tool-categories">
             <button class="category-btn active">全部工具</button>
-            <button class="category-btn">前端开发</button>
-            <button class="category-btn">后端开发</button>
-            <button class="category-btn">数据库</button>
-            <button class="category-btn">DevOps</button>
-            <button class="category-btn">API工具</button>
         </div>
         
         <div class="tools-grid">
@@ -702,11 +632,16 @@
         
         <footer>
             <div class="footer-nav">
-                <a href="index.html"><i class="fas fa-home"></i> 回到首页</a>a>
+                <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+                <a href="working.html"><i class="fas fa-tools"></i> 效率工具</a>
+                <a href="coding.html"><i class="fas fa-code"></i> 开发工具</a>
+                <a href="alipay.html"><i class="fas fa-donate"></i> 赞助支持</a>
+                <a href="news.txt"><i class="fas fa-file-alt"></i> 更新日志</a>
+                <a href="ot.txt"><i class="fas fa-link"></i> 友情链接</a>
             </div>
             <p>xeecn-本站暂未备案（站主实名：王**圣）</p>
             <p>免责声明：本站若有任何侵权内容，请联系作者以删除</p>
-            <p style="margin-top: 25px; color: #5eead4; font-size: 0.95rem;">
+            <p style="margin-top: 25px; color: #3498db; font-size: 0.95rem;">
                 氚-仙 | 探索科技边界，追求极致开发体验
             </p>
         </footer>
