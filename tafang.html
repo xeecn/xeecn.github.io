@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>氚-仙 | 塔防游戏</title>
+    <meta name="keywords" content="塔防游戏,策略游戏,免费游戏,在线游戏">
+    <meta name="description" content="策略布局防御塔，引导敌人行进路线，保护基地！">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* 头部样式 */
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .site-desc {
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* 游戏区域 */
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .game-board {
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        #game-canvas {
+            width: 100%;
+            height: 500px;
+            background: #eef2f7;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* 游戏信息面板 */
+        .game-info {
+            flex: 0 0 300px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* 塔类型选择 */
+        .tower-types {
+            margin-top: 25px;
+        }
+        
+        .tower-type {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+        
+        .tower-type:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+        }
+        
+        .tower-type.active {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+        }
+        
+        .tower-icon {
+            width: 40px;
+            height: 40px;
+            background: #eef2f7;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .tower-info h3 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .tower-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* 游戏说明 */
+        .game-instruction {
+            background: white;
+            padding: 30px;
+            margin: 20px;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .instruction-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .instruction-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .instruction-card h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instruction-card h3 i {
+            margin-right: 10px;
+        }
+        
+        .instruction-card p {
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+        }
+        
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .footer-nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-nav a:hover {
+            color: #5dade2;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #bdc3c7;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .game-info {
+                flex: 0 0 auto;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>氚-仙 | 塔防游戏</h1>
+            <p class="site-desc">策略布局防御塔，引导敌人行进路线，保护基地！</p>
+        </header>
+        
+        <div class="game-container">
+            <div class="game-board">
+                <canvas id="game-canvas"></canvas>
+                <div class="controls">
+                    <button class="control-btn">开始游戏</button>
+                    <button class="control-btn">暂停</button>
+                    <button class="control-btn">重置</button>
+                </div>
+            </div>
+            
+            <div class="game-info">
+                <h2 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">游戏状态</h2>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">生命值</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">500</div>
+                        <div class="stat-label">金币</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">当前波数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">32</div>
+                        <div class="stat-label">消灭敌人</div>
+                    </div>
+                </div>
+                
+                <h2 style="color: #2c3e50; margin: 30px 0 15px; text-align: center;">选择防御塔</h2>
+                
+                <div class="tower-types">
+                    <div class="tower-type active">
+                        <div class="tower-icon">LM</div>
+                        <div class="tower-info">
+                            <h3>轻机枪</h3>
+                            <p>攻击: 中等 | 范围: 中等</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tower-type">
+                        <div class="tower-icon">HM</div>
+                        <div class="tower-info">
+                            <h3>重机枪</h3>
+                            <p>攻击: 高 | 范围: 短</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tower-type">
+                        <div class="tower-icon">CN</div>
+                        <div class="tower-info">
+                            <h3>加农炮</h3>
+                            <p>攻击: 很高 | 范围: 长</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tower-type">
+                        <div class="tower-icon">BL</div>
+                        <div class="tower-info">
+                            <h3>路障</h3>
+                            <p>改变敌人路线</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <button class="control-btn" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">升级防御塔</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-instruction">
+            <h2 class="section-title">游戏指南</h2>
+            
+            <div class="instruction-content">
+                <div class="instruction-card">
+                    <h3><i>🏗️</i> 基础玩法</h3>
+                    <p>从空白地图开始，通过建造防御塔和路障来引导敌人行进路线。策略性地建造和出售防御塔，延长敌人行进距离，让防御塔有更多时间攻击敌人。</p>
+                </div>
+                
+                <div class="instruction-card">
+                    <h3><i>🎯</i> 防御塔类型</h3>
+                    <p>轻机枪：平衡的攻击和范围；重机枪：高伤害但范围短；加农炮：高伤害长范围但攻击慢；路障：改变敌人路线，不造成伤害。</p>
+                </div>
+                
+                <div class="instruction-card">
+                    <h3><i>💰</i> 资源管理</h3>
+                    <p>击败敌人获得金币，用于建造和升级防御塔。拆除防御塔可获得50%金币返还。合理分配资源是获胜关键。</p>
+                </div>
+                
+                <div class="instruction-card">
+                    <h3><i>🏆</i> 高级技巧</h3>
+                    <p>创建迷宫式路线最大化敌人行进距离。组合不同类型防御塔（如路障+加农炮）。优先升级关键位置的防御塔。注意敌人类型变化调整策略。</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-nav">
+                <a href="index.html">首页</a>
+                <a href="working.html">效率工具</a>
+                <a href="coding.html">开发工具</a>
+                <a href="alipay.html">赞助支持</a>
+                <a href="news.txt">更新日志</a>
+            </div>
+            
+            <p>xeecn-本站暂未备案（站主实名：王**圣）</p>
+            <p>免责声明：本站若有任何侵权内容，请联系作者以删除</p>
+            
+            <div class="copyright">
+                © 2023 氚-仙 | 探索科技边界，体验策略游戏乐趣
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // 模拟游戏画布
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 设置画布尺寸
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        
+        // 绘制网格背景
+        function drawGrid() {
+            const gridSize = 40;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制网格
+            ctx.strokeStyle = '#d5d8dc';
+            ctx.lineWidth = 1;
+            
+            for (let x = 0; x <= canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y <= canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // 绘制起点和终点
+            ctx.fillStyle = '#3498db';
+            ctx.beginPath();
+            ctx.arc(40, 40, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.arc(canvas.width - 40, canvas.height - 40, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 绘制路径
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(40, 40);
+            ctx.lineTo(canvas.width - 100, 40);
+            ctx.lineTo(canvas.width - 100, canvas.height - 100);
+            ctx.lineTo(100, canvas.height - 100);
+            ctx.lineTo(100, 200);
+            ctx.lineTo(canvas.width - 40, 200);
+            ctx.lineTo(canvas.width - 40, canvas.height - 40);
+            ctx.stroke();
+            
+            // 绘制防御塔
+            const towers = [
+                {x: canvas.width - 100, y: 80, type: 'machinegun'},
+                {x: canvas.width - 180, y: canvas.height - 100, type: 'cannon'},
+                {x: 140, y: canvas.height - 100, type: 'barrier'},
+                {x: 140, y: 140, type: 'machinegun'}
+            ];
+            
+            towers.forEach(tower => {
+                let color;
+                switch(tower.type) {
+                    case 'machinegun':
+                        color = '#3498db';
+                        break;
+                    case 'cannon':
+                        color = '#e74c3c';
+                        break;
+                    case 'barrier':
+                        color = '#2c3e50';
+                        break;
+                }
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(tower.x, tower.y, 12, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                let text;
+                switch(tower.type) {
+                    case 'machinegun':
+                        text = 'LM';
+                        break;
+                    case 'cannon':
+                        text = 'CN';
+                        break;
+                    case 'barrier':
+                        text = 'BL';
+                        break;
+                }
+                
+                ctx.fillText(text, tower.x, tower.y);
+                
+                // 绘制攻击范围
+                ctx.strokeStyle = color + '40';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(tower.x, tower.y, 50, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+            
+            // 绘制敌人
+            const enemies = [
+                {x: 40, y: 40, progress: 0.2},
+                {x: canvas.width - 180, y: 40, progress: 0.5},
+                {x: canvas.width - 180, y: canvas.height - 180, progress: 0.7}
+            ];
+            
+            enemies.forEach(enemy => {
+                ctx.fillStyle = '#9b59b6';
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 血条
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillRect(enemy.x - 15, enemy.y - 20, 30, 4);
+                
+                ctx.fillStyle = '#2ecc71';
+                ctx.fillRect(enemy.x - 15, enemy.y - 20, 30 * (1 - enemy.progress), 4);
+            });
+        }
+        
+        // 初始绘制
+        drawGrid();
+        
+        // 防御塔选择交互
+        const towerTypes = document.querySelectorAll('.tower-type');
+        towerTypes.forEach(type => {
+            type.addEventListener('click', () => {
+                towerTypes.forEach(t => t.classList.remove('active'));
+                type.classList.add('active');
+            });
+        });
+        
+        // 按钮交互
+        const buttons = document.querySelectorAll('.control-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 100);
+            });
+        });
+        
+        // 响应窗口大小变化
+        window.addEventListener('resize', () => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            drawGrid();
+        });
+    </script>
+</body>
+</html>
