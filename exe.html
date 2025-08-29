@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ 项目集 - xee-cn</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('https://xeecn.github.io/IMG_7917.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.92);
+            min-height: 100vh;
+            box-sizing: border-box;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            border-left: 1px solid rgba(0,0,0,0.05);
+            border-right: 1px solid rgba(0,0,0,0.05);
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            position: relative;
+            display: inline-block;
+        }
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            border-radius: 3px;
+        }
+        .site-desc {
+            color: #4a6b8b;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+                
+        .category {
+            margin-bottom: 50px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .category:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .category h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+        .category h2:before {
+            content: "›";
+            margin-right: 10px;
+            color: #3498db;
+            font-size: 1.5rem;
+        }
+        .project-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        .project-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(52, 152, 219, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3498db, #2c3e50);
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .project-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            margin-bottom: 18px;
+            font-size: 1.4rem;
+            padding-left: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .project-card p {
+            margin: 10px 0;
+            color: #555;
+            line-height: 1.7;
+        }
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        .link-btn i {
+            margin-right: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>C++ 项目集</h1>
+            <p class="site-desc">这里是我开发的C++可执行程序集合，所有项目均可免费下载使用。点击下方项目卡片了解更多信息并下载。</p>
+        </header>
+
+        <div class="category">
+            <h2>游戏项目</h2>
+            <div class="project-list">
+                <div class="project-card">
+                    <h3>简易迷宫</h3>
+                    <p>一个简单的文字迷宫游戏，使用C++开发，适合微机课谨慎摸鱼~</p>
+                    <p><strong>功能特点：</strong></p>
+                    <ul>
+                        <li>可更改迷宫地图</li>
+                        <li>键盘控制角色移动</li>
+                        <li>高兼容性、简易</li>
+                    </ul>
+                    <a href="https://www.ilanzou.com/s/kO8z2qcB" class="link-btn">下载项目</a>
+                </div>
+                <!-- 未来可以在这里添加更多项目卡片 -->
+            </div>
+        </div>
+
+        <footer>
+            © 2025 xee-cn 的个人项目 | 使用HTML5和CSS3构建
+        </footer>
+    </div>
+</body>
+</html>
