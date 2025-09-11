@@ -5,215 +5,209 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xee</title>
     <style>
-        body {
+        /* 基础样式重置 */
+        * {
             margin: 0;
             padding: 0;
-            /* 移除背景图片，改为暗色背景 */
-            background: #222831;
+            box-sizing: border-box;
+        }
+        
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #e6e6e6;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-attachment: fixed;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
         }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(35, 40, 51, 0.96);
-            min-height: 100vh;
-            box-sizing: border-box;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-            border-left: 1px solid rgba(255,255,255,0.03);
-            border-right: 1px solid rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
+        
+        /* 头部样式 */
         header {
             text-align: center;
-            padding: 30px 0;
+            padding: 50px 30px;
+            background: linear-gradient(120deg, #4b6cb7, #182848);
+            color: white;
             position: relative;
         }
-        h1 {
-            color: #00adb5;
-            margin-bottom: 15px;
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            position: relative;
-            display: inline-block;
-        }
-        h1:after {
+        
+        header::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, #00adb5, #393e46);
-            border-radius: 3px;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4b6cb7, #182848);
         }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
         .site-desc {
-            color: #b2ebf2;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            font-weight: 300;
+            font-size: 1.3rem;
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
+            margin: 0 auto;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+            gap: 30px;
         }
         
         .category {
-            margin-bottom: 50px;
-            padding: 20px;
+            flex: 1 1 calc(33.333% - 30px);
+            min-width: 300px;
+            background: white;
             border-radius: 12px;
-            background-color: rgba(44, 62, 80, 0.8);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-            transition: all 0.3s ease;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid #4b6cb7;
         }
+        
         .category:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
         }
+        
         .category h2 {
-            color: #00adb5;
-            border-bottom: 2px solid #00adb5;
+            color: #2c3e50;
+            margin-bottom: 20px;
             padding-bottom: 12px;
-            margin-top: 0;
-            font-size: 1.8rem;
+            border-bottom: 2px solid #eee;
+            font-size: 1.6rem;
             display: flex;
             align-items: center;
         }
-        .category h2:before {
-            content: "›";
+        
+        .category h2::before {
+            content: "●";
+            color: #4b6cb7;
             margin-right: 10px;
-            color: #00adb5;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
+        
         .business-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
+        
         .business-card {
-            background: linear-gradient(135deg, #393e46 0%, #222831 100%);
-            padding: 20px;
+            background: #f8f9fa;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+            padding: 20px;
+            border-left: 4px solid #4b6cb7;
             transition: all 0.3s ease;
-            border: 1px solid rgba(0, 173, 181, 0.12);
-            position: relative;
-            overflow: hidden;
         }
-        .business-card:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, #00adb5, #393e46);
-        }
+        
         .business-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            background: #f1f5f9;
+            transform: translateX(5px);
         }
+        
         .business-card h3 {
-            margin-top: 0;
-            color: #00adb5;
-            margin-bottom: 18px;
-            font-size: 1.4rem;
-            padding-left: 10px;
-            border-left: 3px solid #00adb5;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
         }
+        
         .business-card p {
-            margin: 10px 0;
-            color: #cfd8dc;
-            line-height: 1.7;
+            color: #555;
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
+        
         .link-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 15px;
-            padding: 10px 18px;
-            background: linear-gradient(135deg, #00adb5, #393e46);
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(0,173,181,0.2);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(75, 108, 183, 0.25);
         }
+        
         .link-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,173,181,0.3);
-            background: linear-gradient(135deg, #393e46, #00adb5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(75, 108, 183, 0.4);
+            background: linear-gradient(to right, #182848, #4b6cb7);
         }
-        .link-btn:after {
-            content: "→";
-            margin-left: 8px;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-        }
-        .link-btn:hover:after {
-            transform: translateX(3px);
-        }
+        
+        /* 页脚样式 */
         footer {
             text-align: center;
-            margin-top: 60px;
-            padding: 30px 20px;
-            color: #b0bec5;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            background-color: rgba(44, 62, 80, 0.6);
-            border-radius: 10px;
+            padding: 30px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            margin-top: 20px;
         }
+        
         footer p {
-            margin: 8px 0;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
         }
-        .tag {
-            display: inline-block;
-            padding: 5px 10px;
-            background: linear-gradient(135deg, #ffd700, #e67e22);
-            color: #222;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            font-weight: 500;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.13);
-        }
-
+        
         /* 响应式设计 */
-        @media (max-width: 768px) {
-            .business-list {
-                grid-template-columns: 1fr;
-            }
-            h1 {
-                font-size: 2.2rem;
-            }
-            .site-desc {
-                font-size: 1rem;
+        @media (max-width: 992px) {
+            .category {
+                flex: 1 1 calc(50% - 30px);
             }
         }
         
-        /* 新增动画效果 */
+        @media (max-width: 768px) {
+            .category {
+                flex: 1 1 100%;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .site-desc {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* 动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
         .category {
             animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
         }
-        .category:nth-child(2) { animation-delay: 0.1s; }
-        .category:nth-child(3) { animation-delay: 0.2s; }
-        .category:nth-child(4) { animation-delay: 0.3s; }
         
-        /* 页脚样式优化 */
+        .category:nth-child(1) { animation-delay: 0.1s; }
+        .category:nth-child(2) { animation-delay: 0.2s; }
+        .category:nth-child(3) { animation-delay: 0.3s; }
+        
         footer {
             animation: fadeIn 0.8s ease forwards;
             animation-delay: 0.4s;
@@ -228,59 +222,60 @@
             <p class="site-desc">hello world！</p>
         </header>
         
-        <div class="category">
-            <h2>联系与支持</h2>
-            <div class="business-list">
-                <div class="business-card">
-                    <h3>邮箱联系</h3>
-                    <p>官方邮箱：xeecn@outlook.com</p>
-                    <p></p>
-                    <a href="mailto:xeecn@outlook.com" class="link-btn">发送邮件</a>
-                </div>
-                <div class="business-card">
-                    <h3>赞助支持</h3>
-                    <p>欢迎赞助支持本站持续运营</p>
-                    <p>支持方式：支付宝 </p>
-                    <p>您的支持将帮助我们提供更好的服务</p>
-                    <a href="alipay.html" class="link-btn">去支持</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="category">
-            <h2>免费软件资源</h2>
-            <div class="business-list">
-                <div class="business-card">
-                    <h3>h5/js项目</h3>
-                    <p>原创，转载，改编</p>
-                    <a href="h5js.html" class="link-btn">查看资源</a>
-                </div>
-                <div class="business-card">
-                    <h3>exe(c++)项目</h3>
-                    <p>原创，转载，改编</p>
-                    <a href="exe.html" class="link-btn">查看资源</a>
+        <div class="main-content">
+            <div class="category">
+                <h2>联系与支持</h2>
+                <div class="business-list">
+                    <div class="business-card">
+                        <h3>邮箱联系</h3>
+                        <p>官方邮箱：xeecn@outlook.com</p>
+                        <a href="mailto:xeecn@outlook.com" class="link-btn">发送邮件</a>
+                    </div>
+                    <div class="business-card">
+                        <h3>赞助支持</h3>
+                        <p>欢迎赞助支持本站持续运营</p>
+                        <p>支持方式：支付宝 </p>
+                        <p>您的支持将帮助我们提供更好的服务</p>
+                        <a href="alipay.html" class="link-btn">去支持</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="category">
-            <h2>更多</h2>
-            <div class="business-list">
-                <div class="business-card">
-                    <h3>敬请期待</h3>
-                    <p>噗~</p>
-                    <a href="#" class="link-btn">:)</a>
+            
+            <div class="category">
+                <h2>免费软件资源</h2>
+                <div class="business-list">
+                    <div class="business-card">
+                        <h3>h5/js项目</h3>
+                        <p>原创，转载，改编项目</p>
+                        <a href="h5js.html" class="link-btn">查看资源</a>
+                    </div>
+                    <div class="business-card">
+                        <h3>exe(c++)项目</h3>
+                        <p>原创，转载，改编项目</p>
+                        <a href="exe.html" class="link-btn">查看资源</a>
+                    </div>
                 </div>
-                <div class="business-card">
-                    <h3>敬请期待</h3>
-                    <p>鞥？</p>
-                    <a href="#" class="link-btn">:)</a>
+            </div>
+            
+            <div class="category">
+                <h2>更多</h2>
+                <div class="business-list">
+                    <div class="business-card">
+                        <h3>敬请期待</h3>
+                        <p>噗~</p>
+                        <a href="news.html" class="link-btn">:)</a>
+                    </div>
+                    <div class="business-card">
+                        <h3>敬请期待</h3>
+                        <p>鞥？</p>
+                        <a href="#" class="link-btn">:)</a>
+                    </div>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p style="margin-top: 15px; color: #7f8c8d; font-size: 0.9rem;">xeecn | 追求卓越，永不止步</p>
+            <p>xeecn | 追求卓越，永不止步</p>
         </footer>
     </div>
 </body>
