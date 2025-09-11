@@ -3,204 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xeecn氙-仙：赞助支持</title>
+    <title>赞助支持</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background: #222831; /* 暗色背景 */
+            box-sizing: border-box;
+        }
+        
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #e6e6e6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(35, 40, 51, 0.96);
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-attachment: fixed;
+            color: #333;
             min-height: 100vh;
-            box-sizing: border-box;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-            border-left: 1px solid rgba(255,255,255,0.03);
-            border-right: 1px solid rgba(255,255,255,0.03);
+            padding: 20px;
         }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
         header {
             text-align: center;
-            padding: 30px 0;
+            padding: 50px 30px;
+            background: linear-gradient(120deg, #4b6cb7, #182848);
+            color: white;
             position: relative;
         }
-        h1 {
-            color: #00adb5;
-            margin-bottom: 15px;
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            position: relative;
-            display: inline-block;
-        }
-        h1:after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, #00adb5, #393e46);
-            border-radius: 3px;
-        }
-        .site-desc {
-            color: #b2ebf2;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            font-weight: 300;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
-        }
-        .payment-section {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: rgba(44, 62, 80, 0.85);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.8s ease forwards;
-            margin-bottom: 40px;
-        }
-        .payment-section:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, #00adb5, #393e46);
-        }
-        .payment-title {
-            color: #00adb5;
-            margin-top: 0;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 10px;
-        }
-        .payment-title:after {
+        
+        header::after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #00adb5, #393e46);
-            border-radius: 3px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4b6cb7, #182848);
         }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .site-desc {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .payment-section {
+            padding: 40px 30px;
+            text-align: center;
+            background: white;
+        }
+        
+        .payment-title {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            display: inline-block;
+        }
+        
         .payment-desc {
-            color: #b0bec5;
+            color: #555;
             font-size: 1.1rem;
             margin-bottom: 30px;
-            line-height: 1.8;
+            line-height: 1.7;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
+        
         .payment-code-container {
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #393e46 0%, #222831 100%);
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             display: inline-block;
-            max-width: 450px;
-            border: 1px solid rgba(0, 173, 181, 0.14);
-            position: relative;
-            overflow: hidden;
+            max-width: 400px;
+            border: 1px solid #eaeaea;
+            transition: all 0.3s ease;
         }
-        .payment-code-container:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, #00adb5, #393e46);
+        
+        .payment-code-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
         }
+        
         .payment-code {
             width: 100%;
             height: auto;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: transform 0.3s ease;
         }
+        
         .payment-code:hover {
             transform: scale(1.02);
         }
-        /* 返回首页按钮 */
+        
+        .support-text {
+            margin-top: 25px;
+            color: #4b6cb7;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
         .link-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 28px;
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #00adb5, #393e46);
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(0,173,181,0.2);
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(75, 108, 183, 0.25);
         }
+        
         .link-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,173,181,0.3);
-            background: linear-gradient(135deg, #393e46, #00adb5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(75, 108, 183, 0.4);
+            background: linear-gradient(to right, #182848, #4b6cb7);
         }
-        .link-btn:after {
-            content: "→";
-            margin-left: 8px;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-        }
-        .link-btn:hover:after {
-            transform: translateX(3px);
-        }
+        
         footer {
             text-align: center;
-            margin-top: 60px;
-            padding: 30px 20px;
-            color: #b0bec5;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            background-color: rgba(44, 62, 80, 0.6);
-            border-radius: 10px;
-            animation: fadeIn 1s ease forwards;
+            padding: 30px;
+            background: #2c3e50;
+            color: #ecf0f1;
         }
+        
         footer p {
-            margin: 8px 0;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
         }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* 响应式设计 */
+        
+        .payment-section {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.2rem;
             }
+            
             .site-desc {
                 font-size: 1rem;
             }
-            .payment-section {
-                padding: 18px;
+            
+            .payment-title {
+                font-size: 1.6rem;
+            }
+            
+            .payment-desc {
+                font-size: 1rem;
+            }
+            
+            .payment-code-container {
+                max-width: 300px;
             }
         }
     </style>
@@ -208,22 +191,25 @@
 <body>
     <div class="container">
         <header>
-            <h1>氚-仙</h1>
+            <h1>xee 赞助支持</h1>
             <p class="site-desc">感谢您的支持，您的赞助将帮助我们持续提供优质服务</p>
         </header>
+        
         <div class="payment-section">
             <h2 class="payment-title">支付宝赞助支持</h2>
-            <p class="payment-desc">请使用支付宝扫描下方二维码进行赞助。感谢！</p>
+            <p class="payment-desc">请使用支付宝扫描下方二维码进行赞助。您的每一份支持都将帮助我们提供更好的服务！</p>
+            
             <div class="payment-code-container">
                 <img src="https://xeecn.github.io/IMG_7815.jpeg" class="payment-code" alt="支付宝付款码">
             </div>
-            <br>
+            
+            <p class="support-text">感谢您的慷慨支持！</p>
+            
             <a href="index.html" class="link-btn">返回首页</a>
         </div>
+        
         <footer>
-            <p>xeecn-本站暂未备案（站主实名：王**圣）</p>
-            <p>免责声明：本站若有任何侵权内容，请联系作者以删除</p>
-            <p style="margin-top: 15px; color: #7f8c8d; font-size: 0.9rem;">氙-仙 | 因您支持，所以更好</p>
+            <p>xeecn | 因您支持，所以更好</p>
         </footer>
     </div>
 </body>
