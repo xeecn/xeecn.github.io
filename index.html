@@ -8,24 +8,22 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url('https://xeecn.github.io/IMG_7917.jpeg');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
+            /* 移除背景图片，改为暗色背景 */
+            background: #222831;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #e6e6e6;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.92);
+            background-color: rgba(35, 40, 51, 0.96);
             min-height: 100vh;
             box-sizing: border-box;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-            border-left: 1px solid rgba(0,0,0,0.05);
-            border-right: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            border-left: 1px solid rgba(255,255,255,0.03);
+            border-right: 1px solid rgba(255,255,255,0.03);
         }
         header {
             text-align: center;
@@ -33,12 +31,12 @@
             position: relative;
         }
         h1 {
-            color: #2c3e50;
+            color: #00adb5;
             margin-bottom: 15px;
             font-size: 2.8rem;
             font-weight: 700;
             letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             position: relative;
             display: inline-block;
         }
@@ -50,11 +48,11 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, #3498db, #2c3e50);
+            background: linear-gradient(90deg, #00adb5, #393e46);
             border-radius: 3px;
         }
         .site-desc {
-            color: #4a6b8b;
+            color: #b2ebf2;
             font-size: 1.2rem;
             margin-bottom: 40px;
             font-weight: 300;
@@ -68,17 +66,17 @@
             margin-bottom: 50px;
             padding: 20px;
             border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background-color: rgba(44, 62, 80, 0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
             transition: all 0.3s ease;
         }
         .category:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
         .category h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
+            color: #00adb5;
+            border-bottom: 2px solid #00adb5;
             padding-bottom: 12px;
             margin-top: 0;
             font-size: 1.8rem;
@@ -88,7 +86,7 @@
         .category h2:before {
             content: "›";
             margin-right: 10px;
-            color: #3498db;
+            color: #00adb5;
             font-size: 1.5rem;
         }
         .business-list {
@@ -98,12 +96,12 @@
             margin-top: 25px;
         }
         .business-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: linear-gradient(135deg, #393e46 0%, #222831 100%);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.14);
             transition: all 0.3s ease;
-            border: 1px solid rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(0, 173, 181, 0.12);
             position: relative;
             overflow: hidden;
         }
@@ -114,23 +112,23 @@
             left: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(to bottom, #3498db, #2c3e50);
+            background: linear-gradient(to bottom, #00adb5, #393e46);
         }
         .business-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
         }
         .business-card h3 {
             margin-top: 0;
-            color: #2c3e50;
+            color: #00adb5;
             margin-bottom: 18px;
             font-size: 1.4rem;
             padding-left: 10px;
-            border-left: 3px solid #3498db;
+            border-left: 3px solid #00adb5;
         }
         .business-card p {
             margin: 10px 0;
-            color: #555;
+            color: #cfd8dc;
             line-height: 1.7;
         }
         .link-btn {
@@ -139,7 +137,7 @@
             justify-content: center;
             margin-top: 15px;
             padding: 10px 18px;
-            background: linear-gradient(135deg, #3498db, #2c3e50);
+            background: linear-gradient(135deg, #00adb5, #393e46);
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -148,12 +146,12 @@
             border: none;
             cursor: pointer;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 10px rgba(0,173,181,0.2);
         }
         .link-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+            box-shadow: 0 6px 15px rgba(0,173,181,0.3);
+            background: linear-gradient(135deg, #393e46, #00adb5);
         }
         .link-btn:after {
             content: "→";
@@ -168,9 +166,9 @@
             text-align: center;
             margin-top: 60px;
             padding: 30px 20px;
-            color: #555;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            background-color: rgba(255, 255, 255, 0.6);
+            color: #b0bec5;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background-color: rgba(44, 62, 80, 0.6);
             border-radius: 10px;
         }
         footer p {
@@ -180,14 +178,14 @@
         .tag {
             display: inline-block;
             padding: 5px 10px;
-            background: linear-gradient(135deg, #f1c40f, #e67e22);
-            color: #fff;
+            background: linear-gradient(135deg, #ffd700, #e67e22);
+            color: #222;
             border-radius: 20px;
             font-size: 0.85rem;
             margin-right: 8px;
             margin-bottom: 8px;
             font-weight: 500;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.13);
         }
 
         /* 响应式设计 */
