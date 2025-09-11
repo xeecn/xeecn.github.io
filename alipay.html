@@ -5,28 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xeecn氙-仙：赞助支持</title>
     <style>
-        /* 全局样式 - 与主站保持一致 */
         body {
             margin: 0;
             padding: 0;
-            background-image: url('https://xeecn.github.io/IMG_7816.jpeg');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
+            background: #222831; /* 暗色背景 */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #e6e6e6;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.92);
+            background-color: rgba(35, 40, 51, 0.96);
             min-height: 100vh;
             box-sizing: border-box;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-            border-left: 1px solid rgba(0,0,0,0.05);
-            border-right: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            border-left: 1px solid rgba(255,255,255,0.03);
+            border-right: 1px solid rgba(255,255,255,0.03);
         }
         header {
             text-align: center;
@@ -34,12 +30,12 @@
             position: relative;
         }
         h1 {
-            color: #2c3e50;
+            color: #00adb5;
             margin-bottom: 15px;
             font-size: 2.8rem;
             font-weight: 700;
             letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             position: relative;
             display: inline-block;
         }
@@ -51,11 +47,11 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, #3498db, #2c3e50);
+            background: linear-gradient(90deg, #00adb5, #393e46);
             border-radius: 3px;
         }
         .site-desc {
-            color: #4a6b8b;
+            color: #b2ebf2;
             font-size: 1.2rem;
             margin-bottom: 40px;
             font-weight: 300;
@@ -64,15 +60,13 @@
             margin-right: auto;
             line-height: 1.8;
         }
-        
-        /* 支付码容器 - 增强视觉效果 */
         .payment-section {
             max-width: 800px;
             margin: 0 auto;
             padding: 30px;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(44, 62, 80, 0.85);
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -86,10 +80,10 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(to right, #3498db, #2c3e50);
+            background: linear-gradient(to right, #00adb5, #393e46);
         }
         .payment-title {
-            color: #2c3e50;
+            color: #00adb5;
             margin-top: 0;
             font-size: 1.8rem;
             margin-bottom: 25px;
@@ -105,11 +99,11 @@
             transform: translateX(-50%);
             width: 60px;
             height: 3px;
-            background: linear-gradient(90deg, #3498db, #2c3e50);
+            background: linear-gradient(90deg, #00adb5, #393e46);
             border-radius: 3px;
         }
         .payment-desc {
-            color: #555;
+            color: #b0bec5;
             font-size: 1.1rem;
             margin-bottom: 30px;
             line-height: 1.8;
@@ -120,12 +114,12 @@
         .payment-code-container {
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: linear-gradient(135deg, #393e46 0%, #222831 100%);
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.16);
             display: inline-block;
             max-width: 450px;
-            border: 1px solid rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(0, 173, 181, 0.14);
             position: relative;
             overflow: hidden;
         }
@@ -136,7 +130,7 @@
             left: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(to bottom, #3498db, #2c3e50);
+            background: linear-gradient(to bottom, #00adb5, #393e46);
         }
         .payment-code {
             width: 100%;
@@ -147,65 +141,14 @@
         .payment-code:hover {
             transform: scale(1.02);
         }
-        .support-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-        .support-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            width: 280px;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .support-card:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, #3498db, #2c3e50);
-        }
-        .support-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        .support-card h3 {
-            color: #2c3e50;
-            margin-top: 0;
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-            display: inline-block;
-        }
-        .support-card ul {
-            text-align: left;
-            padding-left: 20px;
-            margin-bottom: 25px;
-        }
-        .support-card li {
-            margin-bottom: 12px;
-            color: #555;
-            line-height: 1.6;
-        }
-        
-        /* 按钮样式 - 与主站一致 */
+        /* 返回首页按钮 */
         .link-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 28px;
             padding: 12px 25px;
-            background: linear-gradient(135deg, #3498db, #2c3e50);
+            background: linear-gradient(135deg, #00adb5, #393e46);
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -214,12 +157,12 @@
             border: none;
             cursor: pointer;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 10px rgba(0,173,181,0.2);
         }
         .link-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+            box-shadow: 0 6px 15px rgba(0,173,181,0.3);
+            background: linear-gradient(135deg, #393e46, #00adb5);
         }
         .link-btn:after {
             content: "→";
@@ -230,14 +173,13 @@
         .link-btn:hover:after {
             transform: translateX(3px);
         }
-        
         footer {
             text-align: center;
             margin-top: 60px;
             padding: 30px 20px;
-            color: #555;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            background-color: rgba(255, 255, 255, 0.6);
+            color: #b0bec5;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background-color: rgba(44, 62, 80, 0.6);
             border-radius: 10px;
             animation: fadeIn 1s ease forwards;
         }
@@ -245,33 +187,20 @@
             margin: 8px 0;
             font-size: 0.95rem;
         }
-        
-        /* 动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .support-info {
-            animation: fadeIn 0.8s ease forwards;
-            animation-delay: 0.2s;
-            opacity: 0;
-        }
-        
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .support-info {
-                flex-direction: column;
-                align-items: center;
-            }
-            .support-card {
-                width: 100%;
-                max-width: 350px;
-            }
             h1 {
                 font-size: 2.2rem;
             }
             .site-desc {
                 font-size: 1rem;
+            }
+            .payment-section {
+                padding: 18px;
             }
         }
     </style>
@@ -282,27 +211,15 @@
             <h1>氚-仙</h1>
             <p class="site-desc">感谢您的支持，您的赞助将帮助我们持续提供优质服务</p>
         </header>
-        
         <div class="payment-section">
             <h2 class="payment-title">支付宝赞助支持</h2>
             <p class="payment-desc">请使用支付宝扫描下方二维码进行赞助。您的每一笔赞助都将用于网站维护、资源开发和服务器费用。</p>
-            
             <div class="payment-code-container">
                 <img src="https://xeecn.github.io/IMG_7815.jpeg" class="payment-code" alt="支付宝付款码">
             </div>
-            
-            <div class="support-info">
-                <div class="support-card">
-                    <h3>赞助说明</h3>
-                    <ul>
-                        <li>赞助金额不限，感谢您的支持</li>
-                        <li>赞助后您的账户不会被记录</li>
-                    </ul>
-                    <a href="index.html" class="link-btn">返回首页</a>
-                </div>
-                
-
-        
+            <br>
+            <a href="index.html" class="link-btn">返回首页</a>
+        </div>
         <footer>
             <p>xeecn-本站暂未备案（站主实名：王**圣）</p>
             <p>免责声明：本站若有任何侵权内容，请联系作者以删除</p>
