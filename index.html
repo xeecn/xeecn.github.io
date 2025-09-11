@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xee</title>
+    <title>xeecn氙-仙：赞助支持</title>
     <style>
-        /* 基础样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +22,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 16px;
@@ -32,7 +31,6 @@
             backdrop-filter: blur(10px);
         }
         
-        /* 头部样式 */
         header {
             text-align: center;
             padding: 50px 30px;
@@ -52,7 +50,7 @@
         }
         
         h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 15px;
             font-weight: 800;
             letter-spacing: 1px;
@@ -60,95 +58,83 @@
         }
         
         .site-desc {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             max-width: 600px;
             margin: 0 auto;
             opacity: 0.9;
             font-weight: 300;
         }
         
-        /* 主内容区域 */
-        .main-content {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 30px;
-            gap: 30px;
-        }
-        
-        .category {
-            flex: 1 1 calc(33.333% - 30px);
-            min-width: 300px;
+        .payment-section {
+            padding: 40px 30px;
+            text-align: center;
             background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-top: 5px solid #4b6cb7;
         }
         
-        .category:hover {
+        .payment-title {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            display: inline-block;
+        }
+        
+        .payment-desc {
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .payment-code-container {
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            display: inline-block;
+            max-width: 400px;
+            border: 1px solid #eaeaea;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-code-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
         }
         
-        .category h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #eee;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
+        .payment-code {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
         }
         
-        .category h2::before {
-            content: "●";
+        .payment-code:hover {
+            transform: scale(1.02);
+        }
+        
+        .support-text {
+            margin-top: 25px;
             color: #4b6cb7;
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .business-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .business-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            border-left: 4px solid #4b6cb7;
-            transition: all 0.3s ease;
-        }
-        
-        .business-card:hover {
-            background: #f1f5f9;
-            transform: translateX(5px);
-        }
-        
-        .business-card h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        .business-card p {
-            color: #555;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            font-weight: 500;
+            font-size: 1.1rem;
         }
         
         .link-btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 30px;
             background: linear-gradient(to right, #4b6cb7, #182848);
             color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 500;
             transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-top: 30px;
             box-shadow: 0 4px 10px rgba(75, 108, 183, 0.25);
         }
         
@@ -158,13 +144,11 @@
             background: linear-gradient(to right, #182848, #4b6cb7);
         }
         
-        /* 页脚样式 */
         footer {
             text-align: center;
             padding: 30px;
             background: #2c3e50;
             color: #ecf0f1;
-            margin-top: 20px;
         }
         
         footer p {
@@ -172,110 +156,60 @@
             letter-spacing: 1px;
         }
         
-        /* 响应式设计 */
-        @media (max-width: 992px) {
-            .category {
-                flex: 1 1 calc(50% - 30px);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .category {
-                flex: 1 1 100%;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .site-desc {
-                font-size: 1.1rem;
-            }
-        }
-        
-        /* 动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .category {
-            animation: fadeIn 0.6s ease forwards;
-            opacity: 0;
+        .payment-section {
+            animation: fadeIn 0.8s ease forwards;
         }
         
-        .category:nth-child(1) { animation-delay: 0.1s; }
-        .category:nth-child(2) { animation-delay: 0.2s; }
-        .category:nth-child(3) { animation-delay: 0.3s; }
-        
-        footer {
-            animation: fadeIn 0.8s ease forwards;
-            animation-delay: 0.4s;
-            opacity: 0;
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .site-desc {
+                font-size: 1rem;
+            }
+            
+            .payment-title {
+                font-size: 1.6rem;
+            }
+            
+            .payment-desc {
+                font-size: 1rem;
+            }
+            
+            .payment-code-container {
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>xee</h1>
-            <p class="site-desc">hello world！</p>
+            <h1>xeecn 氙-仙</h1>
+            <p class="site-desc">感谢您的支持，您的赞助将帮助我们持续提供优质服务</p>
         </header>
         
-        <div class="main-content">
-            <div class="category">
-                <h2>联系与支持</h2>
-                <div class="business-list">
-                    <div class="business-card">
-                        <h3>邮箱联系</h3>
-                        <p>官方邮箱：xeecn@outlook.com</p>
-                        <a href="mailto:xeecn@outlook.com" class="link-btn">发送邮件</a>
-                    </div>
-                    <div class="business-card">
-                        <h3>赞助支持</h3>
-                        <p>欢迎赞助支持本站持续运营</p>
-                        <p>支持方式：支付宝 </p>
-                        <p>您的支持将帮助我们提供更好的服务</p>
-                        <a href="alipay.html" class="link-btn">去支持</a>
-                    </div>
-                </div>
+        <div class="payment-section">
+            <h2 class="payment-title">支付宝赞助支持</h2>
+            <p class="payment-desc">请使用支付宝扫描下方二维码进行赞助。您的每一份支持都将帮助我们提供更好的服务！</p>
+            
+            <div class="payment-code-container">
+                <img src="https://xeecn.github.io/IMG_7815.jpeg" class="payment-code" alt="支付宝付款码">
             </div>
             
-            <div class="category">
-                <h2>免费软件资源</h2>
-                <div class="business-list">
-                    <div class="business-card">
-                        <h3>h5/js项目</h3>
-                        <p>原创，转载，改编项目</p>
-                        <a href="h5js.html" class="link-btn">查看资源</a>
-                    </div>
-                    <div class="business-card">
-                        <h3>exe(c++)项目</h3>
-                        <p>原创，转载，改编项目</p>
-                        <a href="exe.html" class="link-btn">查看资源</a>
-                    </div>
-                </div>
-            </div>
+            <p class="support-text">感谢您的慷慨支持！</p>
             
-            <div class="category">
-                <h2>更多</h2>
-                <div class="business-list">
-                    <div class="business-card">
-                        <h3>敬请期待</h3>
-                        <p>噗~</p>
-                        <a href="news.html" class="link-btn">:)</a>
-                    </div>
-                    <div class="business-card">
-                        <h3>敬请期待</h3>
-                        <p>鞥？</p>
-                        <a href="#" class="link-btn">:)</a>
-                    </div>
-                </div>
-            </div>
+            <a href="index.html" class="link-btn">返回首页</a>
         </div>
         
         <footer>
-            <p>xeecn | 追求卓越，永不止步</p>
+            <p>xeecn | 因您支持，所以更好</p>
         </footer>
     </div>
 </body>
