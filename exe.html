@@ -4,44 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C++ 项目集 - xee-cn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background-image: url('https://xeecn.github.io/IMG_7917.jpeg');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
+            box-sizing: border-box;
+        }
+        
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            background: linear-gradient(135deg, #0a0e21, #1a1a2e, #16213e);
+            background-attachment: fixed;
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
         }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.92);
-            min-height: 100vh;
-            box-sizing: border-box;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-            border-left: 1px solid rgba(0,0,0,0.05);
-            border-right: 1px solid rgba(0,0,0,0.05);
+            background: rgba(23, 25, 35, 0.9);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
         }
+        
         header {
             text-align: center;
-            padding: 30px 0;
+            padding: 50px 30px;
+            background: linear-gradient(120deg, #2d3a5a, #1a2238);
+            color: #f0f0f0;
             position: relative;
         }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
+        }
+        
         h1 {
-            color: #2c3e50;
-            margin-bottom: 15px;
             font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-            position: relative;
-            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
         }
+        
         h1:after {
             content: '';
             position: absolute;
@@ -50,118 +67,180 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, #3498db, #2c3e50);
+            background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
             border-radius: 3px;
         }
+        
         .site-desc {
-            color: #4a6b8b;
             font-size: 1.2rem;
-            margin-bottom: 40px;
-            font-weight: 300;
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
+            opacity: 0.85;
+            font-weight: 300;
+            color: #c2c2d6;
             line-height: 1.8;
         }
-                
+        
+        .main-content {
+            padding: 30px;
+        }
+        
         .category {
-            margin-bottom: 50px;
-            padding: 20px;
+            margin-bottom: 40px;
+            padding: 25px;
             border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background: rgba(35, 37, 47, 0.7);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            border-top: 3px solid #4a6fc1;
         }
+        
         .category:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(40, 42, 54, 0.8);
         }
+        
         .category h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
+            color: #d7d7e2;
+            margin-bottom: 20px;
             padding-bottom: 12px;
-            margin-top: 0;
+            border-bottom: 2px solid #2a2d3a;
             font-size: 1.8rem;
             display: flex;
             align-items: center;
         }
-        .category h2:before {
+        
+        .category h2::before {
             content: "›";
+            color: #4a6fc1;
             margin-right: 10px;
-            color: #3498db;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
+        
         .project-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
             margin-top: 25px;
         }
+        
         .project-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: rgba(40, 42, 54, 0.6);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
-            border: 1px solid rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #4a6fc1;
             position: relative;
             overflow: hidden;
         }
-        .project-card:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, #3498db, #2c3e50);
-        }
+        
         .project-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(50, 52, 64, 0.8);
         }
+        
         .project-card h3 {
-            margin-top: 0;
-            color: #2c3e50;
-            margin-bottom: 18px;
+            color: #e6e6fa;
+            margin-bottom: 15px;
             font-size: 1.4rem;
             padding-left: 10px;
-            border-left: 3px solid #3498db;
+            border-left: 3px solid #4a6fc1;
         }
+        
         .project-card p {
-            margin: 10px 0;
-            color: #555;
+            color: #b8b8cc;
+            margin-bottom: 12px;
             line-height: 1.7;
         }
+        
+        .project-card ul {
+            color: #a8a8c0;
+            margin: 15px 0;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .project-card li {
+            margin-bottom: 8px;
+        }
+        
         .link-btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            margin-top: 15px;
-            padding: 10px 18px;
-            background: linear-gradient(135deg, #3498db, #2c3e50);
+            padding: 10px 20px;
+            background: linear-gradient(to right, #4a6fc1, #2d3a5a);
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(74, 111, 193, 0.3);
         }
+        
         .link-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 6px 15px rgba(74, 111, 193, 0.5);
+            background: linear-gradient(to right, #2d3a5a, #4a6fc1);
         }
+        
         .link-btn i {
             margin-right: 8px;
         }
+        
         footer {
             text-align: center;
-            padding: 30px 0;
-            color: #7f8c8d;
-            font-size: 0.9rem;
+            padding: 30px;
+            background: #1a1c26;
+            color: #c2c2d6;
+        }
+        
+        footer p {
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .category {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .category:nth-child(1) { animation-delay: 0.1s; }
+        .category:nth-child(2) { animation-delay: 0.2s; }
+        .category:nth-child(3) { animation-delay: 0.3s; }
+        
+        footer {
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .site-desc {
+                font-size: 1rem;
+            }
+            
+            .project-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .category h2 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -169,29 +248,50 @@
     <div class="container">
         <header>
             <h1>C++ 项目集</h1>
-            <p class="site-desc">这里是本人开发的C++可执行程序集合，所有项目均可免费下载使用。点击下方项目卡片了解更多信息并下载。</p>
+            <p class="site-desc">探索精心开发的C++应用程序集合，所有项目完全免费并提供开源下载。点击下方项目卡片深入了解详情并获取资源。</p>
         </header>
-
-        <div class="category">
-            <h2>游戏项目</h2>
-            <div class="project-list">
-                <div class="project-card">
-                    <h3>简易迷宫</h3>
-                    <p>一个简单的文字迷宫游戏，使用C++开发，适合微机课谨慎摸鱼~</p>
-                    <p><strong>功能特点：</strong></p>
-                    <ul>
-                        <li>可更改迷宫地图</li>
-                        <li>键盘控制角色移动</li>
-                        <li>高兼容性、简易</li>
-                    </ul>
-                    <a href="https://www.ilanzou.com/s/kO8z2qcB" class="link-btn">下载项目</a>
+        
+        <div class="main-content">
+            <div class="category">
+                <h2>游戏开发项目</h2>
+                <div class="project-list">
+                    <div class="project-card">
+                        <h3>简易迷宫探险</h3>
+                        <p>一款轻量级文字迷宫游戏，完全使用C++开发，适合学习编程和课堂演示使用。</p>
+                        <p><strong>核心特性：</strong></p>
+                        <ul>
+                            <li>可自定义迷宫地图与难度设置</li>
+                            <li>流畅的键盘控制角色移动系统</li>
+                            <li>高度优化的兼容性，支持多种平台</li>
+                            <li>简洁直观的用户界面设计</li>
+                        </ul>
+                        <a href="https://www.ilanzou.com/s/kO8z2qcB" class="link-btn">
+                            <i class="fas fa-download"></i>获取项目
+                        </a>
+                    </div>
+                    
+                    <div class="project-card">
+                        <h3>终端竞速游戏</h3>
+                        <p>基于命令行的极简风格赛车游戏，展示C++在游戏开发中的高效性能。</p>
+                        <p><strong>核心特性：</strong></p>
+                        <ul>
+                            <li>动态生成的赛道与障碍物系统</li>
+                            <li>实时分数统计与成绩记录功能</li>
+                            <li>多级别难度渐进式设计</li>
+                            <li>无需图形界面的轻量级体验</li>
+                        </ul>
+                        <a href="#" class="link-btn">
+                            <i class="fas fa-download"></i>即将推出
+                        </a>
+                    </div>
                 </div>
-                <!-- 未来可以在这里添加更多项目卡片 -->
             </div>
+            
+            
         </div>
-
+        
         <footer>
-            xeecn | hello world!
+            <p>xeecn | 创新编程，极致体验</p>
         </footer>
     </div>
 </body>
