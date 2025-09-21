@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>windows常用软件 - xee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0a0e21, #1a1a2e, #16213e);
+            background-attachment: fixed;
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(23, 25, 35, 0.9);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        header {
+            text-align: center;
+            padding: 50px 30px;
+            background: linear-gradient(120deg, #2d3a5a, #1a2238);
+            color: #f0f0f0;
+            position: relative;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
+            border-radius: 3px;
+        }
+        
+        .site-desc {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.85;
+            font-weight: 300;
+            color: #c2c2d6;
+            line-height: 1.8;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .category {
+            margin-bottom: 40px;
+            padding: 25px;
+            border-radius: 12px;
+            background: rgba(35, 37, 47, 0.7);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border-top: 3px solid #4a6fc1;
+        }
+        
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(40, 42, 54, 0.8);
+        }
+        
+        .category h2 {
+            color: #d7d7e2;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #2a2d3a;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category h2::before {
+            content: "›";
+            color: #4a6fc1;
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .project-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .project-card {
+            background: rgba(40, 42, 54, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border-left: 4px solid #4a6fc1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(50, 52, 64, 0.8);
+        }
+        
+        .project-card h3 {
+            color: #e6e6fa;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            padding-left: 10px;
+            border-left: 3px solid #4a6fc1;
+        }
+        
+        .project-card p {
+            color: #b8b8cc;
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+        
+        .project-card ul {
+            color: #a8a8c0;
+            margin: 15px 0;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .project-card li {
+            margin-bottom: 8px;
+        }
+        
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(to right, #4a6fc1, #2d3a5a);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(74, 111, 193, 0.3);
+        }
+        
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(74, 111, 193, 0.5);
+            background: linear-gradient(to right, #2d3a5a, #4a6fc1);
+        }
+        
+        .link-btn i {
+            margin-right: 8px;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(74, 111, 193, 0.2);
+            color: #8fa8e6;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #1a1c26;
+            color: #c2c2d6;
+        }
+        
+        footer p {
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .category {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .category:nth-child(1) { animation-delay: 0.1s; }
+        .category:nth-child(2) { animation-delay: 0.2s; }
+        
+        footer {
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .site-desc {
+                font-size: 1rem;
+            }
+            
+            .project-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .category h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>windows常用软件</h1>
+            <p class="site-desc">探索精选的HTML5与JavaScript项目集合，包含原创开发与优质转载内容。所有项目完全免费并提供便捷下载。</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="category">
+                <div class="project-list">
+                    <div class="project-card">
+                        <h3>Eaglercraft</h3>
+                        <span class="tag">转载项目</span>
+                        <span class="tag">Minecraft</span>
+                        <span class="tag">浏览器游戏</span>
+                        <p>基于浏览器的Minecraft客户端，无需安装即可体验经典沙盒游戏。</p>
+                        <p><strong>项目特点：</strong></p>
+                        <ul>
+                            <li>完全在浏览器中运行，无需下载安装</li>
+                            <li>支持多人联机游戏体验</li>
+                            <li>优化触屏操作，移动设备友好</li>
+                            <li>高度还原原版游戏核心玩法</li>
+                        </ul>
+                        <p><strong>体验方式：</strong>访问 www.mc.js.cool 体验触屏版，或点击下载离线版本</p>
+                        <a href="https://www.ilanzou.com/s/0wvz2RDv" class="link-btn">
+                            <i class="fas fa-download"></i>获取项目
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            </div>
+        </div>
+        
+        <footer>
+            <p>xeecn | 创新体验，无限可能 | 请确保启用JavaScript以获得完整功能</p>
+        </footer>
+    </div>
+</body>
+</html>
