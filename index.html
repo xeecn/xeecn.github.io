@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xee</title>
     <style>
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -21,7 +20,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -31,8 +30,7 @@
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
         }
-        
-        /* 头部样式 */
+
         header {
             text-align: center;
             padding: 50px 30px;
@@ -40,7 +38,7 @@
             color: #f0f0f0;
             position: relative;
         }
-        
+
         header::after {
             content: '';
             position: absolute;
@@ -50,7 +48,7 @@
             height: 4px;
             background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
         }
-        
+
         h1 {
             font-size: 3.5rem;
             margin-bottom: 15px;
@@ -59,7 +57,7 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .site-desc {
             font-size: 1.3rem;
             max-width: 600px;
@@ -68,15 +66,47 @@
             font-weight: 300;
             color: #c2c2d6;
         }
-        
-        
+
+        .about-card {
+            background: rgba(74, 111, 193, 0.15);
+            margin: 20px 30px 0 30px;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(74, 111, 193, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        .about-card h2 {
+            color: #9bb8e8;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .about-card h2::before {
+            content: "👤";
+            font-size: 1.6rem;
+        }
+        .about-card p {
+            margin-bottom: 10px;
+        }
+        .tech-badge {
+            display: inline-block;
+            background: #2d3a5a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
         .main-content {
             display: flex;
             flex-wrap: wrap;
             padding: 30px;
             gap: 30px;
         }
-        
+
         .category {
             flex: 1 1 calc(33.333% - 30px);
             min-width: 300px;
@@ -87,13 +117,13 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-top: 5px solid #4a6fc1;
         }
-        
+
         .category:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
             background: rgba(40, 42, 54, 0.8);
         }
-        
+
         .category h2 {
             color: #d7d7e2;
             margin-bottom: 20px;
@@ -103,20 +133,20 @@
             display: flex;
             align-items: center;
         }
-        
+
         .category h2::before {
             content: "●";
             color: #4a6fc1;
             margin-right: 10px;
             font-size: 1.2rem;
         }
-        
+
         .business-list {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
+
         .business-card {
             background: rgba(40, 42, 54, 0.6);
             border-radius: 10px;
@@ -124,27 +154,40 @@
             border-left: 4px solid #4a6fc1;
             transition: all 0.3s ease;
         }
-        
+
         .business-card:hover {
             background: rgba(50, 52, 64, 0.8);
             transform: translateX(5px);
         }
-        
+
         .business-card h3 {
             color: #e6e6fa;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-size: 1.3rem;
         }
-        
+
         .business-card p {
             color: #b8b8cc;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             line-height: 1.5;
         }
-        
+
+        .project-tags {
+            margin: 10px 0;
+        }
+        .tag {
+            display: inline-block;
+            background: #1e2a3a;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-right: 6px;
+            color: #aaccff;
+        }
+
         .link-btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 8px 18px;
             background: linear-gradient(to right, #4a6fc1, #2d3a5a);
             color: #ffffff;
             text-decoration: none;
@@ -152,16 +195,17 @@
             font-weight: 500;
             transition: all 0.3s ease;
             margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(74, 111, 193, 0.3);
+            margin-right: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 6px rgba(74, 111, 193, 0.3);
         }
-        
+
         .link-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(74, 111, 193, 0.5);
             background: linear-gradient(to right, #2d3a5a, #4a6fc1);
         }
-        
-        
+
         footer {
             text-align: center;
             padding: 30px;
@@ -169,48 +213,41 @@
             color: #c2c2d6;
             margin-top: 20px;
         }
-        
-        footer p {
-            font-size: 1rem;
-            letter-spacing: 1px;
-        }
-        
-        
+
         @media (max-width: 992px) {
             .category {
                 flex: 1 1 calc(50% - 30px);
             }
         }
-        
+
         @media (max-width: 768px) {
             .category {
                 flex: 1 1 100%;
             }
-            
             h1 {
                 font-size: 2.5rem;
             }
-            
             .site-desc {
                 font-size: 1.1rem;
             }
+            .about-card {
+                margin: 20px 15px 0 15px;
+            }
         }
-        
-        
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .category {
+
+        .category, .about-card {
             animation: fadeIn 0.6s ease forwards;
             opacity: 0;
         }
-        
         .category:nth-child(1) { animation-delay: 0.1s; }
         .category:nth-child(2) { animation-delay: 0.2s; }
         .category:nth-child(3) { animation-delay: 0.3s; }
-        
+        .about-card { animation-delay: 0.05s; }
         footer {
             animation: fadeIn 0.8s ease forwards;
             animation-delay: 0.4s;
@@ -219,70 +256,85 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>xee</h1>
-            <p class="site-desc">Hello world！</p>
-            <p class="site-desc"><strong>Hello 2026!</strong></p>
-        </header>
-        <div class="main-content">
-            <div class="category">
-                <h2>广告位招租（暂无）</h2>
-                
-            </div>
-        <div class="main-content">
-            <div class="category">
-                <h2>联系与支持</h2>
-                <div class="business-list">
-                    <div class="business-card">
-                        <h3>邮箱联系</h3>
-                        <p>官方邮箱：xeecn@outlook.com</p>
-                        <a href="mailto:xeecn@outlook.com" class="link-btn">发送邮件</a>
-                    </div>
-                    <div class="business-card">
-                        <h3>赞助支持</h3>
-                        <p>欢迎赞助支持本站持续运营</p>
-                        <p>支持方式：支付宝 </p>
-                        <p>您的支持将帮助我们提供更好的服务</p>
-                        <a href="alipay.html" class="link-btn">去支持</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="category">
-                <h2>项目合集</h2>
-                <div class="business-list">
-                    <div class="business-card">
-                        <h3>h5/js项目</h3>
-                        <a href="h5js.html" class="link-btn">查看资源</a>
-                    </div>
-                    <div class="business-card">
-                        <h3>exe(c++)项目</h3>
-                        <a href="exe.html" class="link-btn">查看资源</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="category">
-                <h2>更多</h2>
-                <div class="business-list">
-                    <div class="business-card">
-                        <h3>常用应用</h3>
-                        <p>直达官网，放心下载</p>
-                        <a href="winsf.html" class="link-btn">查看资源</a>
-                    </div>
-                    <div class="business-card">
-                        <h3>广告位招租</h3>
-                        <p>暂未完成</p>
-                        <a href="#" class="link-btn">:)</a>
-                    </div>
+<div class="container">
+    <header>
+        <h1>xee</h1>
+        <p class="site-desc">I think, therefore I am.</p>
+    </header>
+    <div class="about-card">    
+        <div>
+            <span class="tech-badge">C++</span>
+            <span class="tech-badge">HTML5/CSS3</span>
+            <span class="tech-badge">JavaScript</span>
+            <span class="tech-badge">GitHub Pages</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- 左：即将到来 -->
+        <div class="category">
+            <h2>即将到来</h2>
+            <div class="business-list">
+                <div class="business-card">
+                    <h3>动态</h3>
+                    <p>:)</p>
+                    <a href="#" class="link-btn">筹备中 →</a>
                 </div>
             </div>
         </div>
-        
-        <footer>
-            <p>xeecn | 追求卓越，永不止步</p>
-        </footer>
+
+        <div class="category">
+            <h2>项目合集</h2>
+            <div class="business-list">
+                <div class="business-card">
+                    <h3>网页版 Minecraft (Eaglercraft)</h3>
+                    <p>转载项目，基于浏览器的MC客户端，无需安装Java即可游玩。</p>
+                    <div class="project-tags">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">开源游戏</span>
+                    </div>
+                    <a href="h5js.html" class="link-btn">下载项目</a>
+                    <a href="https://eaglercraft.ir/" class="link-btn">原项目地址</a>
+                </div>
+                <div class="business-card">
+                    <h3>简易迷宫 (C++)</h3>
+                    <p>控制台下的迷宫游戏，支持键盘方向键移动，目前已经更新至v1.4版本</p>
+                    <div class="project-tags">
+                        <span class="tag">Dev C++</span>
+                        <span class="tag">控制台游戏</span>
+                    </div>
+                    <a href="a/jymg.html" class="link-btn">下载zip包</a>
+                    <p style="margin-top: 8px; color: #b8b8cc;">提示:源码包含在zip包中</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="category">
+            <h2>更多 & 支持</h2>
+            <div class="business-list">
+                <div class="business-card">
+                    <h3>常用应用官网</h3>
+                    <p>精选 Windows 常用软件官方链接，拒绝下载站捆绑。</p>
+                    <a href="winsf.html" class="link-btn">去查看</a>
+                </div>
+                <div class="business-card">
+                    <h3>联系我</h3>
+                    <p>xeecn@outlook.com</p>
+                    <a href="mailto:xeecn@outlook.com" class="link-btn">发送邮件</a>
+                </div>
+                <div class="business-card">
+                    <h3>赞助支持</h3>
+                    <p>支持支付宝</p>
+                    <a href="alipay.html" class="link-btn">去支持</a>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <footer>
+        <p>xeecn | 2026</p>
+    </footer>
+</div>
 </body>
 </html>
