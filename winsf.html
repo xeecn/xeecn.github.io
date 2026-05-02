@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>常用软件-xee</title>
+    <title>xee</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -23,13 +23,14 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: rgba(23, 25, 35, 0.9);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
+            position: relative;
         }
         
         header {
@@ -50,6 +51,30 @@
             background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
         }
         
+        /* 返回首页的房子图标 */
+        .home-icon {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            color: #e6e6fa;
+            background: rgba(74, 111, 193, 0.2);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 1.4rem;
+            z-index: 10;
+        }
+        .home-icon:hover {
+            background: #4a6fc1;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(74, 111, 193, 0.5);
+        }
+        
         h1 {
             font-size: 2.8rem;
             margin-bottom: 15px;
@@ -57,18 +82,6 @@
             letter-spacing: 1px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             color: #ffffff;
-        }
-        
-        h1:after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
-            border-radius: 3px;
         }
         
         .site-desc {
@@ -85,44 +98,10 @@
             padding: 30px;
         }
         
-        .category {
-            margin-bottom: 40px;
-            padding: 25px;
-            border-radius: 12px;
-            background: rgba(35, 37, 47, 0.7);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            border-top: 3px solid #4a6fc1;
-        }
-        
-        .category:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-            background: rgba(40, 42, 54, 0.8);
-        }
-        
-        .category h2 {
-            color: #d7d7e2;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #2a2d3a;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .category h2::before {
-            content: "›";
-            color: #4a6fc1;
-            margin-right: 10px;
-            font-size: 1.8rem;
-        }
-        
         .project-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
-            margin-top: 25px;
         }
         
         .project-card {
@@ -146,8 +125,15 @@
             color: #e6e6fa;
             margin-bottom: 15px;
             font-size: 1.4rem;
-            padding-left: 10px;
-            border-left: 3px solid #4a6fc1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .project-card h3 i {
+            color: #4a6fc1;
+            width: 32px;
+            font-size: 1.6rem;
         }
         
         .project-card p {
@@ -156,50 +142,40 @@
             line-height: 1.7;
         }
         
-        .project-card ul {
-            color: #a8a8c0;
-            margin: 15px 0;
-            padding-left: 20px;
-            line-height: 1.6;
-        }
-        
-        .project-card li {
-            margin-bottom: 8px;
-        }
-        
-        .link-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 10px 20px;
-            background: linear-gradient(to right, #4a6fc1, #2d3a5a);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(74, 111, 193, 0.3);
-        }
-        
-        .link-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(74, 111, 193, 0.5);
-            background: linear-gradient(to right, #2d3a5a, #4a6fc1);
-        }
-        
-        .link-btn i {
-            margin-right: 8px;
-        }
-        
         .tag {
             display: inline-block;
             padding: 4px 10px;
             background: rgba(74, 111, 193, 0.2);
             color: #8fa8e6;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin-right: 8px;
             margin-bottom: 8px;
+        }
+        
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 18px;
+            background: linear-gradient(to right, #4a6fc1, #2d3a5a);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            box-shadow: 0 4px 10px rgba(74, 111, 193, 0.3);
+            font-size: 0.9rem;
+        }
+        
+        .link-btn i {
+            margin-right: 8px;
+        }
+        
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(74, 111, 193, 0.5);
+            background: linear-gradient(to right, #2d3a5a, #4a6fc1);
         }
         
         footer {
@@ -214,77 +190,290 @@
             letter-spacing: 1px;
         }
         
-        /* 动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .category {
-            animation: fadeIn 0.6s ease forwards;
+        .project-card {
+            animation: fadeIn 0.5s ease forwards;
             opacity: 0;
         }
         
-        .category:nth-child(1) { animation-delay: 0.1s; }
-        .category:nth-child(2) { animation-delay: 0.2s; }
+        /* 简化动画延迟，让所有卡片平滑出现 */
+        .project-card:nth-child(1) { animation-delay: 0.05s; }
+        .project-card:nth-child(2) { animation-delay: 0.10s; }
+        .project-card:nth-child(3) { animation-delay: 0.15s; }
+        .project-card:nth-child(4) { animation-delay: 0.20s; }
+        .project-card:nth-child(5) { animation-delay: 0.25s; }
+        .project-card:nth-child(6) { animation-delay: 0.30s; }
+        .project-card:nth-child(7) { animation-delay: 0.35s; }
+        .project-card:nth-child(8) { animation-delay: 0.40s; }
+        .project-card:nth-child(9) { animation-delay: 0.45s; }
+        .project-card:nth-child(10) { animation-delay: 0.50s; }
+        .project-card:nth-child(11) { animation-delay: 0.55s; }
+        .project-card:nth-child(12) { animation-delay: 0.60s; }
+        .project-card:nth-child(13) { animation-delay: 0.65s; }
+        .project-card:nth-child(14) { animation-delay: 0.70s; }
+        .project-card:nth-child(15) { animation-delay: 0.75s; }
+        .project-card:nth-child(16) { animation-delay: 0.80s; }
+        .project-card:nth-child(17) { animation-delay: 0.85s; }
+        .project-card:nth-child(18) { animation-delay: 0.90s; }
+        .project-card:nth-child(19) { animation-delay: 0.95s; }
+        .project-card:nth-child(20) { animation-delay: 1.00s; }
+        .project-card:nth-child(21) { animation-delay: 1.05s; }
+        .project-card:nth-child(22) { animation-delay: 1.10s; }
+        .project-card:nth-child(23) { animation-delay: 1.15s; }
+        .project-card:nth-child(24) { animation-delay: 1.20s; }
         
-        footer {
-            animation: fadeIn 0.8s ease forwards;
-            animation-delay: 0.4s;
-            opacity: 0;
-        }
-        
-        /* 响应式设计 */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.2rem;
             }
-            
             .site-desc {
                 font-size: 1rem;
             }
-            
             .project-list {
                 grid-template-columns: 1fr;
             }
-            
-            .category h2 {
-                font-size: 1.5rem;
+            .home-icon {
+                top: 15px;
+                left: 15px;
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>常用软件</h1>
-            <p class="site-desc">精选的常用软件，直达官网，放心下载</p>
-        </header>
-        
-        <div class="main-content">
-            <div class="category">
-                <div class="project-list">
-                    <div class="project-card">
-                        <h3>微信</h3>
-                        <span class="tag">Wechat</span>
-                        <span class="tag">社交/工作/生活</span>
-                        
-                        <p>直达微信官网</p>
-                        <a href="https://weixin.qq.com/" class="link-btn">
-                            <i class="fas fa-download"></i>跳转至官网
-                        </a>
-                    </div>
-                    
-                </div>
+<div class="container">
+    <!-- 返回首页的房子图标 -->
+    <a href="index.html" class="home-icon" title="返回首页">
+        <i class="fas fa-home"></i>
+    </a>
+    
+    <header>
+        <h1>常用软件 · 纯净官网</h1>
+        <p class="site-desc">直达官方下载页·无捆绑 </p>
+    </header>
+    
+    <div class="main-content">
+        <div class="project-list">
+            
+            <!-- 1. 微信 -->
+            <div class="project-card">
+                <h3><i class="fab fa-weixin"></i> 微信</h3>
+                <span class="tag">社交</span>
+                <span class="tag">办公</span>
+                <p>国民级即时通讯工具，支持电脑手机同步。</p>
+                <a href="https://weixin.qq.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
             </div>
             
-            
+            <!-- 2. QQ -->
+            <div class="project-card">
+                <h3><i class="fab fa-qq"></i> QQ</h3>
+                <span class="tag">社交</span>
+                <span class="tag">文件传输</span>
+                <p>腾讯老牌聊天软件，群聊与远程协助常用。</p>
+                <a href="https://im.qq.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
             </div>
+            
+            <!-- 3. 钉钉 -->
+            <div class="project-card">
+                <h3><i class="fas fa-chalkboard-user"></i> 钉钉</h3>
+                <span class="tag">办公</span>
+                <span class="tag">网课</span>
+                <p>企业/学校普遍使用的协作与直播平台。</p>
+                <a href="https://www.dingtalk.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 4. 腾讯会议 -->
+            <div class="project-card">
+                <h3><i class="fas fa-video"></i> 腾讯会议</h3>
+                <span class="tag">视频会议</span>
+                <span class="tag">网课</span>
+                <p>稳定高清的会议软件，学生上课必备。</p>
+                <a href="https://meeting.tencent.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 5. Chrome -->
+            <div class="project-card">
+                <h3><i class="fab fa-chrome"></i> Google Chrome</h3>
+                <span class="tag">浏览器</span>
+                <span class="tag">快速</span>
+                <p>全球使用最广的网页浏览器，插件丰富。</p>
+                <a href="https://www.google.cn/chrome/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 6. Firefox -->
+            <div class="project-card">
+                <h3><i class="fab fa-firefox-browser"></i> Firefox</h3>
+                <span class="tag">浏览器</span>
+                <span class="tag">隐私保护</span>
+                <p>开源良心浏览器，注重安全与自定义。</p>
+                <a href="https://www.firefox.com.cn/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 7. Edge -->
+            <div class="project-card">
+                <h3><i class="fab fa-edge"></i> Microsoft Edge</h3>
+                <span class="tag">浏览器</span>
+                <span class="tag">Win10/11集成</span>
+                <p>微软新一代浏览器，Chromium内核，省电好用。</p>
+                <a href="https://www.microsoft.com/edge" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 8. 7-Zip -->
+            <div class="project-card">
+                <h3><i class="fas fa-file-archive"></i> 7-Zip</h3>
+                <span class="tag">压缩解压</span>
+                <span class="tag">免费开源</span>
+                <p>高压缩率，无广告，支持多种格式。</p>
+                <a href="https://www.7-zip.org/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 9. VLC -->
+            <div class="project-card">
+                <h3><i class="fas fa-play-circle"></i> VLC</h3>
+                <span class="tag">视频播放器</span>
+                <span class="tag">万能解码</span>
+                <p>几乎能播放任何视频格式，无广告开源。</p>
+                <a href="https://www.videolan.org/vlc/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 10. PotPlayer -->
+            <div class="project-card">
+                <h3><i class="fas fa-film"></i> PotPlayer</h3>
+                <span class="tag">视频播放器</span>
+                <span class="tag">高画质</span>
+                <p>韩国优秀播放器，功能强大且干净。</p>
+                <a href="https://potplayer.daum.net/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 11. Visual Studio Code -->
+            <div class="project-card">
+                <h3><i class="fas fa-code"></i> VS Code</h3>
+                <span class="tag">代码编辑器</span>
+                <span class="tag">免费</span>
+                <p>地表最强轻量级IDE，插件生态无敌。</p>
+                <a href="https://code.visualstudio.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 12. Git -->
+            <div class="project-card">
+                <h3><i class="fab fa-git-alt"></i> Git</h3>
+                <span class="tag">版本控制</span>
+                <span class="tag">开发者工具</span>
+                <p>分布式版本控制系统，程序员必备。</p>
+                <a href="https://git-scm.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 13. Node.js -->
+            <div class="project-card">
+                <h3><i class="fab fa-node-js"></i> Node.js</h3>
+                <span class="tag">JavaScript运行时</span>
+                <span class="tag">服务端</span>
+                <p>让JS脱离浏览器，用于后端开发及工具链。</p>
+                <a href="https://nodejs.org/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 14. Python -->
+            <div class="project-card">
+                <h3><i class="fab fa-python"></i> Python</h3>
+                <span class="tag">编程语言</span>
+                <span class="tag">科学计算</span>
+                <p>简单易学，生态强大，人工智能首选。</p>
+                <a href="https://www.python.org/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 15. 搜狗输入法 -->
+            <div class="project-card">
+                <h3><i class="fas fa-keyboard"></i> 搜狗输入法</h3>
+                <span class="tag">输入法</span>
+                <span class="tag">云词库</span>
+                <p>国内主流拼音输入法，词库强大。</p>
+                <a href="https://shurufa.sogou.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 16. 向日葵远程控制 -->
+            <div class="project-card">
+                <h3><i class="fas fa-desktop"></i> 向日葵</h3>
+                <span class="tag">远程控制</span>
+                <span class="tag">协助</span>
+                <p>易用的远程桌面，穿透内网。</p>
+                <a href="https://sunlogin.oray.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 17. TeamViewer -->
+            <div class="project-card">
+                <h3><i class="fas fa-handshake"></i> TeamViewer</h3>
+                <span class="tag">远程控制</span>
+                <span class="tag">跨国常用</span>
+                <p>老牌远程支持软件，个人免费。</p>
+                <a href="https://www.teamviewer.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 18. qBittorrent -->
+            <div class="project-card">
+                <h3><i class="fas fa-download"></i> qBittorrent</h3>
+                <span class="tag">下载工具</span>
+                <span class="tag">BT</span>
+                <p>无广告的开源BT下载利器，界面清爽。</p>
+                <a href="https://www.qbittorrent.org/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 19. Steam -->
+            <div class="project-card">
+                <h3><i class="fab fa-steam"></i> Steam</h3>
+                <span class="tag">游戏平台</span>
+                <span class="tag">正版游戏</span>
+                <p>全球最大PC数字游戏商店，社区完善。</p>
+                <a href="https://store.steampowered.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 20. Epic Games -->
+            <div class="project-card">
+                <h3><i class="fab fa-epicgames"></i> Epic Games</h3>
+                <span class="tag">游戏平台</span>
+                <span class="tag">每周喜加一</span>
+                <p>每周免费送游戏，Unreal引擎他家。</p>
+                <a href="https://store.epicgames.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 21. OBS Studio -->
+            <div class="project-card">
+                <h3><i class="fas fa-video"></i> OBS Studio</h3>
+                <span class="tag">直播推流</span>
+                <span class="tag">录屏</span>
+                <p>免费开源的直播和录制软件，专业强大。</p>
+                <a href="https://obsproject.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 22. 火绒安全 -->
+            <div class="project-card">
+                <h3><i class="fas fa-shield-alt"></i> 火绒安全</h3>
+                <span class="tag">杀毒防护</span>
+                <span class="tag">弹窗拦截</span>
+                <p>安静、低占用的国产安全软件，无弹窗广告。</p>
+                <a href="https://www.huorong.cn/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
+            <!-- 23. 网易云音乐 -->
+            <div class="project-card">
+                <h3><i class="fas fa-music"></i> 网易云音乐</h3>
+                <span class="tag">音乐播放器</span>
+                <span class="tag">社交评论</span>
+                <p>发现好歌，歌单推荐，电脑版界面舒适。</p>
+                <a href="https://music.163.com/" class="link-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> 官网</a>
+            </div>
+            
         </div>
-        
-        <footer>
-            <p>xee | 纯净更快无捆绑</p>
-        </footer>
     </div>
+    
+    <footer>
+        <p>xeecn | 纯净官网导航</p>
+    </footer>
+</div>
 </body>
 </html>
