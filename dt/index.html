@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态 · 迷宫笔记</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e21, #1a1a2e, #16213e);
+            background-attachment: fixed;
+            color: #e6e6e6;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(23, 25, 35, 0.9);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(120deg, #2d3a5a, #1a2238);
+            position: relative;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4a6fc1, #2d3a5a);
+        }
+        h1 {
+            font-size: 2.6rem;
+            letter-spacing: 2px;
+        }
+        .sub {
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+        .main {
+            padding: 30px;
+        }
+        .post {
+            background: rgba(35, 37, 47, 0.7);
+            border-left: 4px solid #4a6fc1;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+        .post:hover {
+            background: rgba(50, 52, 64, 0.8);
+            transform: translateY(-3px);
+        }
+        .post-date {
+            font-style: italic;
+            color: #b0c4ff;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .post-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #e6e6fa;
+            line-height: 1.7;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #1a1c26;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+        }
+        .home-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: #4a6fc1;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .home-btn:hover {
+            background: #2d4b8c;
+            transform: scale(0.98);
+        }
+        @media (max-width: 600px) {
+            .main { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>📝 动态笔记</h1>
+        <div class="sub">按日期斜体 · 最新优先</div>
+    </header>
+    <div class="main" id="postsContainer">
+        <div class="loading">⏳ 加载动态中 ...</div>
+    </div>
+    <footer>
+        <a href="/" class="home-btn">🏠 返回主站</a>
+        <p style="margin-top: 16px;">xeecn · 硬盘里的故事</p>
+    </footer>
+</div>
+
+<script>
+    (function() {
+        const container = document.getElementById('postsContainer');
+
+        fetch('./data/dynamics.json')
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .then(posts => {
+                if (!posts.length) {
+                    container.innerHTML = `<div class="loading">📭 暂无动态，请先在 /dt/dynamic/ 放入 .txt 文件并运行生成脚本。</div>`;
+                    return;
+                }
+                let html = '';
+                for (let p of posts) {
+                    const safeDate = escapeHtml(p.date);
+                    const safeContent = escapeHtml(p.content).replace(/\n/g, '<br>');
+                    html += `
+                        <div class="post">
+                            <div class="post-date">📅 ${safeDate}</div>
+                            <div class="post-content">${safeContent}</div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+                container.innerHTML = `<div class="error">❌ 加载失败：请确认已运行 generate_dt.py 生成 /dt/data/dynamics.json<br>${err.message}</div>`;
+            });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+    })();
+</script>
+</body>
+</html>
