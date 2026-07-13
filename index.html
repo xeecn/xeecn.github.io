@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="s.png" type="image/png">
+    <title>Xland 服务器</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0d0d1a;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 820px;
+            width: 100%;
+            background: #141428;
+            border: 2px solid #3a5a4a;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2a3a3a;
+            padding-bottom: 16px;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            font-size: 40px;
+            color: #d4a030;
+            letter-spacing: 6px;
+            font-weight: bold;
+        }
+        .header .subtitle {
+            color: #6a7a6a;
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-top: 6px;
+        }
+        .header .version {
+            display: inline-block;
+            background: #1a2a2a;
+            color: #6a8a6a;
+            padding: 2px 14px;
+            border-radius: 2px;
+            font-size: 12px;
+            margin-top: 8px;
+            border: 1px solid #2a4a3a;
+        }
+        .copy-ip {
+            background: #1a2a2a;
+            color: #7ab8c0;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px dashed #2a4a4a;
+            margin: 20px 0;
+            cursor: pointer;
+            user-select: all;
+        }
+        .copy-ip:hover {
+            background: #223a3a;
+            border-color: #3a5a5a;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .info-card {
+            background: #0f1a2a;
+            border: 1px solid #2a3a3a;
+            border-radius: 4px;
+            padding: 14px 18px;
+            transition: border-color 0.2s;
+        }
+        .info-card:hover { border-color: #4a7a5a; }
+        .info-card .label {
+            color: #5a7a5a;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .info-card .value {
+            color: #c0c8c0;
+            font-size: 16px;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+        .info-card .value .highlight { color: #d4a030; }
+        .info-card .value a {
+            color: #7ab8c0;
+            text-decoration: none;
+        }
+        .info-card .value a:hover { text-decoration: underline; }
+        .online-status {
+            color: #5a8a5a;
+            font-size: 14px;
+        }
+        .online-status .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #5a8a5a;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .online-status .count {
+            color: #7ab8c0;
+            font-weight: bold;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .features span {
+            background: #1a2a2a;
+            color: #7a8a7a;
+            padding: 4px 14px;
+            border-radius: 2px;
+            font-size: 12px;
+            border: 1px solid #2a3a3a;
+        }
+        .description {
+            background: #0a1520;
+            border-left: 3px solid #4a7a5a;
+            padding: 16px 20px;
+            margin: 16px 0;
+            color: #a0b0a0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .description .welcome { color: #d4a030; font-weight: bold; }
+        .notice {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 2px solid #2a3a3a;
+        }
+        .notice-title {
+            color: #d4a030;
+            font-size: 14px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .notice-content {
+            background: #0a1520;
+            border: 1px solid #2a3a3a;
+            border-radius: 4px;
+            padding: 14px 18px;
+            color: #a0b0a0;
+            font-size: 14px;
+            line-height: 1.8;
+            min-height: 48px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .notice-content .empty { color: #4a5a4a; font-style: italic; }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #2a3a3a;
+            color: #4a5a4a;
+            font-size: 12px;
+        }
+        .sponsor-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f1a2a;
+            border: 1px solid #2a3a3a;
+            border-radius: 4px;
+            padding: 14px 20px;
+            margin: 16px 0 0 0;
+            transition: border-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .sponsor-card:hover { border-color: #d4a030; }
+        .sponsor-card .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sponsor-card .left .icon { font-size: 20px; }
+        .sponsor-card .left .text {
+            display: flex;
+            flex-direction: column;
+        }
+        .sponsor-card .left .text .title {
+            color: #d4a030;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .sponsor-card .left .text .desc {
+            color: #6a7a6a;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        .sponsor-card .arrow {
+            color: #4a5a4a;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+        .sponsor-card:hover .arrow { color: #d4a030; }
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .header h1 { font-size: 28px; letter-spacing: 3px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .sponsor-card { flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
+            .sponsor-card .left { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⛏ Xland</h1>
+            <div class="subtitle">✦ 纯净生存服务器 ✦</div>
+            <div class="version">📌 Minecraft 1.12.2</div>
+        </div>
+
+        <div class="copy-ip" id="ipDisplay" onclick="copyIP()">📋 复制IP：xland.8mc.top</div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="label">📡 服务器地址</div>
+                <div class="value"><a href="minecraft://xland.8mc.top">xland.8mc.top</a></div>
+            </div>
+            <div class="info-card">
+                <div class="label">💬 QQ群</div>
+                <div class="value"><span class="highlight">839126641</span></div>
+            </div>
+            <div class="info-card">
+                <div class="label">🎮 玩法</div>
+                <div class="value">纯生存 · 养老 · 建筑</div>
+            </div>
+            <div class="info-card">
+                <div class="label">📊 在线状态</div>
+                <div class="value" id="statusDisplay">
+                    <span class="online-status">
+                        <span class="dot"></span> 加载中...
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <a href="pay.html" class="sponsor-card">
+            <div class="left">
+                <span class="icon">💛</span>
+                <div class="text">
+                    <span class="title">赞助服务器</span>
+                    <span class="desc">你的支持，让 Xland 走得更远</span>
+                </div>
+            </div>
+            <span class="arrow">→</span>
+        </a>
+
+        <div class="features">
+            <span>🏠 自由建筑</span>
+            <span>⛏ 原版生存</span>
+            <span>🤝 友好社区</span>
+            <span>📅 长期开放</span>
+        </div>
+
+        <div class="description">
+            <span class="welcome">▸ 欢迎来到 Xland</span><br>
+            Xland 是一个以 <strong>纯净生存</strong> 为核心的 Minecraft 服务器。
+            没有花哨的模组，没有复杂的玩法，只有最纯粹的生存、建筑与探索。
+            无论你是养老玩家，还是建筑党，这里都有一片属于你的土地。
+            <br><br>
+            📖 服务器守则：尊重他人 · 禁止作弊 · 和谐共建
+        </div>
+
+        <div class="notice">
+            <div class="notice-title">📢 服务器公告</div>
+            <div class="notice-content" id="noticeContent"><span class="empty">加载中...</span></div>
+        </div>
+
+        <div class="footer">&copy; 2026 Xland Server &nbsp;|&nbsp; 运行于 Paper 1.12.2</div>
+    </div>
+
+    <script>
+        function copyIP() {
+            const ip = 'xland.8mc.top';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ip).then(() => {
+                    const el = document.getElementById('ipDisplay');
+                    el.textContent = '✅ 已复制：' + ip;
+                    setTimeout(() => { el.textContent = '📋 复制IP：' + ip; }, 2000);
+                }).catch(() => fallbackCopy(ip));
+            } else {
+                fallbackCopy(ip);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            const el = document.getElementById('ipDisplay');
+            el.textContent = '✅ 已复制：' + text;
+            setTimeout(() => { el.textContent = '📋 复制IP：' + text; }, 2000);
+        }
+
+        function loadNotice() {
+            const container = document.getElementById('noticeContent');
+            fetch('mb.txt')
+                .then(res => {
+                    if (!res.ok) throw new Error('文件不存在或无法访问');
+                    return res.arrayBuffer();
+                })
+                .then(buf => {
+                    const text = new TextDecoder('utf-8').decode(buf);
+                    const content = text.trim();
+                    container.innerHTML = content === '' ? '<span class="empty">暂无公告</span>' : content;
+                })
+                .catch(() => {
+                    container.innerHTML = '<span class="empty">暂无公告</span>';
+                });
+        }
+
+        function fetchServerStatus() {
+            const statusEl = document.getElementById('statusDisplay');
+            const apiUrl = 'https://api.mcsrvstat.us/3/xland.8mc.top';
+
+            fetch(apiUrl)
+                .then(res => {
+                    if (!res.ok) throw new Error('API 请求失败');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.online) {
+                        const players = data.players ? data.players.online : 0;
+                        statusEl.innerHTML = `
+                            <span class="online-status">
+                                <span class="dot"></span> 服务器在线 · <span class="count">${players}</span> 人在线
+                            </span>
+                        `;
+                    } else {
+                        statusEl.innerHTML = `
+                            <span class="online-status" style="color: #8a5a5a;">
+                                <span class="dot" style="background: #8a5a5a;"></span> 服务器离线
+                            </span>
+                        `;
+                    }
+                })
+                .catch(() => {
+                    statusEl.innerHTML = `
+                        <span class="online-status" style="color: #7a7a5a;">
+                            <span class="dot" style="background: #7a7a5a;"></span> 状态未知
+                        </span>
+                    `;
+                });
+        }
+
+        loadNotice();
+        fetchServerStatus();
+        setInterval(fetchServerStatus, 60000);
+    </script>
+</body>
+</html>

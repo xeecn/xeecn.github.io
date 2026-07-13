@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赞助 Xland 服务器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0d1a;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #141428;
+            border: 2px solid #3a5a4a;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .header {
+            border-bottom: 2px solid #2a3a3a;
+            padding-bottom: 16px;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #d4a030;
+            letter-spacing: 4px;
+            font-weight: bold;
+        }
+
+        .header .subtitle {
+            color: #6a7a6a;
+            font-size: 14px;
+            letter-spacing: 3px;
+            margin-top: 4px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #7ab8c0;
+            text-decoration: none;
+            font-size: 14px;
+            border: 1px solid #2a3a3a;
+            padding: 4px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            border-color: #4a7a5a;
+            color: #8bc8d0;
+        }
+
+        .qr-section {
+            margin: 20px 0;
+        }
+
+        .qr-section .label {
+            color: #5a7a5a;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .qr-section .method-name {
+            color: #d4a030;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 6px 0 16px 0;
+        }
+
+        .qr-image {
+            max-width: 280px;
+            width: 100%;
+            border: 2px solid #2a3a3a;
+            border-radius: 8px;
+            padding: 8px;
+            background: #0a1520;
+            display: inline-block;
+        }
+
+        .qr-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .qr-image img:not([src]) {
+            display: none;
+        }
+
+        .qr-image .placeholder {
+            color: #4a5a4a;
+            font-size: 14px;
+            padding: 60px 20px;
+            display: block;
+        }
+
+        .qr-image img[src] + .placeholder {
+            display: none;
+        }
+
+        .notice-text {
+            background: #0a1520;
+            border-left: 3px solid #4a7a5a;
+            padding: 14px 18px;
+            margin: 20px 0;
+            color: #a0b0a0;
+            font-size: 13px;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .notice-text .welcome {
+            color: #d4a030;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #2a3a3a;
+            color: #4a5a4a;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 24px; }
+            .header h1 { font-size: 28px; letter-spacing: 2px; }
+            .qr-image { max-width: 220px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1> 赞助 Xland</h1>
+            <div class="subtitle"> 你的支持，让服务器走得更远 </div>
+            <a href="index.html" class="back-link">← 返回首页</a>
+        </div>
+
+        <!-- 二维码 -->
+        <div class="qr-section">
+            <div class="label"> 支付方式</div>
+            <div class="method-name">支付宝 · 扫码赞助</div>
+            <div class="qr-image">
+                <img src="p.jpeg" alt="支付宝收款码" onerror="this.style.display='none'">
+               
+            </div>
+        </div>
+
+        <!-- 说明 -->
+        <div class="notice-text">
+            <span class="welcome"> 赞助说明</span><br>
+             赞助完全自愿，非强制消费<br>
+             赞助金额将用于服务器续费与维护<br>
+             赞助后可联系服主获取对应权益<br>
+             如有疑问请在 QQ 群内咨询
+        </div>
+
+        <!-- 返回 -->
+        <div style="margin-top: 16px;">
+            <a href="index.html" style="color: #7ab8c0; text-decoration: none; font-size: 14px; border: 1px solid #2a3a3a; padding: 6px 20px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.borderColor='#4a7a5a'" onmouseout="this.style.borderColor='#2a3a3a'">← 返回 Xland 首页</a>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            &copy; 2026 Xland Server
+        </div>
+    </div>
+</body>
+</html>
