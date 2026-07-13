@@ -232,12 +232,12 @@
             <div class="version">📌 Minecraft 1.12.2</div>
         </div>
 
-        <div class="copy-ip" id="ipDisplay" onclick="copyIP()">📋 复制IP：xland.8mc.top</div>
+        <div class="copy-ip" id="ipDisplay" onclick="copyIP()">📋 复制IP：xland.3d3k.org</div>
 
         <div class="info-grid">
             <div class="info-card">
                 <div class="label">📡 服务器地址</div>
-                <div class="value"><a href="minecraft://xland.8mc.top">xland.8mc.top</a></div>
+                <div class="value"><a href="minecraft://xland.3d3k.org">xland.3d3k.org</a></div>
             </div>
             <div class="info-card">
                 <div class="label">💬 QQ群</div>
@@ -294,7 +294,7 @@
 
     <script>
         function copyIP() {
-            const ip = 'xland.8mc.top';
+            const ip = 'xland.3d3k.org';
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(ip).then(() => {
                     const el = document.getElementById('ipDisplay');
@@ -337,7 +337,7 @@
 
         function fetchServerStatus() {
             const statusEl = document.getElementById('statusDisplay');
-            const apiUrl = 'https://api.mcsrvstat.us/3/xland.8mc.top';
+            const apiUrl = 'https://api.mcsrvstat.us/3/xland.3d3k.org';
 
             fetch(apiUrl)
                 .then(res => {
