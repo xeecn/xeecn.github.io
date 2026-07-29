@@ -6,92 +6,142 @@
     <link rel="icon" href="s.png" type="image/png">
     <title>Xland 服务器</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #0d0d1a;
+            background: #07070f;
             font-family: 'Courier New', monospace;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 24px;
+            background-image: radial-gradient(ellipse at 50% 0%, #141428 0%, #07070f 70%);
         }
+
+        /* ===== 主容器 ===== */
         .container {
-            max-width: 820px;
+            max-width: 880px;
             width: 100%;
-            background: #141428;
-            border: 2px solid #3a5a4a;
-            border-radius: 8px;
-            padding: 40px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+            background: linear-gradient(145deg, #10101f, #0a0a16);
+            border: 1px solid #2a3a3a;
+            border-radius: 16px;
+            padding: 48px 44px;
+            /* 减弱阴影以降低渲染成本 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
+            position: relative;
+            overflow: hidden;
         }
+        /* 顶部微光 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4a030, #4a7a5a, #d4a030, transparent);
+            opacity: 0.6;
+        }
+
+        /* ===== 头部 ===== */
         .header {
             text-align: center;
-            border-bottom: 2px solid #2a3a3a;
-            padding-bottom: 16px;
+            border-bottom: 1px solid #1f2a2a;
+            padding-bottom: 20px;
             margin-bottom: 28px;
         }
         .header h1 {
-            font-size: 40px;
+            font-size: 44px;
             color: #d4a030;
-            letter-spacing: 6px;
+            letter-spacing: 10px;
             font-weight: bold;
+            /* 缩小发光，减少绘制成本 */
+            text-shadow: 0 0 20px rgba(212, 160, 48, 0.08);
         }
         .header .subtitle {
-            color: #6a7a6a;
-            font-size: 14px;
-            letter-spacing: 4px;
+            color: #5a6a6a;
+            font-size: 13px;
+            letter-spacing: 6px;
             margin-top: 6px;
+            text-transform: uppercase;
         }
         .header .version {
             display: inline-block;
-            background: #1a2a2a;
-            color: #6a8a6a;
-            padding: 2px 14px;
-            border-radius: 2px;
-            font-size: 12px;
-            margin-top: 8px;
-            border: 1px solid #2a4a3a;
+            background: #121f1f;
+            color: #4a7a5a;
+            padding: 3px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 10px;
+            border: 1px solid #1f2f2f;
+            letter-spacing: 1px;
         }
+
+        /* ===== IP 复制 ===== */
         .copy-ip {
-            background: #1a2a2a;
+            background: #0f1a1a;
             color: #7ab8c0;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-size: 18px;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 20px;
             text-align: center;
-            border: 2px dashed #2a4a4a;
-            margin: 20px 0;
+            border: 1px solid #1f2f2f;
+            margin: 24px 0 20px 0;
             cursor: pointer;
-            user-select: all;
+            /* 不让用户误选文本，复制由 JS 控制 */
+            user-select: none;
+            transition: all 0.25s;
+            letter-spacing: 2px;
+            font-weight: bold;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
         .copy-ip:hover {
-            background: #223a3a;
+            background: #142424;
             border-color: #3a5a5a;
+            box-shadow: 0 0 20px rgba(74, 122, 90, 0.05);
         }
+        .copy-ip .hint {
+            font-size: 12px;
+            color: #3a5a5a;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 信息网格 ===== */
         .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 20px 0;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 16px 0 20px 0;
         }
         .info-card {
-            background: #0f1a2a;
-            border: 1px solid #2a3a3a;
-            border-radius: 4px;
-            padding: 14px 18px;
-            transition: border-color 0.2s;
+            background: #0b121f;
+            border: 1px solid #1a252a;
+            border-radius: 8px;
+            padding: 14px 16px;
+            transition: border-color 0.25s, background 0.25s;
         }
-        .info-card:hover { border-color: #4a7a5a; }
+        .info-card:hover {
+            border-color: #2a4a3a;
+            background: #0f1a22;
+        }
         .info-card .label {
-            color: #5a7a5a;
-            font-size: 11px;
+            color: #3a5a5a;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
         .info-card .value {
-            color: #c0c8c0;
-            font-size: 16px;
+            color: #c8d0c8;
+            font-size: 15px;
             margin-top: 4px;
             font-weight: bold;
         }
@@ -101,200 +151,100 @@
             text-decoration: none;
         }
         .info-card .value a:hover { text-decoration: underline; }
+
         .online-status {
             color: #5a8a5a;
             font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .online-status .dot {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: #5a8a5a;
             border-radius: 50%;
             margin-right: 6px;
+            animation: pulse-dot 2s infinite;
+            will-change: opacity;
         }
+        .online-status.offline { color: #6a4a4a; }
+        .online-status.offline .dot { background: #6a4a4a; animation: none; }
+        .online-status.unknown { color: #7a6a4a; }
+        .online-status.unknown .dot { background: #7a6a4a; animation: none; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         .online-status .count {
-            color: #7ab8c0;
+            color: #8ac8b0;
             font-weight: bold;
         }
+
+        /* ===== 特性标签 ===== */
         .features {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 16px 0;
+            gap: 6px;
+            margin: 14px 0 16px 0;
         }
         .features span {
-            background: #1a2a2a;
-            color: #7a8a7a;
-            padding: 4px 14px;
-            border-radius: 2px;
-            font-size: 12px;
-            border: 1px solid #2a3a3a;
-        }
-        .description {
-            background: #0a1520;
-            border-left: 3px solid #4a7a5a;
-            padding: 16px 20px;
-            margin: 16px 0;
-            color: #a0b0a0;
-            font-size: 14px;
-            line-height: 1.8;
-        }
-        .description .welcome { color: #d4a030; font-weight: bold; }
-
-        /* ========== 相册区域 - 全新设计 ========== */
-        .gallery {
-            margin: 32px 0 16px 0;
-            border-top: 2px solid #2a3a3a;
-            padding-top: 28px;
-        }
-        .gallery-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .gallery-title {
-            color: #d4a030;
-            font-size: 20px;
-            letter-spacing: 4px;
-            font-weight: bold;
-        }
-        .gallery-title .icon {
-            margin-right: 8px;
-        }
-        .gallery-badge {
-            background: #1a2a2a;
-            border: 1px solid #2a3a3a;
-            color: #5a7a5a;
-            font-size: 11px;
-            padding: 4px 14px;
+            background: #0f1a1a;
+            color: #5a7a7a;
+            padding: 4px 16px;
             border-radius: 20px;
-            letter-spacing: 1px;
-        }
-        .gallery-item {
-            background: #0a1520;
-            border: 1px solid #2a3a3a;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .gallery-item:hover {
-            border-color: #4a7a5a;
-            box-shadow: 0 0 30px rgba(74, 122, 90, 0.08);
-        }
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        .gallery-item .caption {
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #0f1a2a;
-            border-top: 1px solid #1a2a2a;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .gallery-item .caption .text {
-            color: #b0c0b0;
-            font-size: 14px;
+            font-size: 12px;
+            border: 1px solid #1a2a2a;
             letter-spacing: 0.5px;
         }
-        .gallery-item .caption .text .highlight {
-            color: #d4a030;
-        }
-        .gallery-item .caption .date {
-            color: #4a6a5a;
-            font-size: 12px;
-            letter-spacing: 1px;
-            background: #1a2a2a;
-            padding: 2px 12px;
-            border-radius: 12px;
-            border: 1px solid #2a3a3a;
-        }
-        .gallery-single {
-            max-width: 640px;
-            margin: 0 auto;
-        }
-        .gallery-single .gallery-item {
-            border-color: #3a4a3a;
-        }
-        .gallery-single .gallery-item:hover {
-            border-color: #5a8a5a;
-        }
 
-        /* ========== 后续新增的网格版（多图时启用） ========== */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        .gallery-grid .gallery-item .caption .text {
-            font-size: 13px;
-        }
-
-        .notice {
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 2px solid #2a3a3a;
-        }
-        .notice-title {
-            color: #d4a030;
+        /* ===== 描述区 ===== */
+        .description {
+            background: linear-gradient(135deg, #0a121f, #0d1820);
+            border-left: 3px solid #4a7a5a;
+            padding: 18px 22px;
+            margin: 16px 0 20px 0;
+            color: #8aa0a0;
             font-size: 14px;
-            letter-spacing: 2px;
+            line-height: 1.9;
+            border-radius: 0 6px 6px 0;
+        }
+        .description .welcome {
+            color: #d4a030;
             font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 15px;
         }
-        .notice-content {
-            background: #0a1520;
-            border: 1px solid #2a3a3a;
-            border-radius: 4px;
-            padding: 14px 18px;
-            color: #a0b0a0;
-            font-size: 14px;
-            line-height: 1.8;
-            min-height: 48px;
-            white-space: pre-wrap;
-            word-break: break-word;
+        .description strong {
+            color: #8ab8b0;
         }
-        .notice-content .empty { color: #4a5a4a; font-style: italic; }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid #2a3a3a;
-            color: #4a5a4a;
-            font-size: 12px;
-        }
+
+        /* ===== 赞助卡片 ===== */
         .sponsor-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #0f1a2a;
-            border: 1px solid #2a3a3a;
-            border-radius: 4px;
+            background: #0b121f;
+            border: 1px solid #1a252a;
+            border-radius: 8px;
             padding: 14px 20px;
-            margin: 16px 0 0 0;
-            transition: border-color 0.2s;
+            margin: 6px 0 0 0;
+            transition: all 0.25s;
             text-decoration: none;
             color: inherit;
         }
-        .sponsor-card:hover { border-color: #d4a030; }
+        .sponsor-card:hover {
+            border-color: #d4a030;
+            background: #101a26;
+        }
         .sponsor-card .left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
         .sponsor-card .left .icon { font-size: 20px; }
-        .sponsor-card .left .text {
-            display: flex;
-            flex-direction: column;
-        }
         .sponsor-card .left .text .title {
             color: #d4a030;
             font-size: 15px;
@@ -302,42 +252,171 @@
             letter-spacing: 1px;
         }
         .sponsor-card .left .text .desc {
-            color: #6a7a6a;
+            color: #4a5a5a;
             font-size: 12px;
             margin-top: 2px;
         }
         .sponsor-card .arrow {
-            color: #4a5a4a;
+            color: #3a4a4a;
             font-size: 18px;
-            transition: color 0.2s;
+            transition: color 0.25s;
         }
         .sponsor-card:hover .arrow { color: #d4a030; }
 
-        @media (max-width: 600px) {
-            .container { padding: 20px; }
-            .header h1 { font-size: 28px; letter-spacing: 3px; }
-            .info-grid { grid-template-columns: 1fr; }
-            .sponsor-card { flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
-            .sponsor-card .left { justify-content: center; }
-            .gallery-grid { grid-template-columns: 1fr; }
+        /* ===== 相册 ===== */
+        .gallery {
+            margin: 28px 0 16px 0;
+            border-top: 1px solid #1a252a;
+            padding-top: 24px;
+        }
+        .gallery-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .gallery-title {
+            color: #d4a030;
+            font-size: 18px;
+            letter-spacing: 4px;
+            font-weight: bold;
+        }
+        .gallery-title .icon { margin-right: 6px; }
+        .gallery-badge {
+            background: #0f1a1a;
+            border: 1px solid #1a2a2a;
+            color: #4a6a5a;
+            font-size: 11px;
+            padding: 3px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+        .gallery-item {
+            background: #0a121f;
+            border: 1px solid #1a252a;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            max-width: 580px;
+            margin: 0 auto;
+        }
+        .gallery-item:hover {
+            border-color: #3a5a4a;
+            box-shadow: 0 0 20px rgba(74, 122, 90, 0.03);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .gallery-item .caption {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0b141f;
+            border-top: 1px solid #121f1f;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .gallery-item .caption .text {
+            color: #90a8a8;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        .gallery-item .caption .text .highlight {
+            color: #d4a030;
+        }
+        .gallery-item .caption .date {
+            color: #3a5a4a;
+            font-size: 12px;
+            letter-spacing: 1px;
+            background: #0f1a1a;
+            padding: 2px 14px;
+            border-radius: 20px;
+            border: 1px solid #1a2a2a;
+        }
+
+        /* ===== 公告 ===== */
+        .notice {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #1a252a;
+        }
+        .notice-title {
+            color: #d4a030;
+            font-size: 14px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .notice-content {
+            background: #0a121f;
+            border: 1px solid #1a252a;
+            border-radius: 8px;
+            padding: 16px 20px;
+            color: #8aa0a0;
+            font-size: 14px;
+            line-height: 1.9;
+            min-height: 48px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .notice-content .empty {
+            color: #3a4a4a;
+            font-style: italic;
+        }
+
+        /* ===== 底部 ===== */
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #121f1f;
+            color: #2a3a3a;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            .container { padding: 28px 20px; }
+            .header h1 { font-size: 30px; letter-spacing: 6px; }
+            .info-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .copy-ip { font-size: 16px; padding: 12px 16px; }
             .gallery-header { flex-direction: column; align-items: flex-start; }
             .gallery-item .caption { flex-direction: column; align-items: flex-start; }
+            .sponsor-card { flex-direction: column; align-items: stretch; text-align: center; }
+            .sponsor-card .left { justify-content: center; }
+        }
+
+        @media (max-width: 440px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 24px; letter-spacing: 4px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- 头部 -->
         <div class="header">
             <h1>⛏ Xland</h1>
             <div class="subtitle">✦ 纯净生存服务器 ✦</div>
             <div class="version">📌 Minecraft 1.12.2</div>
         </div>
 
-        <div class="copy-ip" id="ipDisplay" onclick="copyIP()">📋 复制IP：xland.3d3k.org</div>
+        <!-- IP 复制 -->
+        <div class="copy-ip" id="ipDisplay" onclick="copyIP()">
+            <span id="ipText">📋 xland.3d3k.org</span>
+            <span class="hint" id="ipHint">点击复制</span>
+        </div>
 
+        <!-- 信息网格 -->
         <div class="info-grid">
             <div class="info-card">
-                <div class="label">📡 服务器地址</div>
+                <div class="label">📡 地址</div>
                 <div class="value"><a href="minecraft://xland.3d3k.org">xland.3d3k.org</a></div>
             </div>
             <div class="info-card">
@@ -346,18 +425,19 @@
             </div>
             <div class="info-card">
                 <div class="label">🎮 玩法</div>
-                <div class="value">纯生存 · 养老 · 建筑</div>
+                <div class="value">纯净 · 养老 · 建筑</div>
             </div>
             <div class="info-card">
-                <div class="label">📊 在线状态</div>
+                <div class="label">📊 状态</div>
                 <div class="value" id="statusDisplay">
-                    <span class="online-status">
+                    <span id="statusText" class="online-status unknown">
                         <span class="dot"></span> 加载中...
                     </span>
                 </div>
             </div>
         </div>
 
+        <!-- 赞助 -->
         <a href="pay.html" class="sponsor-card">
             <div class="left">
                 <span class="icon">💛</span>
@@ -369,6 +449,7 @@
             <span class="arrow">→</span>
         </a>
 
+        <!-- 特性标签 -->
         <div class="features">
             <span>🏠 自由建筑</span>
             <span>⛏ 原版生存</span>
@@ -376,6 +457,7 @@
             <span>📅 长期开放</span>
         </div>
 
+        <!-- 描述 -->
         <div class="description">
             <span class="welcome">▸ 欢迎来到 Xland</span><br>
             Xland 是一个以 <strong>纯净生存</strong> 为核心的 Minecraft 服务器。
@@ -385,43 +467,49 @@
             📖 服务器守则：尊重他人 · 禁止作弊 · 和谐共建
         </div>
 
-        <!-- ========== 相册 - 居中单图版 ========== -->
+        <!-- 相册 -->
         <div class="gallery">
             <div class="gallery-header">
                 <span class="gallery-title"><span class="icon">📸</span> 服务器相册</span>
                 <span class="gallery-badge">✦ 记录 Xland 的每一刻</span>
             </div>
-            <div class="gallery-single">
-                <div class="gallery-item">
-                    <img src="x.png" alt="Xland PVP大赛合影">
-                    <div class="caption">
-                        <span class="text">🏆 <span class="highlight">2026 PVP 大赛</span> · 合影留念</span>
-                        <span class="date">2026.7.29</span>
-                    </div>
+            <div class="gallery-item">
+                <!-- lazy load，避免首屏阻塞 -->
+                <img src="x.png" alt="Xland PVP大赛合影" loading="lazy" width="1200" height="600">
+                <div class="caption">
+                    <span class="text">🏆 <span class="highlight">2026 PVP 大赛</span> · 合影留念</span>
+                    <span class="date">2026.7.29</span>
                 </div>
             </div>
-            <!-- 
-                多图时，将上面的 gallery-single 替换为 gallery-grid，
-                然后在里面放多个 gallery-item 
-            -->
         </div>
 
+        <!-- 公告 -->
         <div class="notice">
             <div class="notice-title">📢 服务器公告</div>
             <div class="notice-content" id="noticeContent"><span class="empty">加载中...</span></div>
         </div>
 
-        <div class="footer">&copy; 2026 Xland Server &nbsp;|&nbsp; 运行于 Paper 1.12.2</div>
+        <div class="footer">&copy; 2026 Xland Server &nbsp;·&nbsp; 运行于 Paper 1.12.2</div>
     </div>
 
     <script>
+        // 小工具：fetch 带超时，避免请求长期挂起
+        function fetchWithTimeout(url, options = {}, timeout = 5000) {
+            return Promise.race([
+                fetch(url, options),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
+            ]);
+        }
+
         function copyIP() {
             const ip = 'xland.3d3k.org';
+            const ipText = document.getElementById('ipText');
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(ip).then(() => {
-                    const el = document.getElementById('ipDisplay');
-                    el.textContent = '✅ 已复制：' + ip;
-                    setTimeout(() => { el.textContent = '📋 复制IP：' + ip; }, 2000);
+                    ipText.textContent = '✅ 已复制：' + ip;
+                    setTimeout(() => {
+                        ipText.textContent = '📋 xland.3d3k.org';
+                    }, 2000);
                 }).catch(() => fallbackCopy(ip));
             } else {
                 fallbackCopy(ip);
@@ -431,69 +519,96 @@
         function fallbackCopy(text) {
             const ta = document.createElement('textarea');
             ta.value = text;
+            // 把 textarea 放到不可见位置，避免触发滚动
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
             document.body.appendChild(ta);
             ta.select();
-            document.execCommand('copy');
+            try { document.execCommand('copy'); } catch (e) {}
             document.body.removeChild(ta);
-            const el = document.getElementById('ipDisplay');
-            el.textContent = '✅ 已复制：' + text;
-            setTimeout(() => { el.textContent = '📋 复制IP：' + text; }, 2000);
+            const ipText = document.getElementById('ipText');
+            ipText.textContent = '✅ 已复制：' + text;
+            setTimeout(() => {
+                ipText.textContent = '📋 xland.3d3k.org';
+            }, 2000);
         }
 
         function loadNotice() {
             const container = document.getElementById('noticeContent');
-            fetch('mb.txt')
+            fetchWithTimeout('mb.txt', {}, 4000)
                 .then(res => {
-                    if (!res.ok) throw new Error('文件不存在或无法访问');
-                    return res.arrayBuffer();
+                    if (!res.ok) throw new Error('not ok');
+                    return res.text();
                 })
-                .then(buf => {
-                    const text = new TextDecoder('utf-8').decode(buf);
-                    const content = text.trim();
-                    container.innerHTML = content === '' ? '<span class="empty">暂无公告</span>' : content;
+                .then(text => {
+                    const t = (text || '').trim();
+                    if (t) container.textContent = t;
+                    else container.innerHTML = '<span class="empty">暂无公告</span>';
                 })
                 .catch(() => {
                     container.innerHTML = '<span class="empty">暂无公告</span>';
                 });
         }
 
-        function fetchServerStatus() {
-            const statusEl = document.getElementById('statusDisplay');
-            const apiUrl = 'https://api.mcsrvstat.us/3/xland.3d3k.org';
+        function setStatusOnline(count) {
+            const statusText = document.getElementById('statusText');
+            statusText.className = 'online-status online';
+            // 清空并设置文本节点，避免 innerHTML 重解析
+            statusText.textContent = '';
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            statusText.appendChild(dot);
+            const t = document.createTextNode(' 在线 · ');
+            statusText.appendChild(t);
+            const countEl = document.createElement('span');
+            countEl.className = 'count';
+            countEl.textContent = String(count);
+            statusText.appendChild(countEl);
+            statusText.appendChild(document.createTextNode(' 人'));
+        }
 
-            fetch(apiUrl)
-                .then(res => {
-                    if (!res.ok) throw new Error('API 请求失败');
-                    return res.json();
-                })
+        function setStatusOffline() {
+            const statusText = document.getElementById('statusText');
+            statusText.className = 'online-status offline';
+            statusText.textContent = '';
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            statusText.appendChild(dot);
+            statusText.appendChild(document.createTextNode(' 离线'));
+        }
+
+        function setStatusUnknown() {
+            const statusText = document.getElementById('statusText');
+            statusText.className = 'online-status unknown';
+            statusText.textContent = '';
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            statusText.appendChild(dot);
+            statusText.appendChild(document.createTextNode(' 未知'));
+        }
+
+        function fetchServerStatus() {
+            const api = 'https://api.mcsrvstat.us/3/xland.3d3k.org';
+            fetchWithTimeout(api, {}, 5000)
+                .then(res => res.json())
                 .then(data => {
-                    if (data.online) {
-                        const players = data.players ? data.players.online : 0;
-                        statusEl.innerHTML = `
-                            <span class="online-status">
-                                <span class="dot"></span> 服务器在线 · <span class="count">${players}</span> 人在线
-                            </span>
-                        `;
+                    if (data && data.online) {
+                        const players = data.players && data.players.online ? data.players.online : 0;
+                        setStatusOnline(players);
                     } else {
-                        statusEl.innerHTML = `
-                            <span class="online-status" style="color: #8a5a5a;">
-                                <span class="dot" style="background: #8a5a5a;"></span> 服务器离线
-                            </span>
-                        `;
+                        setStatusOffline();
                     }
                 })
                 .catch(() => {
-                    statusEl.innerHTML = `
-                        <span class="online-status" style="color: #7a7a5a;">
-                            <span class="dot" style="background: #7a7a5a;"></span> 状态未知
-                        </span>
-                    `;
+                    setStatusUnknown();
                 });
         }
 
+        // 启动
         loadNotice();
         fetchServerStatus();
-        setInterval(fetchServerStatus, 60000);
+        // 6s 更新一次（可按需调整）
+        setInterval(fetchServerStatus, 6000);
     </script>
 </body>
 </html>
