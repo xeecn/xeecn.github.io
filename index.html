@@ -141,6 +141,103 @@
             line-height: 1.8;
         }
         .description .welcome { color: #d4a030; font-weight: bold; }
+
+        /* ========== 相册区域 - 全新设计 ========== */
+        .gallery {
+            margin: 32px 0 16px 0;
+            border-top: 2px solid #2a3a3a;
+            padding-top: 28px;
+        }
+        .gallery-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .gallery-title {
+            color: #d4a030;
+            font-size: 20px;
+            letter-spacing: 4px;
+            font-weight: bold;
+        }
+        .gallery-title .icon {
+            margin-right: 8px;
+        }
+        .gallery-badge {
+            background: #1a2a2a;
+            border: 1px solid #2a3a3a;
+            color: #5a7a5a;
+            font-size: 11px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+        .gallery-item {
+            background: #0a1520;
+            border: 1px solid #2a3a3a;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .gallery-item:hover {
+            border-color: #4a7a5a;
+            box-shadow: 0 0 30px rgba(74, 122, 90, 0.08);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .gallery-item .caption {
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f1a2a;
+            border-top: 1px solid #1a2a2a;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .gallery-item .caption .text {
+            color: #b0c0b0;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        .gallery-item .caption .text .highlight {
+            color: #d4a030;
+        }
+        .gallery-item .caption .date {
+            color: #4a6a5a;
+            font-size: 12px;
+            letter-spacing: 1px;
+            background: #1a2a2a;
+            padding: 2px 12px;
+            border-radius: 12px;
+            border: 1px solid #2a3a3a;
+        }
+        .gallery-single {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .gallery-single .gallery-item {
+            border-color: #3a4a3a;
+        }
+        .gallery-single .gallery-item:hover {
+            border-color: #5a8a5a;
+        }
+
+        /* ========== 后续新增的网格版（多图时启用） ========== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .gallery-grid .gallery-item .caption .text {
+            font-size: 13px;
+        }
+
         .notice {
             margin-top: 24px;
             padding-top: 16px;
@@ -215,12 +312,16 @@
             transition: color 0.2s;
         }
         .sponsor-card:hover .arrow { color: #d4a030; }
+
         @media (max-width: 600px) {
             .container { padding: 20px; }
             .header h1 { font-size: 28px; letter-spacing: 3px; }
             .info-grid { grid-template-columns: 1fr; }
             .sponsor-card { flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
             .sponsor-card .left { justify-content: center; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-header { flex-direction: column; align-items: flex-start; }
+            .gallery-item .caption { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
@@ -282,6 +383,27 @@
             无论你是养老玩家，还是建筑党，这里都有一片属于你的土地。
             <br><br>
             📖 服务器守则：尊重他人 · 禁止作弊 · 和谐共建
+        </div>
+
+        <!-- ========== 相册 - 居中单图版 ========== -->
+        <div class="gallery">
+            <div class="gallery-header">
+                <span class="gallery-title"><span class="icon">📸</span> 服务器相册</span>
+                <span class="gallery-badge">✦ 记录 Xland 的每一刻</span>
+            </div>
+            <div class="gallery-single">
+                <div class="gallery-item">
+                    <img src="x.png" alt="Xland PVP大赛合影">
+                    <div class="caption">
+                        <span class="text">🏆 <span class="highlight">2026 PVP 大赛</span> · 合影留念</span>
+                        <span class="date">2026.7.29</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 
+                多图时，将上面的 gallery-single 替换为 gallery-grid，
+                然后在里面放多个 gallery-item 
+            -->
         </div>
 
         <div class="notice">
