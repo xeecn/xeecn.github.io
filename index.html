@@ -44,21 +44,6 @@
             color: var(--text);
         }
 
-        /* 背景图片上的淡蓝白遮罩，让中间卡片更清晰 */
-        /* 如果想让背景图更清楚，把 0.82 改小，比如 0.5 或 0.3 */
-        /* 如果完全不想遮罩，把这一段整个删掉 */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(246, 250, 255, 0.82);
-            pointer-events: none;
-            z-index: 0;
-        }
-
         /* ===== 主容器（MC GUI 双层边框感） ===== */
         .container {
             max-width: 880px;
