@@ -31,12 +31,10 @@
             border: 1px solid #2a3a3a;
             border-radius: 16px;
             padding: 48px 44px;
-            /* 减弱阴影以降低渲染成本 */
             box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
             position: relative;
             overflow: hidden;
         }
-        /* 顶部微光 */
         .container::before {
             content: '';
             position: absolute;
@@ -60,7 +58,6 @@
             color: #d4a030;
             letter-spacing: 10px;
             font-weight: bold;
-            /* 缩小发光，减少绘制成本 */
             text-shadow: 0 0 20px rgba(212, 160, 48, 0.08);
         }
         .header .subtitle {
@@ -93,7 +90,6 @@
             border: 1px solid #1f2f2f;
             margin: 24px 0 20px 0;
             cursor: pointer;
-            /* 不让用户误选文本，复制由 JS 控制 */
             user-select: none;
             transition: all 0.25s;
             letter-spacing: 2px;
@@ -409,7 +405,7 @@
 
         <!-- IP 复制 -->
         <div class="copy-ip" id="ipDisplay" onclick="copyIP()">
-            <span id="ipText">📋 xland.3d3k.org</span>
+            <span id="ipText">📋 nalxer.top</span>
             <span class="hint" id="ipHint">点击复制</span>
         </div>
 
@@ -417,7 +413,7 @@
         <div class="info-grid">
             <div class="info-card">
                 <div class="label">📡 地址</div>
-                <div class="value"><a href="minecraft://xland.3d3k.org">xland.3d3k.org</a></div>
+                <div class="value"><a href="minecraft://nalxer.top">nalxer.top</a></div>
             </div>
             <div class="info-card">
                 <div class="label">💬 QQ群</div>
@@ -474,7 +470,6 @@
                 <span class="gallery-badge">✦ 记录 Nalxer 的每一刻</span>
             </div>
             <div class="gallery-item">
-                <!-- lazy load，避免首屏阻塞 -->
                 <img src="x.png" alt="Nalxer PVP大赛合影" loading="lazy" width="1200" height="600">
                 <div class="caption">
                     <span class="text">🏆 <span class="highlight">2026 PVP 大赛</span> · 合影留念</span>
@@ -493,7 +488,6 @@
     </div>
 
     <script>
-        // 小工具：fetch 带超时，避免请求长期挂起
         function fetchWithTimeout(url, options = {}, timeout = 5000) {
             return Promise.race([
                 fetch(url, options),
@@ -502,13 +496,13 @@
         }
 
         function copyIP() {
-            const ip = 'xland.3d3k.org';
+            const ip = 'nalxer.top';
             const ipText = document.getElementById('ipText');
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(ip).then(() => {
                     ipText.textContent = '✅ 已复制：' + ip;
                     setTimeout(() => {
-                        ipText.textContent = '📋 xland.3d3k.org';
+                        ipText.textContent = '📋 nalxer.top';
                     }, 2000);
                 }).catch(() => fallbackCopy(ip));
             } else {
@@ -519,7 +513,6 @@
         function fallbackCopy(text) {
             const ta = document.createElement('textarea');
             ta.value = text;
-            // 把 textarea 放到不可见位置，避免触发滚动
             ta.style.position = 'fixed';
             ta.style.left = '-9999px';
             document.body.appendChild(ta);
@@ -529,7 +522,7 @@
             const ipText = document.getElementById('ipText');
             ipText.textContent = '✅ 已复制：' + text;
             setTimeout(() => {
-                ipText.textContent = '📋 xland.3d3k.org';
+                ipText.textContent = '📋 nalxer.top';
             }, 2000);
         }
 
@@ -553,7 +546,6 @@
         function setStatusOnline(count) {
             const statusText = document.getElementById('statusText');
             statusText.className = 'online-status online';
-            // 清空并设置文本节点，避免 innerHTML 重解析
             statusText.textContent = '';
             const dot = document.createElement('span');
             dot.className = 'dot';
@@ -588,7 +580,7 @@
         }
 
         function fetchServerStatus() {
-            const api = 'https://api.mcsrvstat.us/3/xland.3d3k.org';
+            const api = 'https://api.mcsrvstat.us/3/nalxer.top';
             fetchWithTimeout(api, {}, 5000)
                 .then(res => res.json())
                 .then(data => {
@@ -604,10 +596,8 @@
                 });
         }
 
-        // 启动
         loadNotice();
         fetchServerStatus();
-        // 6s 更新一次（可按需调整）
         setInterval(fetchServerStatus, 6000);
     </script>
 </body>
