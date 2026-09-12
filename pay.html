@@ -3,150 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>赞助 Xland 服务器</title>
+    <link rel="icon" href="s.png" type="image/png">
+    <title>赞助 Nalxer 服务器</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            border-radius: 0 !important;
+        }
+
+        :root {
+            --blue: #3b82f6;
+            --blue-dark: #2563eb;
+            --blue-mid: #60a5fa;
+            --blue-light: #93c5fd;
+            --blue-soft: #dbeafe;
+            --blue-bg: #eff6ff;
+
+            --grass: #6ab04c;
+            --grass-dark: #3d7a26;
+            --diamond: #2db8a8;
+            --diamond-dark: #197e75;
+            --gold: #f0a92e;
+            --gold-dark: #b45309;
+            --redstone: #dc4f4f;
+            --amethyst: #9b5de5;
+            --amethyst-dark: #6b2eb8;
+
+            --text: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --border: #dbeafe;
+
+            --pixel-font: 'Jersey 10',
+                          'Microsoft YaHei', '微软雅黑',
+                          'PingFang SC', 'Hiragino Sans GB',
+                          'SimHei', '黑体',
+                          sans-serif;
         }
 
         body {
-            background: #0d0d1a;
-            font-family: 'Courier New', monospace;
+            background-color: #eaf3ff;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.07) 1px, transparent 1px);
+            background-size: 16px 16px;
+            font-family: var(--pixel-font);
+            font-size: 14px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 24px;
+            color: var(--text);
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
-            background: #141428;
-            border: 2px solid #3a5a4a;
-            border-radius: 8px;
-            padding: 40px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-            text-align: center;
+            background: var(--white);
+            border: 4px solid var(--blue-mid);
+            padding: 40px 36px;
+            position: relative;
+            box-shadow:
+                0 0 0 4px var(--white),
+                0 0 0 8px var(--blue-soft),
+                12px 12px 0 8px rgba(59, 130, 246, 0.12);
         }
 
+        /* ===== 头部 ===== */
         .header {
-            border-bottom: 2px solid #2a3a3a;
-            padding-bottom: 16px;
-            margin-bottom: 28px;
+            text-align: center;
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+            border-bottom: 4px dashed var(--blue-soft);
         }
-
         .header h1 {
-            font-size: 36px;
-            color: #d4a030;
-            letter-spacing: 4px;
-            font-weight: bold;
+            font-family: var(--pixel-font);
+            font-size: 48px;
+            letter-spacing: 5px;
+            color: var(--gold-dark);
+            text-shadow:
+                2px 2px 0 #ffffff,
+                4px 4px 0 rgba(240, 169, 46, 0.3);
+            display: inline-block;
+            line-height: 1;
         }
-
         .header .subtitle {
-            color: #6a7a6a;
+            color: var(--text-light);
             font-size: 14px;
-            letter-spacing: 3px;
-            margin-top: 4px;
+            letter-spacing: 4px;
+            margin-top: 8px;
+            text-shadow: 1px 1px 0 #ffffff;
         }
 
+        /* ===== 返回按钮 ===== */
         .back-link {
             display: inline-block;
-            margin-top: 12px;
-            color: #7ab8c0;
+            margin-top: 16px;
+            font-family: var(--pixel-font);
+            font-size: 15px;
+            color: var(--blue-dark);
             text-decoration: none;
-            font-size: 14px;
-            border: 1px solid #2a3a3a;
-            padding: 4px 16px;
-            border-radius: 4px;
-            transition: all 0.2s;
+            padding: 6px 18px;
+            background: var(--white);
+            border: 3px solid var(--blue-dark);
+            letter-spacing: 1px;
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
+                inset -2px -2px 0 rgba(37, 99, 235, 0.12),
+                4px 4px 0 var(--blue-light);
+            transition: all 0.08s linear;
+            text-shadow: 1px 1px 0 #ffffff;
         }
-
         .back-link:hover {
-            border-color: #4a7a5a;
-            color: #8bc8d0;
+            background: var(--blue-bg);
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
+                inset -2px -2px 0 rgba(37, 99, 235, 0.15),
+                4px 4px 0 var(--blue-mid);
+        }
+        .back-link:active {
+            transform: translate(3px, 3px);
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                inset -2px -2px 0 rgba(37, 99, 235, 0.18),
+                1px 1px 0 var(--blue-mid);
         }
 
+        /* ===== 二维码区 ===== */
         .qr-section {
             margin: 20px 0;
+            text-align: center;
         }
-
         .qr-section .label {
-            color: #5a7a5a;
+            display: inline-block;
+            background: var(--blue-soft);
+            color: var(--blue-dark);
+            padding: 4px 16px;
             font-size: 13px;
             letter-spacing: 2px;
-            text-transform: uppercase;
+            border: 3px solid var(--blue-mid);
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                3px 3px 0 rgba(96, 165, 250, 0.4);
+            text-shadow: 1px 1px 0 #ffffff;
         }
-
         .qr-section .method-name {
-            color: #d4a030;
-            font-size: 18px;
-            font-weight: bold;
-            margin: 6px 0 16px 0;
+            color: var(--diamond-dark);
+            font-size: 22px;
+            letter-spacing: 2px;
+            margin: 14px 0 16px 0;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(45, 184, 168, 0.3);
         }
-
         .qr-image {
-            max-width: 280px;
-            width: 100%;
-            border: 2px solid #2a3a3a;
-            border-radius: 8px;
-            padding: 8px;
-            background: #0a1520;
             display: inline-block;
+            background: var(--white);
+            border: 3px solid var(--border);
+            padding: 12px;
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                6px 6px 0 rgba(219, 234, 254, 0.7);
+            transition: all 0.12s linear;
         }
-
+        .qr-image:hover {
+            transform: translate(-2px, -2px);
+            border-color: var(--blue-light);
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                8px 8px 0 rgba(147, 197, 253, 0.7);
+        }
         .qr-image img {
-            width: 100%;
+            width: 260px;
             height: auto;
             display: block;
-            border-radius: 4px;
+            image-rendering: pixelated;
         }
-
-        .qr-image img:not([src]) {
-            display: none;
-        }
-
-        .qr-image .placeholder {
-            color: #4a5a4a;
-            font-size: 14px;
-            padding: 60px 20px;
+        .qr-image img[style*="display: none"] + .placeholder {
             display: block;
         }
-
-        .qr-image img[src] + .placeholder {
+        .qr-image .placeholder {
             display: none;
+            color: #94a3b8;
+            font-size: 14px;
+            padding: 60px 30px;
+            letter-spacing: 2px;
         }
 
+        /* ===== 赞助说明 ===== */
         .notice-text {
-            background: #0a1520;
-            border-left: 3px solid #4a7a5a;
-            padding: 14px 18px;
-            margin: 20px 0;
-            color: #a0b0a0;
-            font-size: 13px;
-            line-height: 1.8;
+            background: #fffdf5;
+            border: 3px solid var(--gold);
+            border-left: 7px solid var(--gold-dark);
+            padding: 16px 20px;
+            margin: 22px 0 18px 0;
+            color: #6b5a2a;
+            font-size: 15px;
+            line-height: 1.9;
             text-align: left;
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                5px 5px 0 rgba(240, 169, 46, 0.25);
+            text-shadow: 1px 1px 0 #ffffff;
         }
-
         .notice-text .welcome {
-            color: #d4a030;
-            font-weight: bold;
+            color: var(--gold-dark);
+            font-size: 18px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.35);
         }
 
+        /* ===== 底部返回按钮 ===== */
+        .bottom-back {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        /* ===== 页脚 ===== */
         .footer {
+            text-align: center;
             margin-top: 24px;
             padding-top: 16px;
-            border-top: 1px solid #2a3a3a;
-            color: #4a5a4a;
-            font-size: 12px;
+            border-top: 4px dashed var(--blue-soft);
+            color: var(--text-light);
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0 #ffffff;
+        }
+        .footer span {
+            color: var(--blue-dark);
+            font-size: 18px;
+            letter-spacing: 2px;
+            vertical-align: -2px;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
         }
 
+        /* ===== 响应式 ===== */
         @media (max-width: 600px) {
-            .container { padding: 24px; }
-            .header h1 { font-size: 28px; letter-spacing: 2px; }
-            .qr-image { max-width: 220px; }
+            .container { padding: 26px 18px; }
+            .header h1 { font-size: 36px; letter-spacing: 3px; }
+            .qr-image img { width: 200px; }
+            .qr-section .method-name { font-size: 18px; }
         }
     </style>
 </head>
@@ -154,38 +259,38 @@
     <div class="container">
         <!-- 头部 -->
         <div class="header">
-            <h1> 赞助 Xland</h1>
-            <div class="subtitle"> 你的支持，让服务器走得更远 </div>
+            <h1>赞助 Nalxer</h1>
+            <div class="subtitle">✦ 你的支持，让服务器走得更远 ✦</div>
             <a href="index.html" class="back-link">← 返回首页</a>
         </div>
 
         <!-- 二维码 -->
         <div class="qr-section">
-            <div class="label"> 支付方式</div>
+            <div class="label">支付方式</div>
             <div class="method-name">支付宝 · 扫码赞助</div>
             <div class="qr-image">
-                <img src="p.jpeg" alt="支付宝收款码" onerror="this.style.display='none'">
-               
+                <img src="p.jpeg" alt="支付宝收款码" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="placeholder">二维码加载失败<br>请检查 p.jpeg</div>
             </div>
         </div>
 
-        <!-- 说明 -->
+        <!-- 赞助说明 -->
         <div class="notice-text">
-            <span class="welcome"> 赞助说明</span><br>
-             赞助完全自愿，非强制消费<br>
-             赞助金额将用于服务器续费与维护<br>
-             赞助后可联系服主获取对应权益<br>
-             如有疑问请在 QQ 群内咨询
+            <span class="welcome">▸ 赞助说明</span><br>
+            · 赞助完全自愿，非强制消费<br>
+            · 赞助金额将用于服务器续费与维护<br>
+            · 赞助后可联系服主获取对应权益<br>
+            · 如有疑问请在 QQ 群内咨询
         </div>
 
         <!-- 返回 -->
-        <div style="margin-top: 16px;">
-            <a href="index.html" style="color: #7ab8c0; text-decoration: none; font-size: 14px; border: 1px solid #2a3a3a; padding: 6px 20px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.borderColor='#4a7a5a'" onmouseout="this.style.borderColor='#2a3a3a'">← 返回 Xland 首页</a>
+        <div class="bottom-back">
+            <a href="index.html" class="back-link">← 返回 Nalxer 首页</a>
         </div>
 
         <!-- 页脚 -->
         <div class="footer">
-            &copy; 2026 Xland Server
+            &copy; 2026 <span>Nalxer</span> Server
         </div>
     </div>
 </body>
