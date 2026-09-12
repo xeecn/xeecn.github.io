@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="s.png" type="image/png">
     <title>Nalxer 服务器</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            border-radius: 0 !important;
         }
 
         :root {
@@ -21,67 +27,80 @@
             --blue-bg: #eff6ff;
 
             --grass: #6ab04c;
+            --grass-dark: #3d7a26;
             --diamond: #2db8a8;
+            --diamond-dark: #197e75;
             --gold: #f0a92e;
+            --gold-dark: #b45309;
             --redstone: #dc4f4f;
             --amethyst: #9b5de5;
-            --dirt: #a0704f;
+            --amethyst-dark: #6b2eb8;
 
             --text: #1e293b;
             --text-light: #64748b;
             --white: #ffffff;
-            --border: #e2e8f0;
+            --border: #dbeafe;
+
+            --pixel-font: 'Jersey 10',
+                          'Microsoft YaHei', '微软雅黑',
+                          'PingFang SC', 'Hiragino Sans GB',
+                          'SimHei', '黑体',
+                          sans-serif;
         }
 
         body {
-            background: #f6faff url('bg.jpg') center center / cover no-repeat fixed;
-            font-family: 'Courier New', 'Consolas', 'Microsoft YaHei', monospace;
+            background-color: #eaf3ff;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.07) 1px, transparent 1px);
+            background-size: 16px 16px;
+            font-family: var(--pixel-font);
+            font-size: 14px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 24px;
             color: var(--text);
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
         }
 
-        /* ===== 主容器（MC GUI 双层边框感） ===== */
         .container {
-            max-width: 880px;
+            max-width: 900px;
             width: 100%;
             background: var(--white);
-            border: 3px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 46px 42px;
-            box-shadow:
-                0 0 0 3px #eff6ff,
-                0 0 0 6px #dbeafe,
-                0 14px 36px rgba(59, 130, 246, 0.14),
-                0 24px 60px rgba(59, 130, 246, 0.08);
+            border: 4px solid var(--blue-mid);
+            padding: 44px 40px;
             position: relative;
-            z-index: 1;
+            box-shadow:
+                0 0 0 4px var(--white),
+                0 0 0 8px var(--blue-soft),
+                12px 12px 0 8px rgba(59, 130, 246, 0.12);
         }
 
         /* ===== 头部 ===== */
         .header {
             text-align: center;
-            padding-bottom: 24px;
+            padding-bottom: 22px;
             margin-bottom: 26px;
-            border-bottom: 2px dashed #dbeafe;
+            border-bottom: 4px dashed var(--blue-soft);
         }
         .header h1 {
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: 8px;
-            color: var(--blue);
+            font-family: var(--pixel-font);
+            font-size: 68px;         /* 纯英文，加大 */
+            letter-spacing: 6px;
+            color: var(--blue-dark);
             text-shadow:
-                2px 2px 0 #ffffff,
-                4px 4px 0 rgba(59, 130, 246, 0.12);
+                3px 3px 0 #ffffff,
+                6px 6px 0 rgba(59, 130, 246, 0.28);
             display: inline-block;
+            line-height: 1;
         }
         .header .subtitle {
             color: var(--text-light);
-            font-size: 13px;
-            letter-spacing: 5px;
+            font-size: 14px;         /* 中文保持小 */
+            letter-spacing: 4px;
             margin-top: 8px;
             text-shadow: 1px 1px 0 #ffffff;
         }
@@ -89,90 +108,81 @@
             display: inline-block;
             background: var(--blue-soft);
             color: var(--blue-dark);
-            padding: 5px 20px;
-            border-radius: 6px;
-            font-size: 12px;
-            margin-top: 14px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border: 2px solid #bfdbfe;
+            padding: 5px 16px;
+            font-size: 18px;         /* Minecraft 1.12.2 英文数字，加大 */
+            margin-top: 12px;
+            letter-spacing: 2px;
+            border: 3px solid var(--blue-mid);
             box-shadow:
                 inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                inset -2px -2px 0 rgba(37, 99, 235, 0.08),
-                0 2px 0 #bfdbfe;
+                inset -2px -2px 0 rgba(37, 99, 235, 0.12),
+                3px 3px 0 rgba(96, 165, 250, 0.4);
             text-shadow: 1px 1px 0 #ffffff;
         }
 
-        /* ===== IP 复制按钮（MC 立体按钮） ===== */
+        /* ===== IP 复制按钮 ===== */
         .copy-ip-wrap {
             text-align: center;
-            margin: 26px 0 24px 0;
+            margin: 24px 0 22px 0;
         }
         .copy-ip {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background: linear-gradient(180deg, #ffffff 0%, #e6f0ff 100%);
+            gap: 12px;
+            background: var(--white);
             color: var(--blue-dark);
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 1px;
+            padding: 12px 26px;
+            font-family: var(--pixel-font);
+            font-size: 30px;         /* nalxer.top 英文数字，加大 */
+            letter-spacing: 2px;
             cursor: pointer;
             user-select: none;
-            border: 2px solid var(--blue-mid);
+            border: 4px solid var(--blue-dark);
             box-shadow:
-                inset 3px 3px 0 rgba(255, 255, 255, 0.95),
-                inset -3px -3px 0 rgba(37, 99, 235, 0.12),
-                0 5px 0 #93c5fd,
-                0 8px 16px rgba(59, 130, 246, 0.20);
-            transition: all 0.12s ease;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.12);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
+                inset -2px -2px 0 rgba(37, 99, 235, 0.12),
+                5px 5px 0 var(--blue-light);
+            transition: all 0.08s linear;
+            text-shadow: 1px 1px 0 #ffffff;
         }
         .copy-ip:hover {
-            background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
+            background: var(--blue-bg);
             box-shadow:
-                inset 3px 3px 0 rgba(255, 255, 255, 0.95),
-                inset -3px -3px 0 rgba(37, 99, 235, 0.14),
-                0 5px 0 #7eb3f8,
-                0 10px 22px rgba(59, 130, 246, 0.26);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
+                inset -2px -2px 0 rgba(37, 99, 235, 0.15),
+                5px 5px 0 var(--blue-mid);
         }
         .copy-ip:active {
-            transform: translateY(4px);
+            transform: translate(4px, 4px);
             box-shadow:
-                inset 3px 3px 0 rgba(255, 255, 255, 0.9),
-                inset -3px -3px 0 rgba(37, 99, 235, 0.16),
-                0 1px 0 #7eb3f8,
-                0 2px 6px rgba(59, 130, 246, 0.18);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                inset -2px -2px 0 rgba(37, 99, 235, 0.18),
+                1px 1px 0 var(--blue-mid);
         }
         .copy-ip .hint {
-            font-size: 12px;
+            font-family: var(--pixel-font);
+            font-size: 13px;         /* 中文保持小 */
             color: var(--text-light);
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-shadow: 1px 1px 0 #ffffff;
         }
 
-        /* ===== 信息网格（多彩方块） ===== */
+        /* ===== 信息网格 ===== */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            margin: 20px 0 22px 0;
+            margin: 18px 0 20px 0;
         }
         .info-card {
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 14px 16px;
-            transition: all 0.15s ease;
+            background: var(--white);
+            border: 3px solid var(--border);
+            padding: 12px 14px 12px 18px;
+            transition: all 0.12s linear;
             box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 1),
-                0 3px 0 rgba(226, 232, 240, 0.9),
-                0 5px 12px rgba(59, 130, 246, 0.06);
+                inset 2px 2px 0 #ffffff,
+                5px 5px 0 rgba(219, 234, 254, 0.7);
             position: relative;
-            overflow: hidden;
         }
         .info-card::before {
             content: '';
@@ -188,347 +198,349 @@
         .info-card:nth-child(4)::before { background: var(--redstone); }
 
         .info-card:hover {
-            transform: translateY(-2px);
-            border-color: #c7dbff;
+            transform: translate(-2px, -2px);
+            border-color: var(--blue-light);
             box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 1),
-                0 4px 0 rgba(191, 219, 254, 0.9),
-                0 8px 20px rgba(59, 130, 246, 0.14);
+                inset 2px 2px 0 #ffffff,
+                7px 7px 0 rgba(147, 197, 253, 0.7);
         }
         .info-card .label {
             color: var(--text-light);
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 13px;         /* 中文保持小 */
             letter-spacing: 1px;
             text-shadow: 1px 1px 0 #ffffff;
         }
         .info-card .value {
             color: var(--text);
-            font-size: 15px;
-            margin-top: 5px;
-            font-weight: 800;
+            font-size: 15px;         /* 默认（含中文内容）保持小 */
+            margin-top: 4px;
             text-shadow: 1px 1px 0 #ffffff;
+            line-height: 1.3;
+        }
+        /* 纯英文数字内容单独放大 */
+        .info-card .value a,
+        .info-card .value .highlight {
+            font-size: 22px;
+            line-height: 1;
+            display: inline-block;
+            margin-top: 2px;
         }
         .info-card .value .highlight {
-            color: var(--gold);
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.18);
+            color: var(--gold-dark);
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.3);
         }
         .info-card .value a {
             color: var(--blue-dark);
             text-decoration: none;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.12);
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.2);
         }
         .info-card .value a:hover {
             text-decoration: underline;
         }
 
-        /* 在线状态 */
         .online-status {
-            color: #15803d;
-            font-size: 14px;
+            color: var(--grass-dark);
+            font-size: 14px;         /* 中文保持小 */
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            font-weight: 800;
             text-shadow: 1px 1px 0 #ffffff;
         }
         .online-status .dot {
             display: inline-block;
-            width: 8px;
-            height: 8px;
+            width: 9px;
+            height: 9px;
             background: #22c55e;
-            border-radius: 1px;
-            margin-right: 6px;
-            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.22);
+            margin-right: 5px;
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.5),
+                inset -2px -2px 0 rgba(0, 100, 0, 0.3),
+                0 0 0 2px var(--white),
+                0 0 0 3px rgba(34, 197, 94, 0.4);
         }
         .online-status.offline { color: #b91c1c; }
         .online-status.offline .dot {
             background: #ef4444;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.5),
+                inset -2px -2px 0 rgba(100, 0, 0, 0.3),
+                0 0 0 2px var(--white),
+                0 0 0 3px rgba(239, 68, 68, 0.4);
         }
-        .online-status.unknown { color: #b45309; }
+        .online-status.unknown { color: var(--gold-dark); }
         .online-status.unknown .dot {
             background: #f59e0b;
-            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+            box-shadow:
+                inset 2px 2px 0 rgba(255, 255, 255, 0.5),
+                inset -2px -2px 0 rgba(100, 60, 0, 0.3),
+                0 0 0 2px var(--white),
+                0 0 0 3px rgba(245, 158, 11, 0.4);
         }
         .online-status .count {
+            font-size: 22px;         /* 数字加大 */
             color: var(--blue-dark);
-            font-weight: 800;
+            line-height: 1;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.2);
+            vertical-align: -2px;
         }
 
-        /* ===== 赞助卡片（MC 立体按钮） ===== */
+        /* ===== 赞助卡片 ===== */
         .sponsor-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(180deg, #fffdf5 0%, #fef3d6 100%);
-            border: 2px solid var(--gold);
-            border-radius: 8px;
-            padding: 15px 22px;
+            background: #fffdf5;
+            border: 4px solid var(--gold-dark);
+            padding: 12px 20px;
             margin: 4px 0 0 0;
-            transition: all 0.12s ease;
+            transition: all 0.08s linear;
             text-decoration: none;
             color: inherit;
             box-shadow:
-                inset 3px 3px 0 rgba(255, 255, 255, 0.95),
-                inset -3px -3px 0 rgba(240, 169, 46, 0.15),
-                0 5px 0 #f0a92e,
-                0 8px 16px rgba(240, 169, 46, 0.22);
+                inset 2px 2px 0 #ffffff,
+                inset -2px -2px 0 rgba(240, 169, 46, 0.2),
+                5px 5px 0 var(--gold);
         }
         .sponsor-card:hover {
-            background: linear-gradient(180deg, #fffdf5 0%, #fde8b4 100%);
+            background: #fef3d6;
             box-shadow:
-                inset 3px 3px 0 rgba(255, 255, 255, 0.95),
-                inset -3px -3px 0 rgba(240, 169, 46, 0.2),
-                0 5px 0 #e09b20,
-                0 10px 22px rgba(240, 169, 46, 0.3);
+                inset 2px 2px 0 #ffffff,
+                inset -2px -2px 0 rgba(240, 169, 46, 0.25),
+                5px 5px 0 #e09b20;
         }
         .sponsor-card:active {
-            transform: translateY(4px);
+            transform: translate(4px, 4px);
             box-shadow:
-                inset 3px 3px 0 rgba(255, 255, 255, 0.9),
-                inset -3px -3px 0 rgba(240, 169, 46, 0.22),
-                0 1px 0 #e09b20,
-                0 2px 6px rgba(240, 169, 46, 0.2);
+                inset 2px 2px 0 #ffffff,
+                inset -2px -2px 0 rgba(240, 169, 46, 0.25),
+                1px 1px 0 #e09b20;
         }
         .sponsor-card .left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
         .sponsor-card .left .icon {
-            font-size: 24px;
+            font-size: 22px;
+            line-height: 1;
+        }
+        .sponsor-card .left .text {
+            display: flex;
+            flex-direction: column;
         }
         .sponsor-card .left .text .title {
-            color: #b45309;
-            font-size: 16px;
-            font-weight: 800;
+            color: var(--gold-dark);
+            font-size: 17px;         /* 中文保持小 */
             letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.22);
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.35);
+            line-height: 1;
         }
         .sponsor-card .left .text .desc {
             color: #92701f;
-            font-size: 12px;
-            margin-top: 3px;
-            font-weight: 600;
+            font-size: 13px;         /* 中文保持小，Nalxer 会以像素字号显示 */
+            margin-top: 5px;
             text-shadow: 1px 1px 0 #ffffff;
+            line-height: 1;
         }
         .sponsor-card .arrow {
-            color: #b45309;
-            font-size: 20px;
-            font-weight: bold;
-            transition: transform 0.15s ease;
+            color: var(--gold-dark);
+            font-size: 24px;
+            transition: transform 0.12s linear;
             text-shadow: 1px 1px 0 #ffffff;
         }
         .sponsor-card:hover .arrow {
             transform: translateX(4px);
         }
 
-        /* ===== 特性标签（MC 多彩方块） ===== */
+        /* ===== 特性标签 ===== */
         .features {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin: 20px 0 22px 0;
+            margin: 18px 0 20px 0;
         }
         .features span {
-            padding: 6px 16px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.3px;
-            border: 2px solid;
-            transition: all 0.12s ease;
+            padding: 5px 14px;
+            font-size: 15px;         /* 中文保持小 */
+            letter-spacing: 1px;
+            border: 3px solid;
+            transition: all 0.08s linear;
             text-shadow: 1px 1px 0 #ffffff;
             box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
-                inset -2px -2px 0 rgba(0, 0, 0, 0.05),
-                0 2px 0 rgba(0, 0, 0, 0.06);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                inset -2px -2px 0 rgba(0, 0, 0, 0.06),
+                3px 3px 0 rgba(0, 0, 0, 0.06);
         }
         .features span:nth-child(1) {
-            color: #3d7a26;
-            border-color: #6ab04c;
+            color: var(--grass-dark);
+            border-color: var(--grass);
             background: #e6f5dd;
         }
         .features span:nth-child(2) {
-            color: #197e75;
-            border-color: #2db8a8;
+            color: var(--diamond-dark);
+            border-color: var(--diamond);
             background: #daf4f1;
         }
         .features span:nth-child(3) {
-            color: #b45309;
-            border-color: #f0a92e;
+            color: var(--gold-dark);
+            border-color: var(--gold);
             background: #fdf0d5;
         }
         .features span:nth-child(4) {
-            color: #6b2eb8;
-            border-color: #9b5de5;
+            color: var(--amethyst-dark);
+            border-color: var(--amethyst);
             background: #efe3fc;
         }
         .features span:hover {
-            transform: translateY(-2px);
+            transform: translate(-2px, -2px);
             box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
-                inset -2px -2px 0 rgba(0, 0, 0, 0.05),
-                0 4px 10px rgba(0, 0, 0, 0.10);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                inset -2px -2px 0 rgba(0, 0, 0, 0.06),
+                5px 5px 0 rgba(0, 0, 0, 0.1);
         }
 
         /* ===== 描述区 ===== */
         .description {
-            background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
-            border: 2px solid #dbeafe;
-            border-left: 6px solid var(--grass);
-            padding: 20px 24px;
-            margin: 18px 0 22px 0;
+            background: #f7fbff;
+            border: 3px solid var(--border);
+            border-left: 7px solid var(--grass);
+            padding: 16px 20px;
+            margin: 16px 0 20px 0;
             color: #475569;
-            font-size: 14px;
-            line-height: 1.95;
-            border-radius: 6px;
+            font-size: 15px;         /* 中文保持小 */
+            line-height: 1.75;
             box-shadow:
-                inset 0 1px 0 #ffffff,
-                0 3px 0 rgba(219, 234, 254, 0.9),
-                0 6px 16px rgba(59, 130, 246, 0.06);
+                inset 2px 2px 0 #ffffff,
+                5px 5px 0 rgba(219, 234, 254, 0.7);
             text-shadow: 1px 1px 0 #ffffff;
         }
         .description .welcome {
-            color: #3d7a26;
-            font-weight: 800;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(106, 176, 76, 0.22);
+            color: var(--grass-dark);
+            font-size: 17px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(106, 176, 76, 0.3);
         }
         .description strong {
             color: var(--blue-dark);
-            font-weight: 800;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.15);
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
         }
 
         /* ===== 相册 ===== */
         .gallery {
-            margin: 28px 0 16px 0;
-            border-top: 2px dashed #dbeafe;
-            padding-top: 24px;
+            margin: 26px 0 16px 0;
+            border-top: 4px dashed var(--blue-soft);
+            padding-top: 22px;
         }
         .gallery-header {
             display: flex;
             align-items: baseline;
             justify-content: space-between;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
             gap: 8px;
         }
         .gallery-title {
             color: var(--blue-dark);
-            font-size: 18px;
-            letter-spacing: 3px;
-            font-weight: 800;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.15);
+            font-size: 17px;         /* 中文保持小 */
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 0 #ffffff, 3px 3px 0 rgba(59, 130, 246, 0.25);
         }
         .gallery-title .icon {
             margin-right: 6px;
         }
         .gallery-badge {
             background: #efe3fc;
-            border: 2px solid var(--amethyst);
-            color: #6b2eb8;
-            font-size: 11px;
-            padding: 4px 14px;
-            border-radius: 6px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            border: 3px solid var(--amethyst);
+            color: var(--amethyst-dark);
+            font-size: 13px;
+            padding: 4px 12px;
+            letter-spacing: 1px;
             box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
-                0 2px 0 rgba(155, 93, 229, 0.4);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                3px 3px 0 rgba(155, 93, 229, 0.4);
             text-shadow: 1px 1px 0 #ffffff;
         }
         .gallery-item {
             background: var(--white);
-            border: 2px solid var(--border);
-            border-radius: 8px;
+            border: 3px solid var(--border);
             overflow: hidden;
-            transition: all 0.15s ease;
+            transition: all 0.12s linear;
             max-width: 600px;
             margin: 0 auto;
             box-shadow:
-                0 3px 0 rgba(226, 232, 240, 0.9),
-                0 8px 20px rgba(59, 130, 246, 0.08);
+                5px 5px 0 rgba(219, 234, 254, 0.7);
         }
         .gallery-item:hover {
-            transform: translateY(-3px);
-            border-color: #c7dbff;
+            transform: translate(-3px, -3px);
+            border-color: var(--blue-light);
             box-shadow:
-                0 5px 0 rgba(191, 219, 254, 0.9),
-                0 14px 32px rgba(59, 130, 246, 0.16);
+                8px 8px 0 rgba(147, 197, 253, 0.7);
         }
         .gallery-item img {
             width: 100%;
             height: auto;
             display: block;
+            image-rendering: pixelated;
+            border-bottom: 3px solid var(--border);
         }
         .gallery-item .caption {
-            padding: 14px 22px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-            border-top: 2px solid var(--border);
+            background: #f8fbff;
             flex-wrap: wrap;
             gap: 8px;
         }
         .gallery-item .caption .text {
             color: #475569;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 15px;         /* 中文保持小 */
             text-shadow: 1px 1px 0 #ffffff;
         }
         .gallery-item .caption .text .highlight {
-            color: #b45309;
-            font-weight: 800;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.22);
+            color: var(--gold-dark);
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.3);
         }
         .gallery-item .caption .date {
-            color: #197e75;
-            font-size: 12px;
-            font-weight: 800;
+            color: var(--diamond-dark);
+            font-size: 18px;         /* 2026.7.29 数字加大 */
             background: #daf4f1;
             padding: 3px 12px;
-            border-radius: 6px;
-            border: 2px solid var(--diamond);
+            border: 3px solid var(--diamond);
+            letter-spacing: 1px;
+            line-height: 1;
             text-shadow: 1px 1px 0 #ffffff;
             box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
-                0 2px 0 rgba(45, 184, 168, 0.4);
+                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
+                3px 3px 0 rgba(45, 184, 168, 0.4);
         }
 
         /* ===== 公告 ===== */
         .notice {
-            margin-top: 26px;
-            padding-top: 20px;
-            border-top: 2px dashed #dbeafe;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 4px dashed var(--blue-soft);
         }
         .notice-title {
-            color: #3d7a26;
-            font-size: 15px;
+            color: var(--grass-dark);
+            font-size: 15px;         /* 中文保持小 */
             letter-spacing: 2px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(106, 176, 76, 0.22);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 0 #ffffff, 3px 3px 0 rgba(106, 176, 76, 0.3);
         }
         .notice-content {
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 18px 22px;
+            background: #f8fbff;
+            border: 3px solid var(--border);
+            padding: 14px 18px;
             color: #475569;
-            font-size: 14px;
-            line-height: 1.95;
-            min-height: 50px;
+            font-size: 15px;         /* 中文保持小 */
+            line-height: 1.75;
+            min-height: 48px;
             white-space: pre-wrap;
             word-break: break-word;
             box-shadow:
-                inset 0 1px 0 #ffffff,
-                0 3px 0 rgba(226, 232, 240, 0.9),
-                0 6px 14px rgba(59, 130, 246, 0.06);
+                inset 2px 2px 0 #ffffff,
+                5px 5px 0 rgba(219, 234, 254, 0.7);
             text-shadow: 1px 1px 0 #ffffff;
         }
         .notice-content .empty {
@@ -539,27 +551,28 @@
         /* ===== 底部 ===== */
         .footer {
             text-align: center;
-            margin-top: 26px;
-            padding-top: 18px;
-            border-top: 2px dashed #dbeafe;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 4px dashed var(--blue-soft);
             color: var(--text-light);
-            font-size: 12px;
+            font-size: 13px;         /* 中文保持小 */
             letter-spacing: 1px;
-            font-weight: 600;
             text-shadow: 1px 1px 0 #ffffff;
         }
         .footer span {
             color: var(--blue-dark);
-            font-weight: 800;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.15);
+            font-size: 18px;         /* Nalxer 英文加大 */
+            letter-spacing: 2px;
+            vertical-align: -2px;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
         }
 
         /* ===== 响应式 ===== */
         @media (max-width: 700px) {
-            .container { padding: 28px 20px; }
-            .header h1 { font-size: 28px; letter-spacing: 4px; }
+            .container { padding: 26px 18px; }
+            .header h1 { font-size: 48px; letter-spacing: 4px; }
             .info-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .copy-ip { font-size: 16px; padding: 12px 20px; }
+            .copy-ip { font-size: 22px; padding: 10px 18px; }
             .gallery-header { flex-direction: column; align-items: flex-start; }
             .gallery-item .caption { flex-direction: column; align-items: flex-start; }
             .sponsor-card { flex-direction: column; align-items: stretch; text-align: center; gap: 8px; }
@@ -569,7 +582,7 @@
 
         @media (max-width: 440px) {
             .info-grid { grid-template-columns: 1fr; }
-            .header h1 { font-size: 22px; letter-spacing: 3px; }
+            .header h1 { font-size: 40px; letter-spacing: 3px; }
         }
     </style>
 </head>
@@ -577,7 +590,7 @@
     <div class="container">
         <!-- 头部 -->
         <div class="header">
-            <h1>⛏ Nalxer</h1>
+            <h1>Nalxer</h1>
             <div class="subtitle">✦ 纯净生存服务器 ✦</div>
             <div class="version">📌 Minecraft 1.12.2</div>
         </div>
@@ -608,7 +621,7 @@
                 <div class="label">📊 状态</div>
                 <div class="value" id="statusDisplay">
                     <span id="statusText" class="online-status unknown">
-                        <span class="dot"></span> 加载中...
+                        <span class="dot"></span> 加载中
                     </span>
                 </div>
             </div>
