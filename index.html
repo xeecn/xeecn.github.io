@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <meta name="description" content="Nalxer 粘液生存服务器 · Minecraft 1.12.2 · 地址 nalxer.top · QQ群 839126641">
 
     <style>
         * {
@@ -514,6 +515,64 @@
                 3px 3px 0 rgba(45, 184, 168, 0.4);
         }
 
+        /* ===== 守则入口 ===== */
+        .rules-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fbff;
+            border: 4px solid var(--blue-mid);
+            padding: 12px 20px;
+            margin: 4px 0 18px 0;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.08s linear;
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                5px 5px 0 rgba(147, 197, 253, 0.7);
+        }
+        .rules-link:hover {
+            background: var(--blue-bg);
+            border-color: var(--blue-dark);
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                5px 5px 0 var(--blue-mid);
+        }
+        .rules-link:active {
+            transform: translate(4px, 4px);
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                1px 1px 0 var(--blue-mid);
+        }
+        .rules-link .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .rules-link .left .icon { font-size: 22px; line-height: 1; }
+        .rules-link .left .text { display: flex; flex-direction: column; }
+        .rules-link .left .text .title {
+            color: var(--blue-dark);
+            font-size: 17px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
+            line-height: 1;
+        }
+        .rules-link .left .text .desc {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-top: 5px;
+            text-shadow: 1px 1px 0 #ffffff;
+            line-height: 1;
+        }
+        .rules-link .arrow {
+            color: var(--blue-dark);
+            font-size: 24px;
+            transition: transform 0.12s linear;
+            text-shadow: 1px 1px 0 #ffffff;
+        }
+        .rules-link:hover .arrow { transform: translateX(4px); }
+
         /* ===== 公告 ===== */
         .notice {
             margin-top: 24px;
@@ -626,6 +685,27 @@
             </div>
         </div>
 
+        <!-- 补充信息 -->
+        <div class="features">
+            <span>🧩 粘液科技</span>
+            <span>🏠 领地保护</span>
+            <span>🚪 多家园传送</span>
+            <span>💎 客户端 1.12 - 1.20.4 可进</span>
+            <span>🗺️ 地图永久保存</span>
+        </div>
+
+        <!-- 服务器守则入口 -->
+        <a href="rules.html" class="rules-link">
+            <div class="left">
+                <span class="icon">📜</span>
+                <div class="text">
+                    <span class="title">服务器守则</span>
+                    <span class="desc">六条核心规则 · 违规处理与申诉方式</span>
+                </div>
+            </div>
+            <span class="arrow">→</span>
+        </a>
+
         <!-- 赞助 -->
         <a href="pay.html" class="sponsor-card">
             <div class="left">
@@ -654,6 +734,7 @@
             同时保留原版生存、建筑与探索的乐趣。
             <br><br>
             📖 服务器守则：尊重他人 · 禁止作弊 · 和谐共建
+            &nbsp;<a href="rules.html" style="color: var(--blue-dark); text-decoration: none; text-shadow: 1px 1px 0 #ffffff;">查看完整规则 →</a>
         </div>
 
         <!-- 相册 -->
@@ -736,7 +817,7 @@
                 });
         }
 
-        function setStatusOnline(count) {
+        function setStatusOnline(count, maxCount) {
             const statusText = document.getElementById('statusText');
             statusText.className = 'online-status online';
             statusText.textContent = '';
@@ -749,6 +830,13 @@
             countEl.textContent = String(count);
             statusText.appendChild(countEl);
             statusText.appendChild(document.createTextNode(' 人'));
+            if (maxCount) {
+                statusText.appendChild(document.createTextNode(' / '));
+                const maxEl = document.createElement('span');
+                maxEl.className = 'count';
+                maxEl.textContent = String(maxCount);
+                statusText.appendChild(maxEl);
+            }
         }
 
         function setStatusOffline() {
@@ -778,7 +866,8 @@
                 .then(data => {
                     if (data && data.online) {
                         const players = data.players && data.players.online ? data.players.online : 0;
-                        setStatusOnline(players);
+                        const maxCount = data.players && data.players.max ? data.players.max : 0;
+                        setStatusOnline(players, maxCount);
                     } else {
                         setStatusOffline();
                     }
