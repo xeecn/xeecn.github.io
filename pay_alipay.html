@@ -357,12 +357,12 @@
             <div class="label">支付方式</div>
 
             <div class="pay-tabs">
-                <button class="pay-tab wechat active" data-pay="wechat" onclick="switchPay('wechat')">微信支付</button>
-                <button class="pay-tab alipay" data-pay="alipay" onclick="switchPay('alipay')">支付宝</button>
+                <button class="pay-tab wechat" data-pay="wechat" onclick="switchPay('wechat')">微信支付</button>
+                <button class="pay-tab alipay active" data-pay="alipay" onclick="switchPay('alipay')">支付宝</button>
             </div>
 
             <!-- 微信 -->
-            <div class="pay-panel active" id="panel-wechat">
+            <div class="pay-panel" id="panel-wechat">
                 <div class="method-name">微信支付 · 扫码赞助</div>
                 <div class="qr-row">
                     <div class="qr-item">
@@ -377,7 +377,7 @@
             </div>
 
             <!-- 支付宝 -->
-            <div class="pay-panel" id="panel-alipay">
+            <div class="pay-panel active" id="panel-alipay">
                 <div class="method-name">支付宝 · 扫码赞助</div>
                 <div class="qr-row">
                     <div class="qr-item">

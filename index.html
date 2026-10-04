@@ -625,6 +625,324 @@
             text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
         }
 
+
+          /* ===== 新手快速加入（三步） ===== */
+          .steps { margin-top: 22px; }
+          .steps-title {
+              color: var(--blue-dark);
+              font-size: 20px;
+              letter-spacing: 2px;
+              margin-bottom: 10px;
+              text-shadow: 1px 1px 0 #ffffff;
+          }
+          .step {
+              display: flex;
+              gap: 12px;
+              align-items: flex-start;
+              background: var(--white);
+              border: 3px solid var(--blue-soft);
+              padding: 12px 14px;
+              margin-bottom: 10px;
+              box-shadow: 4px 4px 0 rgba(219, 234, 254, 0.9);
+          }
+          .step .num {
+              flex: 0 0 30px;
+              height: 30px;
+              line-height: 30px;
+              text-align: center;
+              background: var(--blue);
+              color: #fff;
+              font-size: 20px;
+              border: 3px solid var(--blue-dark);
+              box-shadow: 2px 2px 0 rgba(37, 99, 235, 0.35);
+          }
+          .step .body { flex: 1; }
+          .step .body .t {
+              color: var(--text);
+              font-size: 19px;
+              letter-spacing: 1px;
+              display: block;
+              margin-bottom: 2px;
+          }
+          .step .body .d {
+              color: var(--text-light);
+              font-size: 13px;
+              display: block;
+          }
+          .step .body .ip {
+              display: inline-block;
+              margin-top: 6px;
+              background: var(--blue-bg);
+              border: 2px dashed var(--blue-light);
+              padding: 3px 10px;
+              color: var(--blue-dark);
+              font-size: 17px;
+              cursor: pointer;
+              user-select: none;
+          }
+          .step .body .ip:hover { background: var(--blue-soft); }
+
+          /* ===== 常用命令 ===== */
+          .cmds { margin-top: 22px; }
+          .cmds-title {
+              color: var(--blue-dark);
+              font-size: 20px;
+              letter-spacing: 2px;
+              margin-bottom: 10px;
+              text-shadow: 1px 1px 0 #ffffff;
+          }
+          .cmd-list { display: flex; flex-wrap: wrap; gap: 8px; }
+          .cmd {
+              background: var(--white);
+              border: 3px solid var(--blue-soft);
+              padding: 6px 12px;
+              font-size: 14px;
+              color: var(--text);
+              box-shadow: 3px 3px 0 rgba(219, 234, 254, 0.9);
+              cursor: pointer;
+              user-select: none;
+              transition: transform .08s;
+          }
+          .cmd:hover { border-color: var(--blue-light); transform: translate(-1px, -1px); }
+          .cmd:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(219, 234, 254, 0.9); }
+          .cmd code { color: var(--blue-dark); font-weight: bold; }
+          .cmd .cn { color: var(--text-light); font-size: 12px; margin-left: 6px; }
+
+          /* ===== 加入我们 ===== */
+          .join { margin-top: 22px; }
+          .join-title {
+              color: var(--blue-dark);
+              font-size: 20px;
+              letter-spacing: 2px;
+              margin-bottom: 10px;
+              text-shadow: 1px 1px 0 #ffffff;
+          }
+          .join-row {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              background: var(--white);
+              border: 3px solid var(--blue-soft);
+              padding: 12px 14px;
+              margin-bottom: 8px;
+              box-shadow: 4px 4px 0 rgba(219, 234, 254, 0.9);
+          }
+          .join-row .k { color: var(--text-light); font-size: 14px; flex: 0 0 96px; }
+          .join-row .v { flex: 1; color: var(--text); font-size: 18px; letter-spacing: 1px; }
+          .join-row .v.gold { color: var(--gold-dark); }
+          .join-row .v.blue { color: var(--blue-dark); }
+          .join-row .act {
+              flex: 0 0 auto;
+              background: var(--blue-bg);
+              border: 2px solid var(--blue-light);
+              color: var(--blue-dark);
+              padding: 4px 10px;
+              font-size: 13px;
+              cursor: pointer;
+              user-select: none;
+          }
+          .join-row .act:hover { background: var(--blue-soft); }
+          .join-row.owner .v { font-size: 16px; }
+          .join-row .avatar {
+              width: 40px; height: 40px;
+              border: 3px solid var(--blue-soft);
+              image-rendering: pixelated;
+              object-fit: cover;
+          }
+
+          /* ===== 游戏内规则（分组） ===== */
+          .rules { margin-top: 22px; }
+          .rules-title {
+              color: var(--blue-dark);
+              font-size: 20px;
+              letter-spacing: 2px;
+              margin-bottom: 10px;
+              text-shadow: 1px 1px 0 #ffffff;
+          }
+          .law-note {
+              background: #fff7e6;
+              border: 3px solid #f5d08a;
+              color: var(--gold-dark);
+              padding: 10px 14px;
+              font-size: 15px;
+              margin-bottom: 10px;
+              box-shadow: 4px 4px 0 rgba(245, 208, 138, 0.5);
+          }
+          .rule-group {
+              background: var(--white);
+              border: 3px solid var(--blue-soft);
+              margin-bottom: 8px;
+              box-shadow: 4px 4px 0 rgba(219, 234, 254, 0.9);
+          }
+          .rule-group .head {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 11px 14px;
+              cursor: pointer;
+              user-select: none;
+          }
+          .rule-group .head:hover { background: var(--blue-bg); }
+          .rule-group .head .lvl { font-size: 18px; letter-spacing: 2px; }
+          .rule-group .head .lvl.light  { color: var(--grass-dark); }
+          .rule-group .head .lvl.mid    { color: var(--gold-dark); }
+          .rule-group .head .lvl.heavy  { color: var(--redstone); }
+          .rule-group .head .tip { color: var(--text-light); font-size: 14px; }
+          .rule-group .head .arrow {
+              color: var(--blue-light);
+              font-size: 18px;
+              transition: transform .15s;
+          }
+          .rule-group.open .head .arrow { transform: rotate(90deg); }
+          /* 折叠动画：display 不能过渡，所以用 max-height + opacity */
+          .rule-group .items {
+              max-height: 0;
+              overflow: hidden;
+              opacity: 0;
+              padding: 0 16px;
+              border-top: 3px dashed transparent;
+              transition: max-height .34s cubic-bezier(.4, 0, .2, 1),
+                          opacity .26s ease,
+                          padding .34s cubic-bezier(.4, 0, .2, 1),
+                          border-color .34s ease;
+          }
+          .rule-group.open .items {
+              max-height: 1200px;   /* 足够容纳最长那组（重度 8 条 + 说明） */
+              opacity: 1;
+              padding: 10px 16px 12px;
+              border-top-color: var(--blue-soft);
+          }
+          /* 箭头旋转也给个动画，开合时更自然 */
+          .rule-group .head { transition: background .18s ease; }
+          .rule-group .items ol { padding-left: 22px; }
+          .rule-group .items li {
+              color: var(--text);
+              font-size: 14px;
+              line-height: 1.9;
+          }
+          .rule-group .items .ban {
+              margin-top: 8px;
+              color: var(--redstone);
+              font-size: 14px;
+          }
+          .rule-foot {
+              margin-top: 10px;
+              text-align: center;
+              font-size: 14px;
+              line-height: 2;
+          }
+          .rule-foot .warn { color: var(--amethyst-dark); }
+          .rule-foot .bless { color: var(--grass-dark); }
+
+          /* ===== 音乐播放器（右下角） ===== */
+          .music-box {
+              position: fixed;
+              right: 18px;
+              bottom: 18px;
+              z-index: 999;
+              display: flex;
+              gap: 6px;
+          }
+          .music-btn {
+              width: 44px; height: 44px;
+              background: var(--white);
+              border: 3px solid var(--blue);
+              color: var(--blue-dark);
+              font-size: 20px;
+              line-height: 1;
+              cursor: pointer;
+              box-shadow: 3px 3px 0 rgba(59, 130, 246, 0.35);
+              font-family: var(--pixel-font);
+          }
+          .music-btn:hover { background: var(--blue-bg); }
+          .music-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(59, 130, 246, 0.35); }
+          .music-btn.playing { background: var(--grass); border-color: var(--grass-dark); color: #fff; }
+          .music-btn.next { border-color: var(--amethyst); color: var(--amethyst-dark); }
+          .music-btn.next:hover { background: #f6efff; }
+
+
+          /* ===== 新增卡片的 hover 浮起（与 .info-card 同一套观感）=====
+             之前 .step / .join-row / .rule-group 都没有 hover 反馈，
+             鼠标移上去只有 .cmd 会动，看起来像坏了一半。 */
+          .step {
+              transition: all 0.12s linear;
+          }
+          .step:hover {
+              transform: translate(-2px, -2px);
+              border-color: var(--blue-light);
+              box-shadow:
+                  inset 2px 2px 0 #ffffff,
+                  7px 7px 0 rgba(147, 197, 253, 0.7);
+          }
+
+          .join-row {
+              transition: all 0.12s linear;
+          }
+          .join-row:hover {
+              transform: translate(-2px, -2px);
+              border-color: var(--blue-light);
+              box-shadow:
+                  inset 2px 2px 0 #ffffff,
+                  7px 7px 0 rgba(147, 197, 253, 0.7);
+          }
+
+          .rule-group {
+              transition: all 0.12s linear;
+          }
+          .rule-group:hover {
+              transform: translate(-2px, -2px);
+              border-color: var(--blue-light);
+              box-shadow:
+                  inset 2px 2px 0 #ffffff,
+                  7px 7px 0 rgba(147, 197, 253, 0.7);
+          }
+
+          /* 步骤里的"点击复制"地址块也一起浮 */
+          .step .body .ip {
+              transition: all 0.12s linear;
+          }
+          .step .body .ip:hover {
+              transform: translate(-2px, -2px);
+              box-shadow: 3px 3px 0 rgba(147, 197, 253, 0.7);
+          }
+
+          /* 加入我们的"按钮"保持按压感，但给个颜色变化 */
+          .join-row .act {
+              transition: all 0.12s linear;
+          }
+          .join-row .act:hover {
+              transform: translate(-1px, -1px);
+              box-shadow: 2px 2px 0 rgba(147, 197, 253, 0.7);
+          }
+          .join-row .act:active {
+              transform: translate(1px, 1px);
+              box-shadow: none;
+          }
+
+          /* ===== 轻提示 ===== */
+          .toast {
+              position: fixed;
+              left: 50%;
+              bottom: 84px;
+              transform: translateX(-50%);
+              background: var(--text);
+              color: #fff;
+              padding: 8px 16px;
+              font-size: 14px;
+              letter-spacing: 1px;
+              z-index: 1000;
+              opacity: 0;
+              pointer-events: none;
+              transition: opacity .18s;
+              box-shadow: 3px 3px 0 rgba(30, 41, 59, 0.3);
+          }
+          .toast.show { opacity: 1; }
+
+          @media (max-width: 700px) {
+              .join-row .k { flex: 0 0 72px; font-size: 13px; }
+              .join-row .v { font-size: 16px; }
+          }
+
         /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             .container { padding: 26px 18px; }
@@ -752,6 +1070,169 @@
             </div>
         </div>
 
+
+          <!-- 新手快速加入 -->
+          <div class="steps">
+              <div class="steps-title">🚀 新手快速加入</div>
+
+              <div class="step">
+                  <div class="num">1</div>
+                  <div class="body">
+                      <span class="t">打开 Minecraft 1.12.2 客户端</span>
+                      <span class="d">推荐 1.12.2 版本；兼容 1.12 ~ 1.20.4 客户端进入</span>
+                  </div>
+              </div>
+
+              <div class="step">
+                  <div class="num">2</div>
+                  <div class="body">
+                      <span class="t">添加服务器</span>
+                      <span class="d">点击「多人游戏」→「添加服务器」，在地址栏填入：</span>
+                      <span class="ip" onclick="copyIP()">📋 nalxer.top（点击复制）</span>
+                  </div>
+              </div>
+
+              <div class="step">
+                  <div class="num">3</div>
+                  <div class="body">
+                      <span class="t">进入服务器开始冒险</span>
+                      <span class="d">双击服务器列表中的 Nalxer，即可进入游戏开始生存之旅</span>
+                  </div>
+              </div>
+          </div>
+
+          <!-- 常用命令 -->
+          <div class="cmds">
+              <div class="cmds-title">⌨️ 常用命令</div>
+              <div class="cmd-list">
+                  <div class="cmd" onclick="copyCmd('/spawn')"><code>/spawn</code><span class="cn">回出生点</span></div>
+                  <div class="cmd" onclick="copyCmd('/home')"><code>/home</code><span class="cn">回家</span></div>
+                  <div class="cmd" onclick="copyCmd('/sethome')"><code>/sethome</code><span class="cn">设置家</span></div>
+                  <div class="cmd" onclick="copyCmd('/menu')"><code>/menu</code><span class="cn">打开菜单</span></div>
+                  <div class="cmd" onclick="copyCmd('/tpa')"><code>/tpa 玩家名</code><span class="cn">传送请求</span></div>
+                  <div class="cmd" onclick="copyCmd('/warp')"><code>/warp 地点</code><span class="cn">传送到地标</span></div>
+                  <div class="cmd" onclick="copyCmd('/money')"><code>/money</code><span class="cn">查余额</span></div>
+                  <div class="cmd" onclick="copyCmd('/help')"><code>/help</code><span class="cn">帮助</span></div>
+              </div>
+          </div>
+
+          <!-- 加入我们 -->
+          <div class="join">
+              <div class="join-title">💬 加入我们</div>
+
+              <div class="join-row">
+                  <span class="k">服务器地址</span>
+                  <span class="v blue">nalxer.top</span>
+                  <span class="act" onclick="copyIP()">点击复制</span>
+              </div>
+
+              <div class="join-row">
+                  <span class="k">QQ 交流群</span>
+                  <span class="v gold">839126641</span>
+                  <span class="act" onclick="copyText('839126641','QQ群号')">点击复制</span>
+              </div>
+
+              <div class="join-row owner">
+                  <span class="k">服主</span>
+                  <img class="avatar" src="avatar1.jpg" alt="服主 fs1">
+                  <span class="v">fs1 <span style="color:var(--text-light);font-size:14px;">2913264323</span></span>
+                  <span class="act" onclick="copyText('2913264323','fs1 的 QQ')">查看</span>
+              </div>
+
+              <div class="join-row owner">
+                  <span class="k">服主</span>
+                  <img class="avatar" src="avatar2.jpg" alt="服主 Windows Defender">
+                  <span class="v">Windows Defender <span style="color:var(--text-light);font-size:14px;">2703441387</span></span>
+                  <span class="act" onclick="copyText('2703441387','Windows Defender 的 QQ')">查看</span>
+              </div>
+
+              <div class="join-row">
+                  <span class="k">客户端兼容</span>
+                  <span class="v">1.12 — 1.20.4</span>
+              </div>
+
+              <div class="join-row">
+                  <span class="k">游戏模式</span>
+                  <span class="v">生存 / 粘液科技</span>
+              </div>
+          </div>
+
+          <!-- 游戏内规则 -->
+          <div class="rules">
+              <div class="rules-title">📜 游戏内规则 <span style="font-size:13px;color:var(--text-light);">— Linux 编辑</span></div>
+
+              <div class="law-note">⚖️ 请遵守中华人民共和国宪法、刑法等法律</div>
+
+              <div class="rule-group" onclick="toggleRule(this)">
+                  <div class="head">
+                      <span><span class="lvl light">轻度</span> <span class="tip">违反封禁 1-7 天</span></span>
+                      <span class="arrow">▶</span>
+                  </div>
+                  <div class="items">
+                      <ol>
+                          <li>禁止盗窃其他玩家物品</li>
+                          <li>禁止一直击杀其他玩家（PVP 等除外）</li>
+                          <li>禁止损坏服务器主城周围地形</li>
+                      </ol>
+                      <div class="ban">以上条例违反封禁 1-7 天不等</div>
+                  </div>
+              </div>
+
+              <div class="rule-group" onclick="toggleRule(this)">
+                  <div class="head">
+                      <span><span class="lvl mid">中度</span> <span class="tip">违反封禁 7-30 天</span></span>
+                      <span class="arrow">▶</span>
+                  </div>
+                  <div class="items">
+                      <ol start="4">
+                          <li>禁止毁坏玩家建筑</li>
+                          <li>禁止毁坏公共建筑</li>
+                          <li>禁止使用 TNT 等毁坏服务器地形</li>
+                          <li>禁止在其他玩家建筑物中使用幸运方块</li>
+                          <li>禁止盗取服务器地图画</li>
+                          <li>禁止持有违规道具（如 32k）</li>
+                          <li>禁止大量刷珍贵物品刷货币</li>
+                          <li>请尊重其他玩家领地，禁止毁坏其他玩家的领地</li>
+                      </ol>
+                      <div class="ban">以上条例违反封禁 7-30 天不等</div>
+                  </div>
+              </div>
+
+              <div class="rule-group" onclick="toggleRule(this)">
+                  <div class="head">
+                      <span><span class="lvl heavy">重度</span> <span class="tip">违反封禁 30 天-永久（ID+IP）</span></span>
+                      <span class="arrow">▶</span>
+                  </div>
+                  <div class="items">
+                      <ol start="12">
+                          <li>非 OP 持有命令方块，且拒不归还</li>
+                          <li>使用一系列手段攻击服务器</li>
+                          <li>制造大型卡服机、禁人塔等</li>
+                          <li>盗取服务器 OP 权限</li>
+                          <li>绕过服务器登录、服务器领地插件限制</li>
+                          <li>盗取他人账号</li>
+                          <li>使用外挂</li>
+                          <li>其他违规行为，且态度恶劣，拒不改正</li>
+                      </ol>
+                      <div class="ban">以上条例封禁 30 天 - 永久（ID+IP 封禁）</div>
+                      <div class="ban">★ 第 12-18 条一旦触犯，直接永久封禁（ID+IP 封禁）</div>
+                  </div>
+              </div>
+
+              <div class="rule-foot">
+                  <span class="warn"># 此规则对 fs1 可能无效！！！</span><br>
+                  <span class="bless">祝愿正常玩家玩得开心！！！</span>
+              </div>
+          </div>
+
+          <!-- 音乐播放器 -->
+          <div class="music-box">
+              <button class="music-btn" id="musicBtn" title="音乐开关"><span id="musicIcon">♪</span></button>
+              <button class="music-btn next" id="nextBtn" title="切下一首">»</button>
+          </div>
+          <div class="toast" id="toast"></div>
+          <video id="bgMusic" loop playsinline style="width:1px;height:1px;opacity:0;position:fixed;bottom:0;left:0;pointer-events:none;"></video>
+
         <!-- 公告 -->
         <div class="notice">
             <div class="notice-title">📢 服务器公告</div>
@@ -876,6 +1357,113 @@
                     setStatusUnknown();
                 });
         }
+
+
+          /* ---------- 轻提示 ---------- */
+          let toastTimer = null;
+          function toast(msg) {
+              const el = document.getElementById('toast');
+              if (!el) return;
+              el.textContent = msg;
+              el.classList.add('show');
+              clearTimeout(toastTimer);
+              toastTimer = setTimeout(() => el.classList.remove('show'), 1600);
+          }
+
+          /* ---------- 复制文本（通用） ---------- */
+          function copyText(text, label) {
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(text)
+                      .then(() => toast('已复制' + (label ? ' ' + label : '') + '：' + text))
+                      .catch(() => fallbackCopyText(text, label));
+              } else {
+                  fallbackCopyText(text, label);
+              }
+          }
+          function fallbackCopyText(text, label) {
+              const ta = document.createElement('textarea');
+              ta.value = text;
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand('copy'); } catch (e) {}
+              document.body.removeChild(ta);
+              toast('已复制' + (label ? ' ' + label : '') + '：' + text);
+          }
+          function copyCmd(cmd) { copyText(cmd, '命令'); }
+
+          /* ---------- 规则分组折叠 ---------- */
+          function toggleRule(el) {
+              if (!el) return;
+              el.classList.toggle('open');
+          }
+          // ★ 默认全部收起（服主要求不再默认展开"轻度"）
+
+          /* ---------- 多首背景音乐（用视频文件当音源） ---------- */
+          // ★ 为什么用 <video> 而不是 <audio>：
+          //   音源文件是 .mp4，audio 标签在部分浏览器不认 mp4 容器，
+          //   而 video 标签能只播声音（元素尺寸设成 1px 且 opacity:0）。
+          //   这也是 nalxer官网 的做法，保持一致方便以后换曲子。
+          const playlist = [
+              { file: 'bgm1.mp4', name: '第一首 BGM' },
+              { file: 'bgm2.mp4', name: '第二首 BGM' },
+              { file: 'bgm3.mp4', name: '第三首 BGM' },
+          ];
+          let currentTrack = 0;
+          let musicPlaying = false;
+          const bgMusic   = document.getElementById('bgMusic');
+          const musicBtn  = document.getElementById('musicBtn');
+          const musicIcon = document.getElementById('musicIcon');
+          const nextBtn   = document.getElementById('nextBtn');
+          let musicReady = false;
+
+          function loadTrack(i) {
+              currentTrack = ((i % playlist.length) + playlist.length) % playlist.length;
+              bgMusic.src = playlist[currentTrack].file;
+              bgMusic.load();
+          }
+          function playMusic() {
+              bgMusic.play().then(() => {
+                  musicPlaying = true;
+                  musicBtn.classList.add('playing');
+                  musicIcon.textContent = '♫';
+              }).catch(() => {
+                  musicPlaying = false;
+                  musicBtn.classList.remove('playing');
+                  musicIcon.textContent = '♪';
+                  toast('音乐需要先点击页面一次才能播放');
+              });
+          }
+          function stopMusic() {
+              bgMusic.pause();
+              musicPlaying = false;
+              musicBtn.classList.remove('playing');
+              musicIcon.textContent = '♪';
+          }
+          if (bgMusic) {
+              musicBtn.onclick = function () {
+                  if (musicPlaying) { stopMusic(); toast('音乐已暂停'); }
+                  else { playMusic(); }
+              };
+              nextBtn.onclick = function () {
+                  loadTrack(currentTrack + 1);
+                  if (musicPlaying) { playMusic(); }
+                  else { toast('已切换到：' + playlist[currentTrack].name); }
+              };
+              // 一首播完自动下一首
+              bgMusic.addEventListener('ended', function () {
+                  loadTrack(currentTrack + 1);
+                  playMusic();
+              });
+              // 手机上滑屏/切后台容易把音乐断掉，这里自动续上
+              bgMusic.addEventListener('pause', function () {
+                  if (musicPlaying) bgMusic.play().catch(() => {});
+              });
+              loadTrack(0);
+              musicReady = true;
+          }
+
 
         loadNotice();
         fetchServerStatus();
