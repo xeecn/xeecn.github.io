@@ -1,0 +1,815 @@
+/* ==========================================================================
+   Nalxer · 版式（只管布局，不碰玻璃）
+   ==========================================================================
+   分工说明
+     liquid-glass.css  负责"玻璃长什么样"（折射、受光边、底色、文字）
+     layout.css        负责"东西摆在哪"（栅格、间距、对齐、响应式）
+
+   为什么之前页面塌了：把旧的三个样式表一起摘掉时，
+   连里面的**栅格与排版**也一起摘了 —— 那些规则和模糊无关，
+   是页面骨架。这里把它们按同样思路重建，且不含任何背景/模糊，
+   所以不会再和玻璃层打架。
+
+   参考设计：i.dmego.cn —— 居中封面、内容收窄、块间距大而均匀。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 基础
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+        'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 64px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, .header h1, .panel-title {
+    font-family: 'Jersey 10', -apple-system, BlinkMacSystemFont,
+        'PingFang SC', 'Microsoft YaHei', sans-serif;
+    letter-spacing: 0.02em;
+}
+
+a { text-decoration: none; }
+
+img { max-width: 100%; height: auto; }
+
+/* 收窄正文栏 —— 铺满 1200px 会显散 */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.main-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   2. 首屏封面
+   -------------------------------------------------------------------------- */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 72px 32px 56px;
+    margin: 0 0 20px;
+}
+
+.header h1 {
+    font-size: clamp(52px, 10vw, 84px);
+    line-height: 1;
+    margin: 0 0 14px;
+}
+
+.header .subtitle {
+    font-size: clamp(15px, 2.4vw, 19px);
+    letter-spacing: 0.14em;
+    margin: 0 0 22px;
+}
+
+/* 细分隔线 */
+.header .subtitle::after {
+    content: '';
+    display: block;
+    width: 72px;
+    height: 1px;
+    margin: 22px auto 0;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(15, 25, 35, 0.32) 50%,
+            rgba(255, 255, 255, 0) 100%);
+}
+
+.header .version {
+    display: inline-block;
+    padding: 8px 20px;
+    margin: 0;
+    font-size: 13.5px;
+    letter-spacing: 0.08em;
+}
+
+/* 圆形徽标：从 HTML 里已有的 rules-link 图标借形状不合适，
+   这里用 cover-avatar 这个可选元素；没有就只靠留白。 */
+.cover-avatar,
+.header .avatar {
+    display: grid;
+    place-items: center;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 26px;
+    border-radius: 50%;
+}
+
+/* --------------------------------------------------------------------------
+   3. 复制服务器地址
+   -------------------------------------------------------------------------- */
+.copy-ip-wrap { margin: 0 0 20px; }
+
+.copy-ip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 24px 26px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.copy-ip > span:first-child {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: clamp(20px, 3.6vw, 27px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+}
+
+.copy-ip .hint {
+    padding: 3px 12px;
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   4. 信息网格（四格）
+   -------------------------------------------------------------------------- */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 0 0 20px;
+}
+
+.info-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 22px 14px;
+    text-align: center;
+    min-height: 96px;
+}
+
+.info-card .label {
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+}
+
+.info-card .value {
+    font-size: clamp(15px, 2vw, 18px);
+    font-weight: 600;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.online-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.online-status .dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #b8860b;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+}
+
+.online-status.online .dot { background: #2ea043; }
+.online-status.offline .dot { background: #c0392b; }
+
+/* --------------------------------------------------------------------------
+   5. 特性标签行
+   -------------------------------------------------------------------------- */
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    padding: 16px;
+    margin: 0 0 18px;
+}
+
+.features > span {
+    display: inline-block;
+    padding: 7px 15px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   6. 入口卡片
+   -------------------------------------------------------------------------- */
+.rules-link,
+.sponsor-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 26px;
+    margin: 0 0 14px;
+    cursor: pointer;
+}
+
+.rules-link .left,
+.sponsor-card .left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.rules-link .icon,
+.sponsor-card .icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+    line-height: 1;
+    border-radius: 14px;
+}
+
+.rules-link .text,
+.sponsor-card .text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.rules-link .title,
+.sponsor-card .title {
+    font-size: 17.5px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.rules-link .desc,
+.sponsor-card .desc {
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.rules-link .arrow,
+.sponsor-card .arrow {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+    line-height: 1;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.rules-link:hover .arrow,
+.sponsor-card:hover .arrow { transform: translateX(3px); }
+
+/* --------------------------------------------------------------------------
+   7. 描述块
+   -------------------------------------------------------------------------- */
+.description {
+    padding: 26px 30px;
+    margin: 0 0 18px;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.description .welcome {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.description br { line-height: 2; }
+
+/* --------------------------------------------------------------------------
+   8. 相册
+   -------------------------------------------------------------------------- */
+.gallery {
+    padding: 26px 30px;
+    margin: 0 0 18px;
+}
+
+.gallery-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.gallery-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.gallery-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 12.5px;
+}
+
+.gallery-item {
+    overflow: hidden;
+}
+
+.gallery-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.gallery-item .caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+}
+
+/* --------------------------------------------------------------------------
+   9. 步骤 / 命令 / 加入我们
+   -------------------------------------------------------------------------- */
+.steps,
+.cmds,
+.join {
+    padding: 26px 30px;
+    margin: 0 0 18px;
+}
+
+.steps-title,
+.cmds-title,
+.join-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+/* 步骤 */
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+}
+
+.step:last-child { margin-bottom: 0; }
+
+.step .num {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    border-radius: 50%;
+    background: linear-gradient(155deg, #6d9dc4, #35618a);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55),
+                0 4px 12px rgba(31, 58, 82, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.step .body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.step .t { font-size: 15.5px; font-weight: 600; line-height: 1.5; }
+.step .d { font-size: 13.5px; line-height: 1.7; }
+
+.step .ip {
+    display: inline-block;
+    width: fit-content;
+    padding: 7px 16px;
+    margin-top: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13.5px;
+    cursor: pointer;
+}
+
+/* 命令：两列 */
+.cmd-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.cmd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+}
+
+.cmd code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+    background: transparent;
+    padding: 0;
+}
+
+.cmd .cn { font-size: 12.5px; white-space: nowrap; }
+
+/* 加入我们 */
+.join-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 15px 18px;
+    margin-bottom: 10px;
+}
+
+.join-row:last-child { margin-bottom: 0; }
+
+.join-row .k { flex: 1 1 110px; font-size: 13.5px; }
+.join-row .v { flex: 1 1 auto; font-size: 15px; font-weight: 600; word-break: break-all; }
+
+.join-row .act {
+    flex: 0 0 auto;
+    padding: 6px 16px;
+    font-size: 12.5px;
+    cursor: pointer;
+}
+
+.join-row .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+/* --------------------------------------------------------------------------
+   10. 返回链接 / 页脚
+   -------------------------------------------------------------------------- */
+.back-link,
+.bottom-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.bottom-back {
+    margin: 26px auto 6px;
+}
+
+.footer {
+    padding: 24px 22px;
+    margin-top: 6px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   11. 内页通用：区块 / 卡片 / 表格
+   -------------------------------------------------------------------------- */
+.category { padding: 26px 28px; margin-bottom: 18px; }
+
+.category h2 {
+    font-size: 20px;
+    font-weight: 700;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.project-list,
+.business-list,
+.tools-grid,
+.featured-grid,
+.tool-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+}
+
+.project-card,
+.tool-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 22px;
+}
+
+.project-card h3,
+.tool-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.project-card p,
+.tool-card p {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.project-card ul { padding-left: 20px; }
+.project-card li { font-size: 13.5px; margin-bottom: 5px; }
+
+.project-card .link-btn,
+.tool-card .link-btn {
+    align-self: flex-start;
+    padding: 10px 18px;
+    margin-top: auto;
+    font-size: 13.5px;
+    cursor: pointer;
+}
+
+.tool-icon { font-size: 22px; margin-bottom: 8px; }
+.tool-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.tool-categories,
+.category-btn,
+.tool-btn {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-btn,
+.tool-btn {
+    padding: 9px 18px;
+    font-size: 13.5px;
+    cursor: pointer;
+}
+
+/* 规则页 */
+.rule-list { display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+
+.rule { padding: 20px 24px; }
+
+.rule .num {
+    display: inline-block;
+    min-width: 26px;
+    font-weight: 700;
+}
+
+.rule .detail { margin-top: 6px; font-size: 14px; }
+
+.rule-foot,
+.law-note,
+.tip,
+.tip-info,
+.tip-warn,
+.tip-grass {
+    padding: 18px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.section-title,
+.lvl-title,
+.payment-title,
+.featured-title,
+.rules-title {
+    font-size: 19px;
+    font-weight: 700;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+/* 表格 */
+.penalty-table { padding: 16px; margin: 18px 0; overflow-x: auto; }
+
+.penalty-table table,
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+th, td {
+    padding: 13px 16px;
+    font-size: 14px;
+    text-align: left;
+    vertical-align: top;
+}
+
+/* 支付页 */
+.pay-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.pay-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    font-size: 14.5px;
+    cursor: pointer;
+}
+
+.pay-panel,
+.payment-section,
+.qr-section { padding: 24px; margin: 18px 0; }
+
+.payment-code-container,
+.payment-code { padding: 20px; text-align: center; }
+
+.qr-row,
+.qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 18px;
+}
+
+.qr-image img,
+.qr-item img,
+.payment-code img {
+    display: block;
+    width: min(260px, 72vw);
+    height: auto;
+}
+
+.qr-section .method-name { font-size: 15px; font-weight: 600; }
+
+.notice { padding: 18px 20px; margin: 20px 0; }
+.notice-title { font-weight: 700; margin-bottom: 6px; }
+.notice-content { font-size: 14px; line-height: 1.8; }
+
+.music-box { display: flex; align-items: center; gap: 12px; padding: 14px 18px; margin: 18px 0; }
+
+.music-btn {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* 轻提示 */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 34px;
+    transform: translate(-50%, 20px);
+    padding: 12px 22px;
+    font-size: 14px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 999;
+}
+
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.empty { padding: 28px; text-align: center; font-size: 14px; }
+
+/* 表单控件 */
+input, textarea, select, button {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 11px 16px;
+    outline: none;
+    border: none;
+}
+
+button { cursor: pointer; }
+
+/* --------------------------------------------------------------------------
+   12. 响应式
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    body { padding: 20px 12px 44px; }
+
+    .header { padding: 52px 22px 44px; }
+    .header h1 { font-size: clamp(40px, 13vw, 60px); }
+    .header .subtitle { letter-spacing: 0.08em; }
+
+    /* 四格 → 两格 */
+    .info-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .cmd-list { grid-template-columns: 1fr; }
+
+    .description,
+    .gallery,
+    .steps,
+    .cmds,
+    .join { padding: 22px 20px; }
+
+    .copy-ip { padding: 20px 18px; }
+
+    .project-list,
+    .business-list,
+    .tools-grid,
+    .featured-grid { grid-template-columns: 1fr; }
+
+    /* 长内容不许撑破 */
+    code, .ip, .cmd code, .join-row .v { word-break: break-word; }
+}
+
+@media (max-width: 480px) {
+    body { padding: 14px 8px 36px; }
+
+    .header { padding: 44px 16px 36px; }
+    .header .subtitle { font-size: 13.5px; letter-spacing: 0.04em; }
+
+    .info-grid { gap: 10px; }
+    .info-card { padding: 16px 10px; min-height: 84px; }
+
+    .rules-link,
+    .sponsor-card { padding: 18px; gap: 12px; }
+
+    .rules-link .icon,
+    .sponsor-card .icon { width: 40px; height: 40px; font-size: 19px; }
+
+    .rules-link .arrow,
+    .sponsor-card .arrow { width: 30px; height: 30px; font-size: 15px; }
+
+    .features > span { padding: 6px 12px; font-size: 12.5px; }
+
+    .description,
+    .gallery,
+    .steps,
+    .cmds,
+    .join { padding: 20px 16px; }
+
+    .cmd { padding: 12px 14px; }
+
+    .join-row { padding: 13px 14px; gap: 8px; }
+    .join-row .k { flex: 1 1 100%; }
+    .join-row .act { padding: 5px 13px; }
+
+    .qr-image img,
+    .qr-item img { width: min(220px, 78vw); }
+
+    .gallery-item .caption { flex-direction: column; align-items: flex-start; }
+}

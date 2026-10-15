@@ -1,0 +1,636 @@
+/* ==========================================================================
+   Nalxer · 液态玻璃（真折射 · 重写版）
+   ==========================================================================
+   这一版把之前 glass.css / glass-tune.css / glass-layout.css 里的
+   模糊与底色**全部推翻**，只保留一份权威定义。
+
+   ★ 为什么不是高斯模糊
+     磨砂（blur）只是把背景糊掉，玻璃没有"形体"。
+     液态玻璃的关键是**边缘折射**：玻璃有一圈厚边，
+     透过边缘看背景会被掰弯、拉伸，并带一点色散。
+     实现：SVG feDisplacementMap 当"厚度场"，
+          再挂到 backdrop-filter: url(#...) 上。
+
+   ★ 为什么背景要换
+     原来的 bg.jpg 是 Minecraft 截图：对比极强、细节极碎。
+     透过折射玻璃看这种图，会变成一片彩色噪点，字完全读不出来。
+     液态玻璃要好看，背景必须是**低对比、大色块**的。
+     所以这里改用一组柔和渐变（并保留 bg.jpg 作为很淡的一层纹理）。
+
+   ★ 层次（从下到上）
+       0  壁纸（柔和大色块）
+       1  玻璃位移层  backdrop-filter: url(#liquid-glass)
+       2  极淡的表面底色 rgba(255,255,255,0.10)
+       3  受光边      1px masked-border，上亮下暗
+       4  斜向高光
+       5  内容
+   ========================================================================== */
+
+/* ==========================================================================
+   1. 壁纸：低对比大色块（这是玻璃好看的前提）
+   ========================================================================== */
+html { background: #0a1118; }
+
+body {
+    background-color: #0a1118;
+    background-image:
+        /* 柔和的色块，给玻璃"可折的东西" */
+        radial-gradient(88% 62% at 14% 6%, rgba(96, 142, 184, 0.55), transparent 62%),
+        radial-gradient(76% 58% at 88% 12%, rgba(132, 104, 178, 0.46), transparent 64%),
+        radial-gradient(96% 70% at 78% 92%, rgba(58, 124, 116, 0.44), transparent 66%),
+        radial-gradient(70% 54% at 22% 88%, rgba(176, 132, 96, 0.34), transparent 68%),
+        /* 壁纸本身只留很淡的一层纹理，不再当主角 */
+        linear-gradient(rgba(9, 15, 21, 0.74), rgba(9, 15, 21, 0.80)),
+        url('bg.jpg'),
+        /* 最底：深色兜底渐变 */
+        linear-gradient(160deg, #0d1620 0%, #0a1118 60%, #0c141c 100%);
+    background-size: auto, auto, auto, auto, cover, cover, cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #10161c;
+}
+
+/* ==========================================================================
+   2. 玻璃主体
+   ========================================================================== */
+.lg,
+.header,
+.copy-ip,
+.info-card,
+.features,
+.rules-link,
+.sponsor-card,
+.description,
+.gallery,
+.steps,
+.cmds,
+.join,
+.footer,
+.category,
+.project-card,
+.tool-card,
+.pay-panel,
+.qr-section,
+.payment-section,
+.rule,
+.notice,
+.tip,
+.tip-info,
+.tip-warn,
+.rule-foot,
+.law-note,
+.music-box,
+.gallery-item,
+.penalty-table,
+.business-card,
+.about-card,
+.featured-card,
+.payment-code-container {
+    position: relative;
+    isolation: isolate;
+    border: none;
+    border-radius: 22px;
+
+    /* 表面极淡：折射才是主角 */
+    background-color: rgba(255, 255, 255, 0.10);
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.13) 0%,
+            rgba(255, 255, 255, 0.02) 40%,
+            rgba(255, 255, 255, 0.00) 62%,
+            rgba(255, 255, 255, 0.06) 100%);
+
+    box-shadow:
+        0 20px 56px rgba(6, 12, 18, 0.26),
+        0 6px 18px rgba(6, 12, 18, 0.14);
+
+    transition: box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.35s ease,
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 兜底（Safari / Firefox 不认 backdrop-filter 里的 url()）：受光边 + 磨砂 */
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    .lg,
+    .header,
+    .copy-ip,
+    .info-card,
+    .features,
+    .rules-link,
+    .sponsor-card,
+    .description,
+    .gallery,
+    .steps,
+    .cmds,
+    .join,
+    .footer,
+    .category,
+    .project-card,
+    .tool-card,
+    .pay-panel,
+    .qr-section,
+    .payment-section,
+    .rule,
+    .notice,
+    .tip,
+    .tip-info,
+    .tip-warn,
+    .rule-foot,
+    .law-note,
+    .music-box,
+    .gallery-item,
+    .penalty-table,
+    .business-card,
+    .about-card,
+    .featured-card,
+    .payment-code-container {
+        -webkit-backdrop-filter: blur(16px) saturate(170%);
+        backdrop-filter: blur(16px) saturate(170%);
+        background-color: rgba(255, 255, 255, 0.26);
+    }
+}
+
+/* ★ Chromium：真折射。顺序必须是"先位移、后微糊"，反了就把弯折抹平了 */
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .lg,
+    .header,
+    .copy-ip,
+    .info-card,
+    .features,
+    .rules-link,
+    .sponsor-card,
+    .description,
+    .gallery,
+    .steps,
+    .cmds,
+    .join,
+    .footer,
+    .category,
+    .project-card,
+    .tool-card,
+    .pay-panel,
+    .qr-section,
+    .payment-section,
+    .rule,
+    .notice,
+    .tip,
+    .tip-info,
+    .tip-warn,
+    .rule-foot,
+    .law-note,
+    .music-box,
+    .gallery-item,
+    .penalty-table,
+    .business-card,
+    .about-card,
+    .featured-card,
+    .payment-code-container {
+        backdrop-filter: url(#liquid-glass) blur(6px) saturate(1.35) brightness(1.05);
+    }
+
+    /* 首屏封面：玻璃更厚（折射更强），看起来是块"厚玻璃板" */
+    .header {
+        backdrop-filter: url(#liquid-glass-thick) blur(9px) saturate(1.35) brightness(1.06);
+    }
+}
+
+/* ==========================================================================
+   3. 受光边（玻璃的"存在感"来源）
+      用 masked-border 画 1px 渐变环：顶部最亮 → 两侧转暗 → 底部微亮
+   ========================================================================== */
+.lg::before,
+.header::before,
+.copy-ip::before,
+.info-card::before,
+.features::before,
+.rules-link::before,
+.sponsor-card::before,
+.description::before,
+.gallery::before,
+.steps::before,
+.cmds::before,
+.join::before,
+.footer::before,
+.category::before,
+.project-card::before,
+.tool-card::before,
+.pay-panel::before,
+.qr-section::before,
+.payment-section::before,
+.rule::before,
+.notice::before,
+.tip::before,
+.rule-foot::before,
+.law-note::before,
+.music-box::before,
+.penalty-table::before,
+.business-card::before,
+.about-card::before,
+.featured-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(var(--lg-angle, 168deg),
+            rgba(255, 255, 255, 0.72) 0%,
+            rgba(255, 255, 255, 0.20) 34%,
+            rgba(255, 255, 255, 0.06) 58%,
+            rgba(255, 255, 255, 0.26) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* ==========================================================================
+   4. 控件与按钮：同样要液态玻璃
+      （按钮小，折射用薄档，否则会糊成一坨认不出形状）
+   ========================================================================== */
+button,
+input,
+textarea,
+select,
+.features > span,
+.tag,
+.tech-badge,
+.tool-tag,
+.gallery-badge,
+.version,
+.pay-tab,
+.category-btn,
+.tool-btn,
+.back-link,
+.bottom-back,
+.join-row .act,
+.step .ip,
+.ip,
+.cmd,
+.step,
+.join-row,
+.music-btn,
+.copy-ip .hint,
+.pay-tab.active,
+.category-btn.active,
+.tool-btn.active {
+    position: relative;
+    isolation: isolate;
+    border: none;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.16);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.20) 0%,
+            rgba(255, 255, 255, 0.04) 46%,
+            rgba(255, 255, 255, 0.10) 100%);
+    box-shadow:
+        0 8px 22px rgba(6, 12, 18, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    color: #10161c;
+    cursor: pointer;
+    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.28s ease,
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 控件里的块状元素不用胶囊，跟着面板走圆角 */
+.cmd,
+.step,
+.join-row {
+    border-radius: 16px;
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    button,
+    input,
+    textarea,
+    select,
+    .features > span,
+    .tag,
+    .tech-badge,
+    .tool-tag,
+    .gallery-badge,
+    .version,
+    .pay-tab,
+    .category-btn,
+    .tool-btn,
+    .back-link,
+    .bottom-back,
+    .join-row .act,
+    .step .ip,
+    .ip,
+    .cmd,
+    .step,
+    .join-row,
+    .music-btn,
+    .copy-ip .hint {
+        -webkit-backdrop-filter: blur(12px) saturate(170%);
+        backdrop-filter: blur(12px) saturate(170%);
+        background-color: rgba(255, 255, 255, 0.34);
+    }
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    button,
+    input,
+    textarea,
+    select,
+    .features > span,
+    .tag,
+    .tech-badge,
+    .tool-tag,
+    .gallery-badge,
+    .version,
+    .pay-tab,
+    .category-btn,
+    .tool-btn,
+    .back-link,
+    .bottom-back,
+    .join-row .act,
+    .step .ip,
+    .ip,
+    .cmd,
+    .step,
+    .join-row,
+    .music-btn,
+    .copy-ip .hint {
+        backdrop-filter: url(#liquid-glass-thin) blur(4px) saturate(1.30);
+    }
+}
+
+/* 控件受光边（一圈更亮的边，让按钮"凸"起来） */
+button::before,
+input::before,
+.features > span::before,
+.tag::before,
+.tech-badge::before,
+.tool-tag::before,
+.gallery-badge::before,
+.version::before,
+.pay-tab::before,
+.category-btn::before,
+.tool-btn::before,
+.back-link::before,
+.bottom-back::before,
+.join-row .act::before,
+.step .ip::before,
+.ip::before,
+.cmd::before,
+.step::before,
+.join-row::before,
+.music-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(170deg,
+            rgba(255, 255, 255, 0.78) 0%,
+            rgba(255, 255, 255, 0.18) 40%,
+            rgba(255, 255, 255, 0.08) 66%,
+            rgba(255, 255, 255, 0.28) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 悬停 / 激活 */
+.rules-link:hover,
+.sponsor-card:hover,
+.info-card:hover,
+.project-card:hover,
+.tool-card:hover,
+.category:hover,
+.copy-ip:hover,
+.cmd:hover,
+.step:hover,
+.join-row:hover,
+button:hover,
+.pay-tab:hover,
+.category-btn:hover,
+.tool-btn:hover,
+.back-link:hover,
+.bottom-back:hover,
+.join-row .act:hover,
+.features > span:hover,
+.tag:hover {
+    background-color: rgba(255, 255, 255, 0.22);
+    box-shadow:
+        0 26px 64px rgba(6, 12, 18, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transform: translateY(-3px);
+}
+
+.pay-tab.active,
+.category-btn.active,
+.tool-btn.active {
+    background-color: rgba(74, 123, 167, 0.42);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.28) 0%,
+            rgba(255, 255, 255, 0.06) 100%);
+    color: #0b1116;
+    box-shadow:
+        0 12px 30px rgba(31, 74, 110, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.pay-tab.active *,
+.category-btn.active *,
+.tool-btn.active * { color: #0b1116; }
+
+/* 受光边在悬停时提亮 */
+.rules-link:hover::before,
+.sponsor-card:hover::before,
+.info-card:hover::before,
+.project-card:hover::before,
+.tool-card:hover::before,
+.category:hover::before,
+.copy-ip:hover::before,
+button:hover::before,
+.pay-tab:hover::before,
+.category-btn:hover::before,
+.back-link:hover::before {
+    filter: brightness(1.3);
+}
+
+/* ==========================================================================
+   5. 文字：黑字 + 白色柔光描边（玻璃上唯一能读清的方案）
+   ========================================================================== */
+body, p, span, div, li, td, th, label, strong, em, code, a, small, b, i {
+    color: #1a2027;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.62),
+        0 2px 6px rgba(255, 255, 255, 0.36),
+        0 3px 16px rgba(0, 0, 0, 0.16);
+}
+
+h1, h2, h3, h4, h5, h6,
+.header h1,
+.steps-title, .cmds-title, .join-title,
+.section-title, .lvl-title, .payment-title,
+.featured-title, .rules-title,
+.gallery-title,
+.rules-link .title,
+.sponsor-card .title,
+.info-card .value,
+.join-row .v,
+.step .t,
+.project-card h3,
+.tool-card h3,
+.category h2,
+.notice-title {
+    color: #0b1116;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.78),
+        0 2px 8px rgba(255, 255, 255, 0.50),
+        0 4px 18px rgba(0, 0, 0, 0.20);
+}
+
+.info-card .label,
+.step .d,
+.cmd .cn,
+.join-row .k,
+.description,
+.project-card p,
+.tool-card p,
+.rule .detail,
+.footer,
+.rec, .cap, .placeholder, .label,
+.payment-desc, .notice-text, .support-text,
+.gallery-item .caption,
+.rule-foot, .law-note, .tip, .tip-info, .tip-warn {
+    color: #333b44;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.58),
+        0 2px 7px rgba(255, 255, 255, 0.34),
+        0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* 强调色在淡玻璃上要够深 */
+.highlight { color: #7d5a06; }
+.join-row .v.blue { color: #23577d; }
+.join-row .v.gold { color: #7d5a06; }
+.cmd code { color: #23577d; }
+.rules-link .arrow,
+.sponsor-card .arrow { color: #23577d; }
+.header .subtitle { color: #2b333b; }
+
+/* ==========================================================================
+   6. 细节
+   ========================================================================== */
+/* 二维码必须留白底，否则扫不出来 */
+.qr-image img,
+.qr-item img,
+.payment-code img {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(6, 12, 18, 0.22),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    padding: 10px;
+}
+
+/* 相册图片本身不要被玻璃压住 */
+.gallery-item { overflow: hidden; border-radius: 20px; }
+.gallery-item img { border-radius: 20px 20px 0 0; }
+.gallery-item .caption {
+    border-top: 1px solid rgba(255, 255, 255, 0.34);
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+/* 表格：整体一块玻璃，行只做淡分隔 */
+.penalty-table { padding: 16px; border-radius: 22px; }
+.penalty-table table,
+table { border-collapse: separate; border-spacing: 0 8px; width: 100%; }
+
+th {
+    position: relative;
+    padding: 13px 16px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.18);
+    color: #0b1116;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+td {
+    padding: 13px 16px;
+    background-color: rgba(255, 255, 255, 0.09);
+    border-top: 1px solid rgba(255, 255, 255, 0.26);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+    color: #333b44;
+}
+
+td:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: 14px 0 0 14px;
+}
+
+td:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: 0 14px 14px 0;
+}
+
+/* 页脚 */
+.footer { border-radius: 22px; }
+
+/* 正文栏收窄，读起来更像作品页 */
+.container { max-width: 900px; }
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.06); }
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.34);
+    border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+
+::selection { background: rgba(74, 123, 167, 0.34); color: #0b1116; }
+
+/* ==========================================================================
+   7. 入场动画：各块依次淡入上移
+   ========================================================================== */
+@keyframes lg-rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.header, .copy-ip-wrap, .info-grid, .features, .rules-link, .sponsor-card,
+.description, .gallery, .steps, .cmds, .join, .footer,
+.category, .project-card, .tool-card, .rule, .pay-panel {
+    animation: lg-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.header        { animation-delay: 0s; }
+.copy-ip-wrap  { animation-delay: 0.06s; }
+.info-grid     { animation-delay: 0.12s; }
+.features      { animation-delay: 0.18s; }
+.rules-link    { animation-delay: 0.24s; }
+.sponsor-card  { animation-delay: 0.30s; }
+.description   { animation-delay: 0.36s; }
+.gallery       { animation-delay: 0.42s; }
+.steps         { animation-delay: 0.48s; }
+.cmds          { animation-delay: 0.54s; }
+.join          { animation-delay: 0.60s; }
+.footer        { animation-delay: 0.66s; }
+
+/* ==========================================================================
+   8. 移动端：一样是完整液态玻璃（不做降级、不减折射，按你的要求）
+   ========================================================================== */
+@media (max-width: 920px) {
+    body { background-attachment: scroll; }
+    .container { max-width: 100%; }
+    .header, .copy-ip, .description, .gallery, .steps, .cmds, .join, .footer {
+        border-radius: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

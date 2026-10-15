@@ -1,0 +1,364 @@
+/* ==========================================================================
+   Nalxer · 规则页 / 赞助页 修正
+   ==========================================================================
+   实拍后发现的问题
+   --------------------------------------------------------------------------
+   ① 规则页的每条规则是"一条通栏细带"
+      原因：.rule 没有左右内边距（原样式靠 .container 的 padding 撑），
+            而我把 .container 的 padding 收掉了 —— 结果玻璃条横跨整宽，
+            里面的字挤在最左边，看着像"把内容漏出来了"。
+      修法：给这些面板自己加内边距，并限制在 940px 的阅读栏内。
+
+   ② 等级标题（"轻度 / 违反封禁 1-7 天"）完全没有样式
+      它只有 .lvl-title + .tag/.ban 三个类，
+      我给 .tag 做了玻璃胶囊，但 .lvl-title 本身在旧样式表被停用后就成了裸文字。
+      修法：把等级标题也做成带玻璃的分组头。
+
+   ③ 规则正文没有明确的"标题 / 说明"层级
+      .rule .title 与 .rule .detail 需要有字号差与间距。
+
+   ④ 赞助页同类问题：支付块与二维码块缺少内边距与分组
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 统一阅读栏宽（所有玻璃面板都收在 940px 内并居中）
+   -------------------------------------------------------------------------- */
+.law-note,
+.tip,
+.tip-info,
+.tip-warn,
+.tip-grass,
+.rule-list,
+.rule-foot,
+.penalty-table,
+.notice,
+.section-title,
+.lvl-title,
+.pay-tabs,
+.pay-panel,
+.payment-section,
+.payment-code-container,
+.qr-section,
+.qr-row,
+.qr-item,
+.notice-content,
+.back-link,
+.bottom-back,
+.category,
+.project-list,
+.business-list,
+.tools-grid,
+.featured-grid {
+    max-width: 940px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --------------------------------------------------------------------------
+   2. 规则页
+   -------------------------------------------------------------------------- */
+/* 法律提示 */
+.law-note {
+    padding: 18px 24px;
+    margin-bottom: 16px;
+    font-size: 14.5px;
+    border-radius: 18px;
+}
+
+/* 一句话版本 */
+.tip,
+.tip-info,
+.tip-warn,
+.tip-grass {
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    font-size: 14.5px;
+    line-height: 1.85;
+}
+
+.tip .tip-body { margin-top: 8px; }
+
+/* 规则列表：每组之间有分隔 */
+.rule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+/* ★ 等级分组头（原来完全没有样式） */
+.lvl-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 22px;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 999px;
+
+    /* 也给它玻璃 */
+    position: relative;
+    isolation: isolate;
+    background-color: rgba(255, 255, 255, 0.34);
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.30) 0%,
+            rgba(255, 255, 255, 0.16) 100%);
+    box-shadow:
+        0 12px 30px rgba(5, 10, 16, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .lvl-title {
+        backdrop-filter: url(#liquid-glass-thin) blur(12px) saturate(1.24);
+    }
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    .lvl-title {
+        background-color: rgba(255, 255, 255, 0.50);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+        backdrop-filter: blur(18px) saturate(160%);
+    }
+}
+
+/* 等级标签（轻度 / 中度 / 重度） */
+.lvl-title .tag {
+    padding: 5px 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border-radius: 999px;
+    color: #06121c;
+}
+
+.lvl-title.light .tag { background-color: rgba(120, 190, 120, 0.55); }
+.lvl-title.mid .tag   { background-color: rgba(230, 190, 90, 0.60); }
+.lvl-title .tag       { background-color: rgba(255, 255, 255, 0.42); }
+
+/* 封禁天数：用颜色区分，不再和标题挤在一起 */
+.lvl-title .ban {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #8c2f22 !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ★ 单条规则：这里补上内边距（问题①的根因） */
+.rule {
+    padding: 20px 24px;
+    border-radius: 18px;
+}
+
+.rule .title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #05090d !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.80),
+        0 2px 8px rgba(255, 255, 255, 0.46) !important;
+}
+
+.rule .num {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 6px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    border-radius: 999px;
+    background: linear-gradient(155deg, #6d9dc4, #35618a);
+    box-shadow: 0 2px 8px rgba(31, 58, 82, 0.28);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+.rule .detail {
+    margin-top: 8px;
+    padding-left: 36px;         /* 与标题对齐，视觉成一段 */
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* 处罚表格 */
+.penalty-table { padding: 16px; border-radius: 20px; }
+.penalty-table th { font-size: 14px; }
+.penalty-table td { font-size: 14px; }
+
+/* 页脚说明 */
+.rule-foot {
+    padding: 20px 24px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.85;
+}
+
+/* --------------------------------------------------------------------------
+   3. 赞助页（pay.html / pay_alipay.html / alipay.html）
+   -------------------------------------------------------------------------- */
+.pay-tabs {
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.pay-panel {
+    padding: 28px 30px;
+    border-radius: 22px;
+}
+
+.pay-panel .welcome,
+.pay-panel .subtitle {
+    display: block;
+    text-align: center;
+}
+
+.pay-panel .welcome {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.pay-panel .subtitle {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.payment-section,
+.payment-code-container {
+    padding: 24px 26px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.payment-title {
+    font-size: 17px;
+    font-weight: 700;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.payment-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+}
+
+/* 二维码区块：一行排开，别竖着堆 */
+.qr-section {
+    padding: 24px 26px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.qr-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    align-items: start;
+}
+
+.qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 14px;
+    border-radius: 18px;
+
+    position: relative;
+    isolation: isolate;
+    background-color: rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 10px 26px rgba(5, 10, 16, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .qr-item {
+        backdrop-filter: url(#liquid-glass-thin) blur(12px) saturate(1.22);
+    }
+}
+
+.qr-item .method-name,
+.qr-section .method-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #05090d !important;
+}
+
+.qr-image,
+.qr-item .qr-image {
+    display: grid;
+    place-items: center;
+}
+
+.qr-image img,
+.qr-item img,
+.payment-code img {
+    width: min(220px, 68vw);
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(5, 10, 16, 0.22);
+    position: relative;
+    z-index: 4;
+}
+
+.qr-item .rec,
+.qr-item .cap {
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.7;
+}
+
+.notice {
+    padding: 20px 24px;
+    border-radius: 18px;
+}
+
+.notice-title { font-size: 15.5px; font-weight: 700; }
+.notice-content { font-size: 14px; line-height: 1.85; }
+
+/* --------------------------------------------------------------------------
+   4. 移动端
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    .law-note,
+    .tip,
+    .tip-info,
+    .tip-warn,
+    .tip-grass,
+    .rule,
+    .rule-foot {
+        padding: 18px 18px;
+    }
+
+    .lvl-title { padding: 12px 18px; font-size: 15px; }
+
+    .rule .detail { padding-left: 0; }   /* 窄屏不再缩进，省宽度 */
+
+    .pay-panel,
+    .payment-section,
+    .payment-code-container,
+    .qr-section { padding: 20px 18px; }
+
+    .qr-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .rule .title { font-size: 15px; }
+    .rule .detail { font-size: 13.5px; }
+    .lvl-title { gap: 8px; padding: 11px 15px; }
+    .pay-tab { padding: 9px 16px; font-size: 13.5px; }
+}

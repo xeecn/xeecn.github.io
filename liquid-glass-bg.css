@@ -1,0 +1,263 @@
+/* ==========================================================================
+   Nalxer · 背景 100% 可见
+   ==========================================================================
+   服主要求（2026-10-16）：壁纸必须完整可见，不许压暗。
+
+   之前我为了"让玻璃折射好看 + 文字读得清"，在壁纸上叠了
+   linear-gradient(rgba(...,0.92)) 这类压暗层，结果壁纸几乎看不见了 —— 这是错的。
+
+   现在的做法（把"可见"和"可读"分开解决）：
+     · 背景层   只放壁纸本身，**不加任何压暗/色调层**，100% 原样
+     · 柔光层   只在四角加很淡的径向光（本身是提亮，不是压暗），
+                给玻璃一点可折的层次
+     · 文字可读性 交给玻璃自己的磨砂与白度，不再牺牲背景
+                 → 玻璃 blur 提到 18~22px，白底提到 0.30
+                 → 这样即使壁纸很花，玻璃上的字也读得清
+   ========================================================================== */
+
+html { background: #0a1118; }
+
+body {
+    background-color: #0a1118;
+    /* ★ 壁纸在最上层（第一个不透明层就是它），下面只垫兜底色。
+         注意：CSS 里 background-image 是**从后往前**叠的，最前面的写在最上面，
+         所以这里第一项必须是壁纸本身，且它不能带任何 alpha。 */
+    background-image:
+        url('bg.jpg'),
+        radial-gradient(70% 50% at 14% 4%, rgba(150, 190, 226, 0.20), transparent 62%),
+        radial-gradient(60% 44% at 88% 10%, rgba(186, 160, 226, 0.16), transparent 64%),
+        radial-gradient(80% 56% at 82% 94%, rgba(150, 214, 206, 0.14), transparent 66%),
+        linear-gradient(160deg, #0b141d 0%, #080e14 62%, #0a1219 100%);
+    background-size: cover, auto, auto, auto, cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* 壁纸是一张信息量很大的 Minecraft 截图 —— 玻璃要"糊"得够狠，
+   字才在它上面站得住。这是唯一为可读性做的让步，且它只影响玻璃内部，
+   不影响壁纸本身的可见度。 */
+.header,
+.copy-ip,
+.info-card,
+.features,
+.rules-link,
+.sponsor-card,
+.description,
+.gallery,
+.steps,
+.cmds,
+.join,
+.footer,
+.category,
+.project-card,
+.tool-card,
+.pay-panel,
+.qr-section,
+.payment-section,
+.rule,
+.notice,
+.tip,
+.tip-info,
+.tip-warn,
+.rule-foot,
+.law-note,
+.music-box,
+.gallery-item,
+.penalty-table,
+.business-card,
+.about-card,
+.featured-card,
+.payment-code-container {
+    background-color: rgba(255, 255, 255, 0.30);
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.26) 0%,
+            rgba(255, 255, 255, 0.14) 36%,
+            rgba(255, 255, 255, 0.12) 58%,
+            rgba(255, 255, 255, 0.20) 100%);
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .header,
+    .copy-ip,
+    .info-card,
+    .features,
+    .rules-link,
+    .sponsor-card,
+    .description,
+    .gallery,
+    .steps,
+    .cmds,
+    .join,
+    .footer,
+    .category,
+    .project-card,
+    .tool-card,
+    .pay-panel,
+    .qr-section,
+    .payment-section,
+    .rule,
+    .notice,
+    .tip,
+    .tip-info,
+    .tip-warn,
+    .rule-foot,
+    .law-note,
+    .music-box,
+    .gallery-item,
+    .penalty-table,
+    .business-card,
+    .about-card,
+    .featured-card,
+    .payment-code-container {
+        /* 先折射（把边缘掰弯），再 20px 磨砂（把花哨壁纸糊成柔和底） */
+        backdrop-filter: url(#liquid-glass) blur(20px) saturate(1.24) brightness(1.06);
+    }
+
+    .header {
+        backdrop-filter: url(#liquid-glass-thick) blur(22px) saturate(1.24) brightness(1.07);
+    }
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    .header,
+    .copy-ip,
+    .info-card,
+    .features,
+    .rules-link,
+    .sponsor-card,
+    .description,
+    .gallery,
+    .steps,
+    .cmds,
+    .join,
+    .footer,
+    .category,
+    .project-card,
+    .tool-card,
+    .pay-panel,
+    .qr-section,
+    .payment-section,
+    .rule,
+    .notice,
+    .tip,
+    .tip-info,
+    .tip-warn,
+    .rule-foot,
+    .law-note,
+    .music-box,
+    .gallery-item,
+    .penalty-table,
+    .business-card,
+    .about-card,
+    .featured-card,
+    .payment-code-container {
+        background-color: rgba(255, 255, 255, 0.46);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
+        backdrop-filter: blur(24px) saturate(160%);
+    }
+}
+
+/* 控件同样：白度提上来，玻璃感保留 */
+button,
+input,
+textarea,
+select,
+.features > span,
+.tag,
+.tech-badge,
+.tool-tag,
+.gallery-badge,
+.version,
+.pay-tab,
+.category-btn,
+.tool-btn,
+.back-link,
+.bottom-back,
+.join-row .act,
+.step .ip,
+.ip,
+.cmd,
+.step,
+.join-row,
+.music-btn,
+.copy-ip .hint {
+    background-color: rgba(255, 255, 255, 0.36);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.32) 0%,
+            rgba(255, 255, 255, 0.16) 48%,
+            rgba(255, 255, 255, 0.24) 100%);
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    button,
+    input,
+    textarea,
+    select,
+    .features > span,
+    .tag,
+    .tech-badge,
+    .tool-tag,
+    .gallery-badge,
+    .version,
+    .pay-tab,
+    .category-btn,
+    .tool-btn,
+    .back-link,
+    .bottom-back,
+    .join-row .act,
+    .step .ip,
+    .ip,
+    .cmd,
+    .step,
+    .join-row,
+    .music-btn,
+    .copy-ip .hint {
+        backdrop-filter: url(#liquid-glass-thin) blur(12px) saturate(1.22);
+    }
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    button,
+    input,
+    textarea,
+    select,
+    .features > span,
+    .tag,
+    .tech-badge,
+    .tool-tag,
+    .gallery-badge,
+    .version,
+    .pay-tab,
+    .category-btn,
+    .tool-btn,
+    .back-link,
+    .bottom-back,
+    .join-row .act,
+    .step .ip,
+    .ip,
+    .cmd,
+    .step,
+    .join-row,
+    .music-btn,
+    .copy-ip .hint {
+        background-color: rgba(255, 255, 255, 0.52);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+        backdrop-filter: blur(18px) saturate(160%);
+    }
+}
+
+/* 背景不压暗之后，玻璃外的页面留白处也要读得清 —— 那里没有玻璃保护，
+   所以给正文栏外的少量裸文字加更强的白色描边 */
+.header h1,
+.header .subtitle {
+    text-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.92),
+        0 2px 10px rgba(255, 255, 255, 0.70),
+        0 6px 26px rgba(0, 0, 0, 0.30);
+}
+
+/* 移动端：同样不压暗背景，同样保持完整折射玻璃 */
+@media (max-width: 920px) {
+    body { background-attachment: scroll; }
+}

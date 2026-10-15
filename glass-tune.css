@@ -1,0 +1,310 @@
+/* ==========================================================================
+   Nalxer 官网 · 液态玻璃调优
+   ==========================================================================
+   第一版截图对比 Linux 官网后发现三个偏差，这里逐条修：
+
+   ① 玻璃太"有色"
+      原因：background 用了 saturate(180%)，把壁纸的绿/粉/青都拽进面板，
+            看起来像彩色糖纸，不是"无色透明"。
+      改法：饱和度降到 125~140%，白底稍微提一点（0.28 → 0.32），
+            让面板是"接近无色的白玻璃"。
+
+   ② 描边太重，一层套一层像方格
+      原因：每层卡片都是 1px solid rgba(255,255,255,0.62)，
+            大面板里套小卡片，边框反复出现。
+      改法：外层面板保留 0.62；**内层**元素降到 0.34，
+            并且内层不再投外阴影 —— 只有最外层浮起来。
+
+   ③ 黑字在花哨背景上不够清楚
+      原因：低透明度玻璃下，深色文字与背景明暗接近。
+      改法：加一层很淡的白色柔光描边（不是纯白 1px，是低透明多级扩散），
+            既提可读性又不显脏。
+
+   ★ 手机端同样保持完整液态玻璃，不降级（见文件末尾）。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ① 玻璃配方：降饱和、提白度
+   -------------------------------------------------------------------------- */
+:root {
+    --glass: rgba(255, 255, 255, 0.32);
+    --glass-strong: rgba(255, 255, 255, 0.48);
+    --glass-soft: rgba(255, 255, 255, 0.22);
+    --glass-bar: rgba(255, 255, 255, 0.66);
+
+    /* 主玻璃：饱和度收敛，接近无色 */
+    --blur: blur(18px) saturate(125%);
+    --blur-bar: blur(24px) saturate(130%);
+    --blur-soft: blur(14px) saturate(120%);
+
+    /* 外层描边（明显，界定面板边界） */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.62);
+    /* 内层描边（很淡，只做轻微分隔） */
+    --inner-border: 1px solid rgba(255, 255, 255, 0.34);
+
+    --glass-highlight: inset 0 1.2px 0 rgba(255, 255, 255, 0.85);
+    --glass-shadow: 0 8px 32px rgba(15, 25, 35, 0.13);
+
+    /* 文字：深色 + 淡白柔光描边（多级扩散比单层更自然） */
+    --ink-shadow: 0 1px 2px rgba(255, 255, 255, 0.55),
+                  0 1px 6px rgba(0, 0, 0, 0.22);
+    --ink-shadow-soft: 0 1px 2px rgba(255, 255, 255, 0.50),
+                       0 1px 4px rgba(0, 0, 0, 0.16);
+    --ink-shadow-strong: 0 1px 1px rgba(255, 255, 255, 0.75),
+                         0 1px 3px rgba(255, 255, 255, 0.55),
+                         0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+/* --------------------------------------------------------------------------
+   ② 内层元素：淡描边、不投影
+      这些是"面板里面的卡片"，全部改成轻描边 + 玻璃，不再各自浮起。
+   -------------------------------------------------------------------------- */
+.info-card,
+.about-card,
+.business-card,
+.tool-card,
+.featured-card,
+.project-card,
+.category,
+.rule,
+.tip,
+.tip-info,
+.tip-warn,
+.tip-grass,
+.rule-foot,
+.law-note,
+.notice,
+.steps,
+.cmds,
+.join,
+.description,
+.gallery,
+.music-box,
+.pay-panel,
+.payment-section,
+.payment-code-container,
+.qr-section,
+.qr-item,
+.step,
+.cmd,
+.join-row,
+.features,
+.gallery-item,
+.penalty-table,
+table {
+    border: var(--inner-border);
+    box-shadow: none;
+    background: var(--glass-soft);
+    -webkit-backdrop-filter: var(--blur-soft);
+    backdrop-filter: var(--blur-soft);
+}
+
+/* 外层容器与页脚：保留完整玻璃 + 浮起 */
+.container,
+.header,
+.footer {
+    background: var(--glass);
+    -webkit-backdrop-filter: var(--blur);
+    backdrop-filter: var(--blur);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-highlight);
+}
+
+.header {
+    background: var(--glass-soft);
+    box-shadow: var(--glass-highlight);
+}
+
+/* 头部里的标题用更强的描边，压在花哨壁纸上也清楚 */
+.header h1 {
+    text-shadow: var(--ink-shadow-strong);
+    color: #0f1519;
+}
+
+/* 交互元素（可点的）稍微实一点，便于识别 */
+.rules-link,
+.sponsor-card,
+.link-btn,
+.copy-ip,
+.back-link,
+.bottom-back,
+.pay-tab,
+.category-btn,
+.tool-btn,
+.tag,
+.tech-badge,
+.tool-tag,
+.features span,
+.gallery-badge,
+.version {
+    background: var(--glass-strong);
+    border: var(--inner-border);
+    box-shadow: var(--glass-highlight);
+    -webkit-backdrop-filter: var(--blur-soft);
+    backdrop-filter: var(--blur-soft);
+}
+
+/* --------------------------------------------------------------------------
+   ③ 正文与次要文字：统一描边，提升可读
+   -------------------------------------------------------------------------- */
+body,
+p, span, div, li, td, th, label, strong, em, code,
+.description,
+.rule .detail,
+.project-card p,
+.project-card li,
+.tool-card p,
+.step .d,
+.cmd .cn,
+.join-row .k,
+.info-card .label,
+.payment-desc,
+.notice-text,
+.support-text,
+.site-desc,
+.footer,
+.footer span,
+.rec, .cap, .placeholder, .label {
+    text-shadow: var(--ink-shadow-soft);
+}
+
+/* 正文里的次要色不要过灰，玻璃上会糊 */
+:root {
+    --text-secondary: #2b3138;
+    --text-tertiary: #4a5057;
+    --text-light: #5c6269;
+}
+
+/* 强调文字：给描边，避免深色底上发闷 */
+.highlight,
+.info-card .value,
+.join-row .v,
+.join-row .v.blue,
+.join-row .v.gold,
+.step .t,
+.rules-link .title,
+.sponsor-card .title,
+.gallery-title,
+.steps-title,
+.cmds-title,
+.join-title,
+.section-title,
+.lvl-title,
+.payment-title,
+.featured-title,
+.rules-title,
+.category h2,
+.project-card h3,
+.tool-card h3 {
+    text-shadow: var(--ink-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   ④ 表格：去掉"每行独立浮起"的观感，改成连续表体
+   -------------------------------------------------------------------------- */
+.penalty-table th,
+th {
+    background: var(--glass-strong);
+    border: var(--inner-border);
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+    box-shadow: none;
+}
+
+.penalty-table td,
+td {
+    background: var(--glass-soft);
+    border: var(--inner-border);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.penalty-table tr td:first-child,
+tr td:first-child {
+    border-radius: 0 0 0 var(--r-sm);
+}
+
+.penalty-table tr td:last-child,
+tr td:last-child {
+    border-radius: 0 0 var(--r-sm) 0;
+}
+
+/* 最后一行如果是唯一一行，四角都圆 */
+.penalty-table tr:only-child td:first-child { border-radius: var(--r-sm) 0 0 var(--r-sm); }
+.penalty-table tr:only-child td:last-child { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+
+/* --------------------------------------------------------------------------
+   ⑤ 相册：图片本身不该被玻璃压暗
+   -------------------------------------------------------------------------- */
+.gallery-item {
+    background: rgba(255, 255, 255, 0.18);
+    overflow: hidden;
+}
+
+.gallery-item img {
+    border-radius: var(--r) var(--r) 0 0;
+}
+
+.gallery-item .caption {
+    background: rgba(255, 255, 255, 0.42);
+    border-top: var(--inner-border);
+}
+
+/* --------------------------------------------------------------------------
+   ⑥ 二维码：白底保证能扫
+   -------------------------------------------------------------------------- */
+.qr-image img,
+.qr-item img {
+    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 4px 18px rgba(15, 25, 35, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   ⑦ 页脚
+   -------------------------------------------------------------------------- */
+.footer {
+    background: var(--glass-soft);
+}
+
+/* --------------------------------------------------------------------------
+   ⑧ 移动端：同样是完整液态玻璃（不降级）
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    .container {
+        background: var(--glass);
+        -webkit-backdrop-filter: var(--blur);
+        backdrop-filter: var(--blur);
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow), var(--glass-highlight);
+    }
+
+    /* 小屏上内层卡片用稍实的底，避免文字压在花纹上 */
+    .info-card,
+    .step,
+    .cmd,
+    .join-row,
+    .description,
+    .steps,
+    .cmds,
+    .join,
+    .rule,
+    .project-card,
+    .tool-card,
+    .pay-panel,
+    .qr-section {
+        background: rgba(255, 255, 255, 0.34);
+        -webkit-backdrop-filter: var(--blur-soft);
+        backdrop-filter: var(--blur-soft);
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 { text-shadow: var(--ink-shadow-strong); }
+
+    .rules-link,
+    .sponsor-card,
+    .link-btn,
+    .copy-ip {
+        background: rgba(255, 255, 255, 0.52);
+    }
+}

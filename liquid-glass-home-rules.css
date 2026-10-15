@@ -1,0 +1,249 @@
+/* ==========================================================================
+   Nalxer · 主页「游戏内规则」区块
+   ==========================================================================
+   问题：主页的规则区用的类和规则页不一样 ——
+     主页：.rules / .rules-title / .rule-group（可折叠）+ .head / .items
+     规则页：.rule-list / .lvl-title / .rule + .title / .detail
+   我之前只做了规则页那一套，主页这套的样式还留在被停用的旧样式表里，
+   于是主页规则区完全没有样式：折叠的 .items 不再是 max-height:0，
+   内容全部摊开、又没有任何玻璃底，看起来就是"规则文字糊在背景上"。
+
+   这里补齐主页这套（含折叠动画与玻璃分组头），视觉与规则页统一。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 区块容器
+   -------------------------------------------------------------------------- */
+.rules {
+    max-width: 940px;
+    margin: 18px auto 18px;
+}
+
+.rules-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    padding: 0 2px;
+    color: #05090d !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.80),
+        0 2px 8px rgba(255, 255, 255, 0.46) !important;
+}
+
+.rules-title span {
+    font-size: 13px !important;
+    font-weight: 400;
+    color: #333c45 !important;
+}
+
+/* 法律提示 */
+.rules .law-note {
+    max-width: none;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    font-size: 14.5px;
+    border-radius: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   2. 规则分组（可折叠）
+   -------------------------------------------------------------------------- */
+.rule-group {
+    position: relative;
+    isolation: isolate;
+    margin-bottom: 12px;
+    border-radius: 18px;
+    overflow: hidden;
+
+    /* 玻璃底 */
+    background-color: rgba(255, 255, 255, 0.28);
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.24) 0%,
+            rgba(255, 255, 255, 0.12) 52%,
+            rgba(255, 255, 255, 0.18) 100%);
+    box-shadow:
+        0 14px 34px rgba(5, 10, 16, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.58);
+    transition: box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.3s ease;
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .rule-group {
+        backdrop-filter: url(#liquid-glass) blur(16px) saturate(1.24);
+    }
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    .rule-group {
+        background-color: rgba(255, 255, 255, 0.46);
+        -webkit-backdrop-filter: blur(20px) saturate(160%);
+        backdrop-filter: blur(20px) saturate(160%);
+    }
+}
+
+.rule-group:hover {
+    background-color: rgba(255, 255, 255, 0.38);
+    box-shadow:
+        0 20px 46px rgba(5, 10, 16, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.66);
+}
+
+/* 分组头（点击折叠） */
+.rule-group .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+}
+
+/* 等级文字 */
+.rule-group .head .lvl {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding-right: 4px;
+    color: #05090d !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.78),
+        0 2px 7px rgba(255, 255, 255, 0.44) !important;
+}
+
+.rule-group .head .lvl.light { color: #24691f !important; }
+.rule-group .head .lvl.mid   { color: #8a6208 !important; }
+.rule-group .head .lvl.heavy { color: #8c2f22 !important; }
+
+/* 右侧说明（封禁天数） */
+.rule-group .head .tip {
+    font-size: 13.5px;
+    color: #2a323b !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.66),
+        0 2px 5px rgba(255, 255, 255, 0.34) !important;
+}
+
+/* 折叠箭头 */
+.rule-group .head .arrow {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+    color: #17456a !important;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.42);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.2s ease;
+}
+
+.rule-group.open .head .arrow {
+    transform: rotate(90deg);
+    background-color: rgba(255, 255, 255, 0.60);
+}
+
+/* --------------------------------------------------------------------------
+   3. 折叠体（★ 这里是"内容全摊开"的根因：旧样式表停了 max-height:0）
+   -------------------------------------------------------------------------- */
+.rule-group .items {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 22px;
+    transition: max-height 0.36s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.26s ease,
+                padding 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rule-group.open .items {
+    /* 足够容纳最长那组（重度 8 条 + 说明） */
+    max-height: 1400px;
+    opacity: 1;
+    padding: 2px 22px 20px;
+}
+
+/* 规则条目 */
+.rule-group .items ol {
+    padding-left: 24px;
+    margin: 0;
+}
+
+.rule-group .items li {
+    margin-bottom: 8px;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #1a2027 !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.62),
+        0 2px 5px rgba(255, 255, 255, 0.32) !important;
+}
+
+.rule-group .items li::marker {
+    color: #35618a;
+    font-weight: 600;
+}
+
+/* 组内小结（"以上条例违反封禁 …"） */
+.rule-group .items .ban {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 11px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: 999px;
+    color: #8c2f22 !important;
+    background-color: rgba(255, 238, 236, 0.72);
+    box-shadow: inset 0 0 0 1px rgba(200, 90, 74, 0.24);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. 移动端
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    .rules { margin: 16px auto; }
+
+    .rules-title { font-size: 18px; }
+
+    .rule-group .head {
+        padding: 14px 18px;
+        gap: 10px;
+    }
+
+    .rule-group .head .lvl { font-size: 16px; }
+    .rule-group .head .tip { font-size: 12.5px; }
+
+    .rule-group .items { padding: 0 18px; }
+    .rule-group.open .items { padding: 2px 18px 18px; }
+
+    .rule-group .items li { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+    .rule-group .head {
+        flex-wrap: wrap;
+        padding: 13px 15px;
+    }
+
+    .rule-group .head > span:first-child {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    .rule-group .head .lvl { font-size: 15px; }
+    .rule-group .items li { font-size: 13.5px; }
+    .rule-group .items .ban { font-size: 12.5px; padding: 10px 13px; }
+}

@@ -1,0 +1,253 @@
+/* ==========================================================================
+   Nalxer · 音乐播放器：固定在右下角，滚动页面也不动
+   ==========================================================================
+   服主要求：播放器固定在右下角，滚动时一直可见。
+
+   问题出在哪
+   --------------------------------------------------------------------------
+   原样式表里本来就有
+       .music-box { position: fixed; right: 18px; bottom: 18px; z-index: 999; }
+   但我后来给 .music-box 写的玻璃规则里只设了 display/flex/内边距/背景，
+   **没有再声明 position** —— 而 z-index 在没有定位的元素上无效，
+   于是它退回了普通文档流：看起来就是页脚前面横着一条玻璃条，
+   滚动时跟着页面一起跑。
+
+   修法
+   --------------------------------------------------------------------------
+   1. 明确 position: fixed + right/bottom + z-index（并且给它一个层叠上下文）
+   2. 顺便做成更好看的悬浮胶囊：整条玻璃底 + 两个圆形按钮
+   3. 画中画 / 移动端安全区：用 max() 避开 iPhone 的底部横条
+   4. 打印时不显示
+   ========================================================================== */
+
+.music-box {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    /* 避开 iPhone 底部横条与安卓手势区 */
+    bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    right: max(20px, env(safe-area-inset-right, 0px));
+    z-index: 9000;
+    isolation: isolate;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    margin: 0;
+
+    border-radius: 999px;
+
+    /* 玻璃底 */
+    background-color: rgba(255, 255, 255, 0.34);
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.32) 0%,
+            rgba(255, 255, 255, 0.14) 50%,
+            rgba(255, 255, 255, 0.24) 100%);
+    box-shadow:
+        0 16px 40px rgba(5, 10, 16, 0.28),
+        0 4px 12px rgba(5, 10, 16, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.66);
+
+    transition: box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.3s ease,
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 折射（Chromium）/ 磨砂兜底 */
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .music-box {
+        backdrop-filter: url(#liquid-glass-thin) blur(14px) saturate(1.26);
+    }
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    .music-box {
+        background-color: rgba(255, 255, 255, 0.52);
+        -webkit-backdrop-filter: blur(20px) saturate(165%);
+        backdrop-filter: blur(20px) saturate(165%);
+    }
+}
+
+/* 受光边：与全站玻璃一致 */
+.music-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(170deg,
+            rgba(255, 255, 255, 0.90) 0%,
+            rgba(255, 255, 255, 0.28) 38%,
+            rgba(255, 255, 255, 0.10) 64%,
+            rgba(255, 255, 255, 0.34) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.music-box:hover {
+    background-color: rgba(255, 255, 255, 0.46);
+    box-shadow:
+        0 22px 52px rgba(5, 10, 16, 0.34),
+        0 6px 16px rgba(5, 10, 16, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   按钮：圆形玻璃
+   -------------------------------------------------------------------------- */
+.music-box .music-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    color: #17456a !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7) !important;
+
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+
+    background-color: rgba(255, 255, 255, 0.42);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.40) 0%,
+            rgba(255, 255, 255, 0.18) 100%);
+    box-shadow:
+        0 6px 16px rgba(5, 10, 16, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.24s ease;
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .music-box .music-btn {
+        backdrop-filter: url(#liquid-glass-thin) blur(10px) saturate(1.22);
+    }
+}
+
+.music-box .music-btn:hover {
+    background-color: rgba(255, 255, 255, 0.62);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow:
+        0 10px 24px rgba(5, 10, 16, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.music-box .music-btn:active {
+    transform: translateY(0) scale(0.96);
+}
+
+/* 播放中的主按钮：绿色高亮 */
+.music-box .music-btn.playing {
+    color: #ffffff !important;
+    background-color: rgba(46, 160, 67, 0.88);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.28) 0%,
+            rgba(255, 255, 255, 0.06) 100%);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+    box-shadow:
+        0 10px 26px rgba(6, 120, 60, 0.36),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* 切歌按钮：紫色系，和主按钮区分开 */
+.music-box .music-btn.next {
+    color: #5a2f96 !important;
+}
+
+.music-box .music-btn.next:hover {
+    background-color: rgba(255, 255, 255, 0.66);
+}
+
+/* 播放中的音符轻微呼吸，提示"正在播" */
+@keyframes music-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.10); }
+}
+
+.music-box .music-btn.playing #musicIcon,
+.music-box .music-btn.playing span {
+    display: inline-block;
+    animation: music-pulse 1.6s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   与轻提示错开：toast 也在底部，别叠在一起
+   -------------------------------------------------------------------------- */
+.toast {
+    /* toast 居中在底部，播放器在右下；窄屏时把 toast 抬高一点 */
+    z-index: 9100;
+}
+
+@media (max-width: 920px) {
+    .toast {
+        bottom: 100px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   移动端：按钮略小但仍然好点，位置贴右下
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    .music-box {
+        right: 14px;
+        bottom: max(14px, env(safe-area-inset-bottom, 0px));
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .music-box .music-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 480px) {
+    .music-box {
+        right: 10px;
+        bottom: max(10px, env(safe-area-inset-bottom, 0px));
+        padding: 5px;
+        gap: 5px;
+    }
+
+    .music-box .music-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   打印：不要出现在纸上
+   -------------------------------------------------------------------------- */
+@media print {
+    .music-box,
+    .toast {
+        display: none !important;
+    }
+}
+
+/* 减少动效偏好：只关呼吸动画 */
+@media (prefers-reduced-motion: reduce) {
+    .music-box .music-btn.playing #musicIcon,
+    .music-box .music-btn.playing span {
+        animation: none;
+    }
+}

@@ -1,0 +1,341 @@
+/* ==========================================================================
+   Nalxer · 规则页 / 赞助页 修正（第二版）
+   ==========================================================================
+   实测（CDP 量过盒子）后确认的问题，逐条修：
+
+   ① 规则页"等级标题"只是个 220px 的小胶囊，孤零零飘在空白里
+      原因：.lvl-title 是 flex + fit-content 宽度的胶囊，
+            上面 .rule 是通栏卡片，于是它看起来像"漏掉的一块"。
+      修法：改成**通栏分组头**：
+            整行玻璃底 + 左侧色条 + 等级标签 + 封禁天数 + 右侧细线。
+            这样它就是"接下来这几条规则的分组标题"，视觉上有了归属。
+
+   ② 赞助页两个支付面板**同时显示**
+      原因：旧样式表里有
+              .pay-panel { display: none }
+              .pay-panel.active { display: block }
+            停用旧样式表时把它一起停了，于是 display 回到默认的 block，
+            微信和支付宝两块全亮。
+      修法：补回这套显隐规则（换页时加一点淡入动效）。
+
+   ③ 赞助页的"二维码加载失败"提示**一直显示**
+      原因：旧样式表里有 .placeholder { display: none }，
+            只有图片 onerror 时才被 JS 打开；同样被一起停用了。
+      修法：补回 .placeholder { display: none }。
+
+   ④ 支付方式标签的选中态偏灰，不够醒目 → 换成品牌色。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ① 规则页：等级分组头改成通栏
+   -------------------------------------------------------------------------- */
+.rule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+/* 分组头：整行玻璃 + 左侧色条 */
+.lvl-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 940px;
+    margin: 16px auto 0;
+    padding: 15px 24px 15px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 18px;
+
+    position: relative;
+    isolation: isolate;
+    background-color: rgba(255, 255, 255, 0.34);
+    background-image: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.30) 0%,
+            rgba(255, 255, 255, 0.14) 52%,
+            rgba(255, 255, 255, 0.22) 100%);
+    box-shadow:
+        0 14px 34px rgba(5, 10, 16, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+}
+
+/* 左侧色条：一眼看出等级 */
+.lvl-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 22%;
+    bottom: 22%;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: rgba(120, 190, 120, 0.95);
+}
+
+.lvl-title.mid::before { background: rgba(232, 186, 76, 0.95); }
+.lvl-title.heavy::before { background: rgba(226, 96, 78, 0.95); }
+
+/* 右侧细线，把标题和"封禁天数"分开 */
+.lvl-title > .ban {
+    margin-left: auto;
+    padding-left: 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.45);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #8c2f22 !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.72) !important;
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .lvl-title {
+        backdrop-filter: url(#liquid-glass-thin) blur(12px) saturate(1.24);
+    }
+}
+
+@supports not (backdrop-filter: url("#liquid-glass")) {
+    .lvl-title {
+        background-color: rgba(255, 255, 255, 0.52);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+        backdrop-filter: blur(18px) saturate(160%);
+    }
+}
+
+/* 等级标签 */
+.lvl-title .tag {
+    flex: 0 0 auto;
+    padding: 5px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 999px;
+    color: #06121c !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.55) !important;
+    background-color: rgba(255, 255, 255, 0.44);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.lvl-title.light .tag { background-color: rgba(126, 196, 122, 0.72); }
+.lvl-title.mid .tag   { background-color: rgba(238, 196, 92, 0.78); }
+.lvl-title.heavy .tag { background-color: rgba(232, 116, 98, 0.78); }
+
+/* 单条规则 */
+.rule {
+    padding: 20px 24px;
+    border-radius: 18px;
+}
+
+.rule .title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #05090d !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.80),
+        0 2px 8px rgba(255, 255, 255, 0.46) !important;
+}
+
+.rule .num {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff !important;
+    border-radius: 999px;
+    background: linear-gradient(155deg, #6d9dc4, #35618a);
+    box-shadow: 0 2px 8px rgba(31, 58, 82, 0.28);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+.rule .detail {
+    margin-top: 8px;
+    padding-left: 36px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #262e37 !important;
+}
+
+/* --------------------------------------------------------------------------
+   ② 赞助页：补回"面板显隐"（旧样式表停用后丢的）
+   -------------------------------------------------------------------------- */
+.pay-panel { display: none; }
+
+.pay-panel.active {
+    display: block;
+    animation: pay-fade 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pay-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ③ 补回"二维码加载失败"占位：默认隐藏，只有 onerror 时才显示 */
+.placeholder { display: none; }
+
+/* 占位样式（真失败时显示） */
+.placeholder {
+    padding: 28px 18px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    text-align: center;
+    color: #8c2f22 !important;
+    border-radius: 16px;
+    background-color: rgba(255, 240, 238, 0.72);
+    box-shadow: inset 0 0 0 1px rgba(200, 90, 74, 0.28);
+}
+
+/* ④ 支付方式标签：选中态用品牌色，更醒目 */
+.pay-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 4px 0 20px;
+}
+
+.pay-tab {
+    padding: 11px 24px;
+    font-size: 14.5px;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    color: #1a2027 !important;
+}
+
+.pay-tab.wechat.active {
+    background-color: rgba(7, 193, 96, 0.82);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.28) 0%,
+            rgba(255, 255, 255, 0.06) 100%);
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.32) !important;
+    box-shadow:
+        0 12px 30px rgba(6, 120, 60, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.pay-tab.alipay.active {
+    background-color: rgba(22, 119, 255, 0.82);
+    background-image: linear-gradient(150deg,
+            rgba(255, 255, 255, 0.28) 0%,
+            rgba(255, 255, 255, 0.06) 100%);
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.32) !important;
+    box-shadow:
+        0 12px 30px rgba(12, 74, 160, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* 二维码区块 */
+.qr-section { padding: 24px 26px; border-radius: 20px; }
+
+.qr-section > .label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: #333c45 !important;
+}
+
+.pay-panel .method-name {
+    margin-bottom: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #05090d !important;
+}
+
+.qr-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    align-items: start;
+}
+
+.qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 16px;
+    border-radius: 18px;
+    position: relative;
+    isolation: isolate;
+    background-color: rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 10px 26px rgba(5, 10, 16, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+@supports (backdrop-filter: url("#liquid-glass")) {
+    .qr-item { backdrop-filter: url(#liquid-glass-thin) blur(12px) saturate(1.22); }
+}
+
+.qr-image { display: grid; place-items: center; }
+
+.qr-image img,
+.qr-item img,
+.payment-code img {
+    display: block;
+    width: min(220px, 68vw);
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(5, 10, 16, 0.22);
+    position: relative;
+    z-index: 4;
+}
+
+.qr-item .cap,
+.qr-item .rec {
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.7;
+    color: #2a323b !important;
+}
+
+/* 赞助页底部说明 */
+.notice { padding: 20px 24px; border-radius: 18px; }
+.notice-title { font-size: 15.5px; font-weight: 700; }
+.notice-content { font-size: 14px; line-height: 1.85; color: #262e37 !important; }
+
+/* --------------------------------------------------------------------------
+   移动端
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    .lvl-title {
+        padding: 13px 18px 13px 16px;
+        font-size: 15px;
+        gap: 10px;
+    }
+
+    .lvl-title > .ban { padding-left: 12px; font-size: 13.5px; }
+
+    .rule { padding: 18px 18px; }
+    .rule .detail { padding-left: 0; }
+
+    .qr-section { padding: 20px 18px; }
+    .qr-row { grid-template-columns: 1fr; }
+    .pay-panel { padding: 22px 18px; }
+}
+
+@media (max-width: 480px) {
+    .rule .title { font-size: 15px; }
+    .rule .detail { font-size: 13.5px; }
+    .lvl-title { flex-wrap: wrap; }
+    .lvl-title > .ban {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+        width: 100%;
+    }
+    .pay-tab { padding: 10px 18px; font-size: 13.5px; }
+}

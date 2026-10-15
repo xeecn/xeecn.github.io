@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Nalxer · 最后一处：浅色小字压深
+   ==========================================================================
+   信息卡的"地址 / QQ群 / 玩法 / 状态"这类小标签，
+   以及页脚、说明文字，仍然偏浅 —— 因为在折射玻璃上，
+   浅灰会与透过来的背景亮度重叠，整行就"浮"起来了。
+
+   这里用 !important 强制压深，不去猜是哪一条规则在覆盖。
+   同时把这类小标签加一点字重，视觉上就稳了。
+   ========================================================================== */
+
+/* 信息卡标签 */
+.info-card .label,
+.info-card .label *,
+.rec, .cap, .placeholder, .label,
+.gallery-item .date,
+.gallery-item .caption,
+.footer, .footer span, .footer a,
+.join-row .k,
+.cmd .cn,
+.step .d,
+.rule-foot, .law-note,
+.notice-content, .notice-text,
+.payment-desc, .support-text,
+.section-title + p,
+.category p,
+.rule .detail,
+.tip, .tip-info, .tip-warn, .tip-grass,
+.description,
+.project-card p, .project-card li,
+.tool-card p {
+    color: #262e37 !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.72),
+        0 2px 6px rgba(255, 255, 255, 0.40) !important;
+}
+
+/* 标签行加字重，抵消玻璃的低对比 */
+.info-card .label,
+.rec, .cap, .placeholder, .label,
+.join-row .k,
+.cmd .cn,
+.step .d,
+.gallery-item .date {
+    font-weight: 500;
+}
+
+/* 主文字再确认一次（防止被上面更宽的选择器盖住） */
+.info-card .value,
+.info-card .value *,
+.join-row .v,
+.join-row .v *,
+.step .t,
+.step .t *,
+.gallery-title,
+.steps-title, .cmds-title, .join-title,
+.section-title, .lvl-title, .payment-title,
+.featured-title, .rules-title,
+.notice-title,
+.rules-link .title,
+.sponsor-card .title,
+.category h2,
+.project-card h3,
+.tool-card h3,
+.header h1,
+.header .subtitle {
+    color: #05090d !important;
+    text-shadow:
+        0 1px 1px rgba(255, 255, 255, 0.80),
+        0 2px 8px rgba(255, 255, 255, 0.46) !important;
+}
+
+/* 强调色保持可辨 */
+.highlight, .highlight * { color: #654803 !important; }
+.join-row .v.blue, .join-row .v.blue * { color: #17456a !important; }
+.join-row .v.gold, .join-row .v.gold * { color: #654803 !important; }
+.cmd code { color: #17456a !important; }
+
+/* 数字徽章 / 激活标签仍是白字 */
+.step .num, .step .num * {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+.pay-tab.active, .pay-tab.active *,
+.category-btn.active, .category-btn.active *,
+.tool-btn.active, .tool-btn.active * {
+    color: #06121c !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+}
