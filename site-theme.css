@@ -1,0 +1,837 @@
+/* ==========================================================================
+   Nalxer · 站点统一主题（深色玻璃 · 与首页同一套）
+   ==========================================================================
+   说明
+   --------------------------------------------------------------------------
+   首页（index.html）是单文件设计，用的是"深色玻璃 + 浅色文字 + 彩色光晕"。
+   本站其它页面（规则 / 赞助 / 项目列表 / 工具页 …）原本是浅色玻璃。
+   这份样式表把其它页面统一到首页的观感上：
+
+     文字      主 #f5f9fd   次 #9aafc4   弱 #8296aa
+     卡片      rgba(255,255,255,.05) + 1px rgba(255,255,255,.09)
+     控件      rgba(255,255,255,.08) + 1px rgba(255,255,255,.13)
+     强调      #8cc0ee（蓝） #e8c878（金） #6fce7a / #e8c264 / #e8735e（等级）
+     圆角      卡片 22px   内块 16px   胶囊 999px
+     背景      与首页同款：照片 + 减淡的彩色光晕 + 压暗层
+
+   另外补齐"过渡动画"：
+     · 模块入场：淡入 + 上移 + 轻微放大（配 site-anim.js，滚到才播）
+     · 控件交互：悬停/按下都有过渡，箭头位移、图标微动
+     · 折叠展开：高度与透明度过渡
+
+   兼容：所有动画都用 transform / opacity（合成层动画），
+        不用 backdrop-filter 做持续动画，低端机也不掉帧。
+        不支持 IntersectionObserver 时由 JS 直接放行，不会白屏。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 令牌
+   -------------------------------------------------------------------------- */
+:root {
+    --d-ink: #f5f9fd;
+    --d-ink-2: #d6e4f2;
+    --d-ink-3: #9aafc4;
+    --d-ink-4: #8296aa;
+    --d-ink-5: #6b7f93;
+
+    --d-card: rgba(255, 255, 255, 0.07);
+    --d-card-hi: rgba(255, 255, 255, 0.12);
+    --d-ctl: rgba(255, 255, 255, 0.10);
+    --d-ctl-hi: rgba(255, 255, 255, 0.17);
+    --d-line: rgba(255, 255, 255, 0.11);
+    --d-line-2: rgba(255, 255, 255, 0.16);
+    --d-line-3: rgba(255, 255, 255, 0.18);
+
+    --d-blue: #8cc0ee;
+    --d-blue-deep: #5f93c4;
+    --d-gold: #e8c878;
+    --d-green: #6fce7a;
+    --d-amber: #e8c264;
+    --d-red: #e8735e;
+    --d-red-soft: #f0a79a;
+
+    --d-r-lg: 22px;
+    --d-r: 16px;
+    --d-r-sm: 12px;
+    --d-r-pill: 999px;
+
+    --d-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    --d-shadow-hi: 0 26px 56px rgba(0, 0, 0, 0.34);
+
+    --d-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --d-fast: 0.16s linear;
+    --d-mid: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    --d-slow: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* 覆盖旧浅色主题的变量，避免残留样式拉回白底黑字 */
+    --text: var(--d-ink);
+    --text-secondary: var(--d-ink-3);
+    --text-tertiary: var(--d-ink-4);
+    --text-light: var(--d-ink-4);
+    --bg: transparent;
+    --bg-secondary: var(--d-card);
+    --bg-tertiary: var(--d-card);
+    --border: var(--d-line);
+    --border-light: var(--d-line);
+    --code-bg: rgba(255, 255, 255, 0.06);
+    --code-text: var(--d-blue);
+    --g-panel: var(--d-card);
+    --g-soft: var(--d-card);
+    --g-chip: var(--d-ctl);
+}
+
+/* --------------------------------------------------------------------------
+   2. 背景（与首页同款三层：彩色光晕 → 压暗 → 照片）
+   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   背景
+   ==========================================================================
+   ★ 挂在 html 上，不用伪元素、不用 filter。
+     实测：body::before + position:fixed + z-index:-1 + SVG filter 这套组合
+     在部分内核里背景层完全不参与绘制（三次对照截图亮度一模一样）。
+     根元素 html 的背景绘制最可靠，且会自动铺满整个画布。
+
+   ★ 也不用运行时模糊：
+     壁纸在压缩时已经过重采样，细节本就柔化；
+     再叠一层淡暗即可。省掉一次全屏滤镜，低端机更稳。
+   ========================================================================== */
+html {
+    background-color: #0a1420;
+    background-image:
+        /* 彩色光晕（与首页同款，减淡以免和壁纸打架） */
+        radial-gradient(72% 54% at 10% 0%,
+            rgba(64, 140, 190, 0.20), rgba(64, 140, 190, 0) 60%),
+        radial-gradient(64% 48% at 94% 6%,
+            rgba(138, 90, 190, 0.16), rgba(138, 90, 190, 0) 62%),
+        radial-gradient(82% 58% at 84% 98%,
+            rgba(42, 146, 130, 0.16), rgba(42, 146, 130, 0) 64%),
+        /* 压暗层：保证浅色文字可读，同时壁纸仍看得出来 */
+        linear-gradient(rgba(7, 14, 23, 0.80), rgba(7, 14, 23, 0.86)),
+        /* 壁纸 */
+        url('bg.jpg');
+    background-size: auto, auto, auto, cover, cover;
+    background-position: center, center, center, center, center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    -webkit-text-size-adjust: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* body 透明，让 html 的背景透上来 */
+body {
+    color: var(--d-ink-2);
+    background-color: transparent;
+    background-image: none;
+    min-height: 100vh;
+}
+
+/* 手机端：竖版壁纸 */
+@media (max-width: 920px) {
+    html {
+        background-image:
+            radial-gradient(72% 54% at 10% 0%,
+                rgba(64, 140, 190, 0.20), rgba(64, 140, 190, 0) 60%),
+            radial-gradient(64% 48% at 94% 6%,
+                rgba(138, 90, 190, 0.16), rgba(138, 90, 190, 0) 62%),
+            radial-gradient(82% 58% at 84% 98%,
+                rgba(42, 146, 130, 0.16), rgba(42, 146, 130, 0) 64%),
+            linear-gradient(rgba(7, 14, 23, 0.78), rgba(7, 14, 23, 0.84)),
+            url('bg-mobile.jpg');
+        background-position: center, center, center, center, center top;
+        background-attachment: scroll;
+    }
+}
+
+@media (max-width: 400px) {
+    html {
+        background-image:
+            linear-gradient(rgba(7, 14, 23, 0.78), rgba(7, 14, 23, 0.84)),
+            url('bg-mobile-small.jpg');
+        background-position: center, center top;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   3. 文字：全部换成浅色
+   -------------------------------------------------------------------------- */
+body, p, span, div, li, td, th, label, small, b, i, em, strong, blockquote {
+    color: var(--d-ink-2);
+    /* 很淡的深色描边：壁纸亮处能兜住文字，暗处也看不出来 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+h1, h2, h3, h4, h5, h6,
+.header h1,
+.rules-title, .section-title, .lvl-title,
+.payment-title, .notice-title,
+.steps-title, .cmds-title, .join-title,
+.gallery-title, .featured-title,
+.category h2, .project-card h3, .tool-card h3,
+.info-card .value, .join-row .v, .step .t,
+.rules-link .title, .link-card .title,
+.sponsor-card .title,
+.rule .title, .rule-group .head .lvl {
+    color: var(--d-ink);
+    text-shadow: none;
+}
+
+/* 次要文字 */
+.info-card .label,
+.step .d, .cmd .cn, .join-row .k,
+.rec, .cap, .placeholder, .label,
+.description, .payment-desc, .notice-text, .support-text,
+.project-card p, .tool-card p, .rule .detail,
+.rule-group .head .tip, .rule-group .items li,
+.gallery-item .caption, .footer, .footer span,
+.rule-foot, .law-note, .tip, .tip-info, .tip-warn, .tip-grass,
+.site-desc, .method-name {
+    color: var(--d-ink-3);
+    text-shadow: none;
+}
+
+a {
+    color: var(--d-blue);
+    text-decoration: none;
+    transition: color var(--d-fast);
+}
+
+a:hover { color: #a9d2f6; }
+
+code, .cmd code, .ip, .step .ip {
+    color: var(--d-blue);
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 1px 6px;
+}
+
+.highlight { color: var(--d-gold); }
+.join-row .v.blue { color: var(--d-blue); }
+.join-row .v.gold { color: var(--d-gold); }
+.warn { color: var(--d-amber); }
+.ban { color: var(--d-red); }
+.bless { color: var(--d-green); }
+.light { color: var(--d-green); }
+.mid { color: var(--d-amber); }
+.heavy { color: var(--d-red); }
+
+/* --------------------------------------------------------------------------
+   4. 容器与模块（入场动画的载体）
+   -------------------------------------------------------------------------- */
+.container,
+.main-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* 所有模块统一成深色玻璃 */
+.header,
+.copy-ip,
+.info-card,
+.features,
+.rules-link,
+.sponsor-card,
+.link-card,
+.description,
+.gallery,
+.steps,
+.cmds,
+.join,
+.footer,
+.category,
+.project-card,
+.tool-card,
+.pay-panel,
+.qr-section,
+.payment-section,
+.payment-code-container,
+.rule,
+.rule-list,
+.notice,
+.tip,
+.tip-info,
+.tip-warn,
+.tip-grass,
+.rule-foot,
+.law-note,
+.penalty-table,
+.about-card,
+.business-card,
+.featured-card,
+.rule-group,
+.music-box,
+.gallery-item,
+.qr-item {
+    position: relative;
+    background-color: var(--d-card);
+    background-image: none;
+    border: 1px solid var(--d-line);
+    border-radius: var(--d-r-lg);
+    box-shadow: none;
+
+    /* 不透明度/位移由入场动画控制，这里只保证过渡存在 */
+    transition: background-color var(--d-fast),
+                border-color var(--d-fast),
+                box-shadow var(--d-mid),
+                transform var(--d-mid);
+}
+
+/* 悬停：抬起 + 提亮（只在真有指针的设备上做） */
+@media (hover: hover) and (pointer: fine) {
+    .rules-link:hover,
+    .sponsor-card:hover,
+    .link-card:hover,
+    .info-card:hover,
+    .project-card:hover,
+    .tool-card:hover,
+    .category:hover,
+    .qr-item:hover,
+    .gallery-item:hover,
+    .rule:hover,
+    .rule-group:hover {
+        background-color: var(--d-card-hi);
+        border-color: var(--d-line-2);
+        box-shadow: var(--d-shadow);
+        transform: translateY(-4px);
+    }
+
+    .rules-link:hover .arrow,
+    .sponsor-card:hover .arrow,
+    .link-card:hover .arrow {
+        transform: translateX(4px);
+        color: #a9d2f6;
+    }
+}
+
+/* 大块模块底部再垫一层极淡的黑：
+   壁纸是游戏截图（高对比），只用半透明白底时浅色文字会发花；
+   加一层 .22 的黑做"底衬"，文字立刻清晰，卡片仍是半透明玻璃。 */
+.header,
+.description,
+.gallery,
+.steps,
+.cmds,
+.join,
+.notice,
+.pay-panel,
+.qr-section,
+.payment-section,
+.payment-code-container,
+.category,
+.rule,
+.rule-list,
+.penalty-table,
+.footer {
+    background-image: linear-gradient(rgba(6, 12, 20, 0.52), rgba(6, 12, 20, 0.52));
+}
+
+/* 分组头 / 等级条：比卡片稍实一点 */
+.lvl-title,
+.rule-group .head {
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--d-line);
+    border-radius: var(--d-r);
+}
+
+/* --------------------------------------------------------------------------
+   5. 控件：全都有过渡
+   -------------------------------------------------------------------------- */
+button,
+input,
+textarea,
+select,
+.features > span,
+.tag,
+.tech-badge,
+.tool-tag,
+.gallery-badge,
+.version,
+.pay-tab,
+.category-btn,
+.tool-btn,
+.link-btn,
+.back-link,
+.bottom-back,
+.join-row .act,
+.ip,
+.step .ip,
+.cmd,
+.step,
+.join-row,
+.copy-ip .hint,
+.lvl-title .tag {
+    background-color: var(--d-ctl);
+    background-image: none;
+    border: 1px solid var(--d-line-2);
+    border-radius: var(--d-r-pill);
+    color: var(--d-ink-2);
+    cursor: pointer;
+    transition: background-color var(--d-fast),
+                border-color var(--d-fast),
+                color var(--d-fast),
+                box-shadow var(--d-mid),
+                transform var(--d-mid);
+}
+
+/* 块状控件用圆角矩形 */
+.cmd, .step, .join-row, .lvl-title, .info-card, .project-card, .tool-card {
+    border-radius: var(--d-r);
+}
+
+button:hover,
+input:focus,
+textarea:focus,
+select:focus,
+.features > span:hover,
+.tag:hover,
+.pay-tab:hover,
+.category-btn:hover,
+.tool-btn:hover,
+.link-btn:hover,
+.back-link:hover,
+.bottom-back:hover,
+.join-row .act:hover,
+.join-row:hover,
+.cmd:hover,
+.step:hover {
+    background-color: var(--d-ctl-hi);
+    border-color: var(--d-line-3);
+    color: var(--d-ink);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
+    transform: translateY(-2px);
+}
+
+/* 按下反馈 */
+button:active,
+.pay-tab:active,
+.category-btn:active,
+.tool-btn:active,
+.link-btn:active,
+.back-link:active,
+.join-row .act:active {
+    transform: translateY(0) scale(0.97);
+}
+
+/* 选中态 */
+.pay-tab.active,
+.category-btn.active,
+.tool-btn.active {
+    background-color: rgba(140, 192, 238, 0.26);
+    border-color: rgba(140, 192, 238, 0.55);
+    color: var(--d-ink);
+    box-shadow: 0 8px 22px rgba(60, 120, 180, 0.28);
+}
+
+.pay-tab.wechat.active {
+    background-color: rgba(7, 193, 96, 0.30);
+    border-color: rgba(7, 193, 96, 0.55);
+}
+
+.pay-tab.alipay.active {
+    background-color: rgba(22, 119, 255, 0.30);
+    border-color: rgba(22, 119, 255, 0.55);
+}
+
+/* 输入类控件 */
+input, textarea, select {
+    color: var(--d-ink);
+    border-radius: var(--d-r-sm);
+}
+
+input::placeholder, textarea::placeholder { color: var(--d-ink-5); }
+
+/* --------------------------------------------------------------------------
+   6. 各页面的细节（深色下需要单独处理的地方）
+   -------------------------------------------------------------------------- */
+
+/* 表格：整体一块玻璃，行只做淡分隔 */
+.penalty-table { padding: 16px; border-radius: var(--d-r-lg); }
+
+.penalty-table table, table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+th {
+    padding: 13px 16px;
+    font-size: 14px;
+    text-align: left;
+    color: var(--d-ink);
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: var(--d-r-sm);
+    border: none;
+}
+
+td {
+    padding: 13px 16px;
+    font-size: 14px;
+    text-align: left;
+    color: var(--d-ink-3);
+    background-color: rgba(255, 255, 255, 0.04);
+    border-top: 1px solid var(--d-line);
+    border-bottom: 1px solid var(--d-line);
+}
+
+td:first-child {
+    border-left: 1px solid var(--d-line);
+    border-radius: var(--d-r-sm) 0 0 var(--d-r-sm);
+}
+
+td:last-child {
+    border-right: 1px solid var(--d-line);
+    border-radius: 0 var(--d-r-sm) var(--d-r-sm) 0;
+}
+
+/* 规则页等级标签 */
+.lvl-title { display: flex; align-items: center; gap: 12px; padding: 14px 20px; }
+
+.lvl-title .tag { padding: 4px 14px; font-size: 13px; font-weight: 700; }
+
+.lvl-title.light .tag { background-color: rgba(111, 206, 122, 0.22); border-color: rgba(111, 206, 122, 0.45); color: var(--d-green); }
+.lvl-title.mid .tag   { background-color: rgba(232, 194, 100, 0.22); border-color: rgba(232, 194, 100, 0.45); color: var(--d-amber); }
+.lvl-title.heavy .tag { background-color: rgba(232, 115, 94, 0.22); border-color: rgba(232, 115, 94, 0.45); color: var(--d-red); }
+
+.lvl-title > .ban {
+    margin-left: auto;
+    padding-left: 16px;
+    border-left: 1px solid var(--d-line-2);
+    color: var(--d-red-soft);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* 规则条目 */
+.rule .title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; }
+.rule .detail { margin-top: 8px; padding-left: 36px; font-size: 14px; line-height: 1.8; }
+
+.rule .num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0a1420;
+    border-radius: var(--d-r-pill);
+    background: linear-gradient(155deg, var(--d-blue), var(--d-blue-deep));
+    border: none;
+}
+
+/* 折叠组 */
+.rule-group { overflow: hidden; }
+
+.rule-group .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color var(--d-fast);
+}
+
+.rule-group .head .lvl { font-size: 16px; font-weight: 700; }
+.rule-group .head .lvl.light { color: var(--d-green); }
+.rule-group .head .lvl.mid   { color: var(--d-amber); }
+.rule-group .head .lvl.heavy { color: var(--d-red); }
+
+.rule-group .head .arrow {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+    color: var(--d-blue);
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--d-line-2);
+    transition: transform var(--d-mid), background-color var(--d-fast);
+}
+
+.rule-group.open .head .arrow {
+    transform: rotate(90deg);
+    background-color: rgba(255, 255, 255, 0.13);
+}
+
+.rule-group .items {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 20px;
+    transition: max-height 0.36s var(--d-ease),
+                opacity 0.26s ease,
+                padding 0.36s var(--d-ease);
+}
+
+.rule-group.open .items {
+    max-height: 1400px;
+    opacity: 1;
+    padding: 2px 20px 18px;
+}
+
+.rule-group .items ol { padding-left: 22px; margin: 0; }
+.rule-group .items li { margin-bottom: 7px; font-size: 14px; line-height: 1.75; }
+.rule-group .items li::marker { color: var(--d-blue-deep); font-weight: 600; }
+
+.rule-group .items .ban {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 9px 15px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--d-r-pill);
+    color: var(--d-red-soft);
+    background-color: rgba(200, 90, 74, 0.14);
+    border: 1px solid rgba(200, 90, 74, 0.28);
+}
+
+/* 入口卡片（守则 / 赞助 / 链接） */
+.rules-link, .sponsor-card, .link-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+    cursor: pointer;
+}
+
+.rules-link .left, .sponsor-card .left, .link-card .left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.rules-link .icon, .sponsor-card .icon, .link-card .icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    font-size: 21px;
+    border-radius: var(--d-r-sm);
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--d-line);
+    transition: background-color var(--d-fast), transform var(--d-mid);
+}
+
+.rules-link:hover .icon,
+.sponsor-card:hover .icon,
+.link-card:hover .icon {
+    background-color: rgba(255, 255, 255, 0.12);
+    transform: scale(1.06);
+}
+
+.rules-link .title, .sponsor-card .title, .link-card .title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--d-ink);
+}
+
+.rules-link .desc, .sponsor-card .desc, .link-card .desc {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--d-ink-3);
+}
+
+.rules-link .arrow, .sponsor-card .arrow, .link-card .arrow {
+    flex: 0 0 auto;
+    font-size: 17px;
+    color: var(--d-blue);
+    transition: transform var(--d-mid), color var(--d-fast);
+}
+
+/* 二维码：白底保证能扫，独立于深色主题 */
+.qr-image img,
+.qr-item img,
+.payment-code img {
+    display: block;
+    width: min(220px, 68vw);
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: var(--d-r);
+    border: none;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.qr-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 14px;
+}
+
+.qr-section > .label { display: block; margin-bottom: 12px; font-size: 13px; }
+
+.pay-panel .method-name { margin-bottom: 16px; font-size: 15px; font-weight: 700; }
+.payment-code-container, .payment-code { padding: 20px; text-align: center; }
+
+/* 相册 */
+.gallery { padding: 24px 28px; }
+.gallery-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--d-line);
+}
+.gallery-title { display: inline-flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; }
+.gallery-badge { padding: 5px 14px; font-size: 12.5px; }
+.gallery-item { overflow: hidden; padding: 0; }
+.gallery-item img { display: block; width: 100%; height: auto; border-radius: var(--d-r-lg) var(--d-r-lg) 0 0; }
+.gallery-item .caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 13px 18px;
+    font-size: 13px;
+    border-top: 1px solid var(--d-line);
+}
+
+/* 页脚 */
+.footer { padding: 22px; margin-top: 6px; text-align: center; font-size: 13px; color: var(--d-ink-4); }
+
+/* 滚动条与选中 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.04); }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.16); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.26); }
+::selection { background: rgba(140, 192, 238, 0.30); color: var(--d-ink); }
+
+/* --------------------------------------------------------------------------
+   7. 入场动画
+   --------------------------------------------------------------------------
+   由 site-anim.js 在元素滚入视口时加 .in。
+   **默认就是可见的**（不加 .anim），所以脚本没跑、或浏览器不支持
+   IntersectionObserver 时不会白屏 —— 只有 JS 确认可用才会挂上 .anim。
+   -------------------------------------------------------------------------- */
+.anim {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0) scale(0.97);
+}
+
+.anim.in {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    transition: opacity 0.5s ease-out,
+                transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 减少动效偏好：直接显示 */
+@media (prefers-reduced-motion: reduce) {
+    .anim, .anim.in {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 打印 */
+@media print {
+    body { background: #fff !important; }
+    .music-box, .toast { display: none !important; }
+    * { color: #000 !important; }
+}
+
+/* --------------------------------------------------------------------------
+   8. 手机端
+   -------------------------------------------------------------------------- */
+@media (max-width: 920px) {
+    .container, .main-content { max-width: 100%; }
+
+    .header { padding: 44px 22px 38px; }
+    .description, .gallery, .steps, .cmds, .join, .rule,
+    .notice, .tip, .rule-foot, .law-note { padding: 20px 18px; }
+
+    .rules-link, .sponsor-card, .link-card { padding: 18px; gap: 12px; }
+
+    .qr-row { grid-template-columns: 1fr; }
+    .pay-tab, .category-btn, .tool-btn { padding: 9px 16px; font-size: 13.5px; }
+
+    .rule .detail { padding-left: 0; }
+}
+
+@media (max-width: 480px) {
+    .header { padding: 38px 16px 32px; }
+    .lvl-title { flex-wrap: wrap; }
+    .lvl-title > .ban {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+        width: 100%;
+    }
+    .rule-group .head { flex-wrap: wrap; }
+}
+
+/* ==========================================================================
+   9. 功能性显隐规则（不是外观，缺了功能就坏）
+   ==========================================================================
+   ★ 这几条在旧的 liquid-glass-pages.css / liquid-glass-fix2.css 里，
+     那些文件已随主题合并被删除，所以必须在这里补回：
+        · 支付面板一次只显示一个（否则微信、支付宝两块同时亮）
+        · 二维码占位默认隐藏（否则三张码下面全显示"加载失败"）
+        · 折叠组默认收起（否则规则全摊开）
+   ========================================================================== */
+
+.pay-panel { display: none; }
+
+.pay-panel.active {
+    display: block;
+    animation: panel-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes panel-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 二维码占位：默认隐藏，图片 onerror 时才由脚本打开 */
+.placeholder { display: none; }
+
+/* 占位样式（真加载失败时显示） */
+.placeholder {
+    padding: 26px 18px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    text-align: center;
+    color: var(--d-red-soft);
+    border-radius: var(--d-r);
+    background-color: rgba(200, 90, 74, 0.14);
+    border: 1px solid rgba(200, 90, 74, 0.30);
+}
+
+/* 折叠组默认收起 */
+.rule-group .items {
+    max-height: 0;
+    opacity: 0;
+}
+
+.rule-group.open .items {
+    max-height: 1400px;
+    opacity: 1;
+}

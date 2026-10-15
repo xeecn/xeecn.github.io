@@ -1,1623 +1,1609 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="s.png" type="image/png">
-    <title>Nalxer 服务器</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1420">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Nalxer 粘液生存服务器 · Minecraft 1.12.2 · 地址 nalxer.top · QQ群 839126641">
+<link rel="icon" href="s.png" type="image/png">
+<title>Nalxer 服务器</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" media="print" onload="this.media='all'">
+<style>
+/* =========================================================
+   Nalxer · 滚动涌现版
+   动态来源：
+     1. 背景双层层视差（合成层 translate3d，零重绘）
+     2. 卡片入场涌现（IntersectionObserver 触发，一次播放）
+   兼容基线：Chromium 51+ / Android WebView 7.0+
+   刻意回避：backdrop-filter / SVG filter / mask /
+             flex-gap / clamp / inset / aspect-ratio
+   ========================================================= */
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
-    <meta name="description" content="Nalxer 粘液生存服务器 · Minecraft 1.12.2 · 地址 nalxer.top · QQ群 839126641">
+*{margin:0;padding:0;box-sizing:border-box}
 
-    <style>/*
+html{
+  background:#0a1420;
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+  max-width:100%;
+  overflow-x:hidden;
+}
 
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;
+  min-height:100vh;
+  padding:40px 20px 90px;
+  line-height:1.7;
+  color:#e6edf5;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            border-radius: 0 !important;
-        }
+/* =========================================================
+   背景：两层视差容器（比视口大 30% 留出位移余量）
+   视差由 JS 修改容器 transform，内层 CSS 动画独立运行
+   ========================================================= */
+.bg-layer{
+  position:fixed;
+  top:-30%;right:-8%;bottom:-30%;left:-8%;
+  pointer-events:none;
+  will-change:transform;
+  -webkit-transform:translate3d(0,0,0);
+          transform:translate3d(0,0,0);
+}
+.bg-static-layer{z-index:-3}
+.bg-glow-layer{z-index:-2}
 
-        :root {
-            --blue: #3b82f6;
-            --blue-dark: #2563eb;
-            --blue-mid: #60a5fa;
-            --blue-light: #93c5fd;
-            --blue-soft: #dbeafe;
-            --blue-bg: #eff6ff;
+/* ---------- 静态彩色渐变底（只绘制一次） ---------- */
+.bg-static{
+  position:absolute;
+  top:0;right:0;bottom:0;left:0;
+  background-color:#0a1420;
 
-            --grass: #6ab04c;
-            --grass-dark: #3d7a26;
-            --diamond: #2db8a8;
-            --diamond-dark: #197e75;
-            --gold: #f0a92e;
-            --gold-dark: #b45309;
-            --redstone: #dc4f4f;
-            --amethyst: #9b5de5;
-            --amethyst-dark: #6b2eb8;
+  /* 叠放顺序（background-image 的最后一项画在最底层）：
+       5 条彩色光晕  →  压暗层  →  壁纸
+     彩色光晕已大幅减淡：原来最底下那条 linear-gradient 是完全不透明的，
+     会把壁纸彻底盖住，现在换成很淡的一层。
+     压暗层只做 .26~.38，保证壁纸清楚，同时浅色文字仍读得清。 */
+  background-image:
+    radial-gradient(72% 54% at 10% 0%,
+      rgba(64,140,190,.26), rgba(64,140,190,0) 60%),
+    radial-gradient(64% 48% at 94% 6%,
+      rgba(138,90,190,.22), rgba(138,90,190,0) 62%),
+    radial-gradient(82% 58% at 84% 98%,
+      rgba(42,146,130,.22), rgba(42,146,130,0) 64%),
+    radial-gradient(58% 44% at 14% 90%,
+      rgba(190,116,72,.16), rgba(190,116,72,0) 66%),
+    radial-gradient(58% 46% at 48% 48%,
+      rgba(76,110,168,.15), rgba(76,110,168,0) 70%),
+    linear-gradient(160deg,
+      rgba(14,28,42,.30) 0%, rgba(10,20,30,.22) 46%, rgba(13,26,36,.30) 100%),
+    linear-gradient(rgba(8,16,26,.26), rgba(8,16,26,.38)),
+    url('bg.jpg');
+  background-size:auto,auto,auto,auto,auto,auto,auto,cover;
+  background-position:center,center,center,center,center,center,center,center;
+  background-repeat:no-repeat;
+}
 
-            --text: #1e293b;
-            --text-light: #64748b;
-            --white: #ffffff;
-            --border: #dbeafe;
+/* ---------- 彩色漂移光晕（全页唯一持续动画） ---------- */
+.bg-glow{
+  position:absolute;
+  top:0;right:0;bottom:0;left:0;
+  -webkit-transform-origin:50% 50%;
+          transform-origin:50% 50%;
+  will-change:transform;
+  -webkit-animation:lg-drift 34s ease-in-out infinite alternate;
+          animation:lg-drift 34s ease-in-out infinite alternate;
+  background:
+    radial-gradient(36% 32% at 30% 32%,
+      rgba(96,186,246,.34), rgba(96,186,246,0) 74%),
+    radial-gradient(32% 28% at 72% 62%,
+      rgba(182,112,228,.28), rgba(182,112,228,0) 76%),
+    radial-gradient(42% 36% at 50% 50%,
+      rgba(64,182,158,.20), rgba(64,182,158,0) 78%);
+}
 
-            --pixel-font: 'Jersey 10',
-                          'Microsoft YaHei', '微软雅黑',
-                          'PingFang SC', 'Hiragino Sans GB',
-                          'SimHei', '黑体',
-                          sans-serif;
-        }
+@-webkit-keyframes lg-drift{
+  0%  {-webkit-transform:translate3d(-3%,-2.5%,0) scale(1.14);}
+  50% {-webkit-transform:translate3d( 1.5%, 2.5%,0) scale(1.20);}
+  100%{-webkit-transform:translate3d( 3%,-2%,0) scale(1.14);}
+}
+@keyframes lg-drift{
+  0%  {-webkit-transform:translate3d(-3%,-2.5%,0) scale(1.14);transform:translate3d(-3%,-2.5%,0) scale(1.14);}
+  50% {-webkit-transform:translate3d( 1.5%, 2.5%,0) scale(1.20);transform:translate3d( 1.5%, 2.5%,0) scale(1.20);}
+  100%{-webkit-transform:translate3d( 3%,-2%,0) scale(1.14);transform:translate3d( 3%,-2%,0) scale(1.14);}
+}
 
-        body {
-            background-color: #eaf3ff;
-            background-image:
-                linear-gradient(rgba(59, 130, 246, 0.07) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.07) 1px, transparent 1px);
-            background-size: 16px 16px;
-            font-family: var(--pixel-font);
-            font-size: 14px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            color: var(--text);
-            image-rendering: pixelated;
-            -webkit-font-smoothing: none;
-        }
+/* =========================================================
+   玻璃卡片（静态绘制 + 涌现入场）
+   ========================================================= */
+.g{
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
+  border:1px solid transparent;
+  background-origin:border-box;
+  -webkit-background-clip:padding-box,padding-box,border-box;
+          background-clip:padding-box,padding-box,border-box;
+  background-image:
+    linear-gradient(135deg,
+      rgba(255,255,255,.115) 0%,
+      rgba(255,255,255,.025) 46%,
+      rgba(255,255,255,.080) 100%),
+    linear-gradient(rgba(14,24,36,.44),rgba(14,24,36,.44)),
+    linear-gradient(160deg,
+      rgba(255,255,255,.36) 0%,
+      rgba(255,255,255,.08) 44%,
+      rgba(255,255,255,.05) 66%,
+      rgba(255,255,255,.26) 100%);
+  box-shadow:
+    0 4px 18px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 -1px 0 rgba(150,190,255,.10),
+    inset 0 -16px 34px -22px rgba(120,180,255,.24);
+}
 
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background: var(--white);
-            border: 4px solid var(--blue-mid);
-            padding: 44px 40px;
-            position: relative;
-            box-shadow:
-                0 0 0 4px var(--white),
-                0 0 0 8px var(--blue-soft),
-                12px 12px 0 8px rgba(59, 130, 246, 0.12);
-        }
+/* 鼠标跟随光斑 */
+.g::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;
+  width:320px;height:320px;
+  margin:-160px 0 0 -160px;
+  border-radius:50%;
+  pointer-events:none;
+  opacity:0;
+  -webkit-transition:opacity .3s linear;
+          transition:opacity .3s linear;
+  -webkit-transform:translate3d(var(--mx,0px),var(--my,0px),0);
+          transform:translate3d(var(--mx,0px),var(--my,0px),0);
+  background:radial-gradient(circle,
+    rgba(255,255,255,.18) 0%,
+    rgba(160,210,255,.10) 34%,
+    rgba(200,160,255,.06) 54%,
+    rgba(200,160,255,0) 72%);
+}
+.g:hover::before{opacity:1}
 
-        /-* ===== 头部 ===== *-/
-        .header {
-            text-align: center;
-            padding-bottom: 22px;
-            margin-bottom: 26px;
-            border-bottom: 4px dashed var(--blue-soft);
-        }
-        .header h1 {
-            font-family: var(--pixel-font);
-            font-size: 68px;
-            letter-spacing: 6px;
-            color: var(--blue-dark);
-            text-shadow:
-                3px 3px 0 #ffffff,
-                6px 6px 0 rgba(59, 130, 246, 0.28);
-            display: inline-block;
-            line-height: 1;
-        }
-        .header .subtitle {
-            color: var(--text-light);
-            font-size: 14px;
-            letter-spacing: 4px;
-            margin-top: 8px;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .header .version {
-            display: inline-block;
-            background: var(--blue-soft);
-            color: var(--blue-dark);
-            padding: 5px 16px;
-            font-size: 18px;
-            margin-top: 12px;
-            letter-spacing: 2px;
-            border: 3px solid var(--blue-mid);
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                inset -2px -2px 0 rgba(37, 99, 235, 0.12),
-                3px 3px 0 rgba(96, 165, 250, 0.4);
-            text-shadow: 1px 1px 0 #ffffff;
-        }
+/* ---------- 涌现入场动画 ----------
+   初始：下移 64px + 缩放 0.955 + 透明
+   进入：回到原位、原尺寸、不透明
+   —— 视觉上就是从下方"涌"上来
+   ----------------------------------- */
+.g,
+.rule-group{
+  opacity:0;
+  -webkit-transform:translate3d(0,64px,0) scale(.955);
+          transform:translate3d(0,64px,0) scale(.955);
+  -webkit-transition:
+    opacity .5s ease-out,
+    -webkit-transform .85s cubic-bezier(.22,1,.36,1);
+          transition:
+    opacity .5s ease-out,
+    transform .85s cubic-bezier(.22,1,.36,1);
+}
+.g.in,
+.rule-group.in{
+  opacity:1;
+  -webkit-transform:translate3d(0,0,0) scale(1);
+          transform:translate3d(0,0,0) scale(1);
+}
+/* 音乐盒固定定位，不参与入场 */
+.music-box.g{
+  opacity:1;
+  -webkit-transform:translate3d(0,0,0) scale(1);
+          transform:translate3d(0,0,0) scale(1);
+}
 
-        /-* ===== IP 复制按钮 ===== *-/
-        .copy-ip-wrap {
-            text-align: center;
-            margin: 24px 0 22px 0;
-        }
-        .copy-ip {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--white);
-            color: var(--blue-dark);
-            padding: 12px 26px;
-            font-family: var(--pixel-font);
-            font-size: 30px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            user-select: none;
-            border: 4px solid var(--blue-dark);
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
-                inset -2px -2px 0 rgba(37, 99, 235, 0.12),
-                5px 5px 0 var(--blue-light);
-            transition: all 0.08s linear;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .copy-ip:hover {
-            background: var(--blue-bg);
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.95),
-                inset -2px -2px 0 rgba(37, 99, 235, 0.15),
-                5px 5px 0 var(--blue-mid);
-        }
-        .copy-ip:active {
-            transform: translate(4px, 4px);
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                inset -2px -2px 0 rgba(37, 99, 235, 0.18),
-                1px 1px 0 var(--blue-mid);
-        }
-        .copy-ip .hint {
-            font-family: var(--pixel-font);
-            font-size: 13px;
-            color: var(--text-light);
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
+/* =========================================================
+   布局
+   ========================================================= */
+.container{
+  position:relative;
+  max-width:900px;
+  margin:0 auto;
+}
 
-        /-* ===== 信息网格 ===== *-/
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 18px 0 20px 0;
-        }
-        .info-card {
-            background: var(--white);
-            border: 3px solid var(--border);
-            padding: 12px 14px 12px 18px;
-            transition: all 0.12s linear;
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                5px 5px 0 rgba(219, 234, 254, 0.7);
-            position: relative;
-        }
-        .info-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 5px;
-        }
-        .info-card:nth-child(1)::before { background: var(--blue); }
-        .info-card:nth-child(2)::before { background: var(--grass); }
-        .info-card:nth-child(3)::before { background: var(--gold); }
-        .info-card:nth-child(4)::before { background: var(--redstone); }
+/* ---------- 头部 ---------- */
+.header{
+  text-align:center;
+  padding:60px 28px 46px;
+  margin-bottom:18px;
+}
+.header h1{
+  font-family:"Jersey 10",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:10vw;
+  line-height:1;
+  letter-spacing:.02em;
+  color:#f5f9fd;
+  margin-bottom:14px;
+  text-shadow:
+    0 2px 16px rgba(120,180,255,.24),
+    0 0 44px rgba(160,120,220,.16);
+}
+.header .subtitle{
+  font-size:2.2vw;
+  letter-spacing:.14em;
+  color:#a7bcd2;
+}
+.header .subtitle::after{
+  content:"";
+  display:block;
+  width:72px;height:1px;
+  margin:20px auto 0;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,0),rgba(255,255,255,.36),rgba(255,255,255,0));
+}
+.header .version{
+  display:inline-block;
+  margin-top:20px;
+  padding:8px 20px;
+  font-size:13px;
+  letter-spacing:.08em;
+  color:#cfe0f0;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+}
 
-        .info-card:hover {
-            transform: translate(-2px, -2px);
-            border-color: var(--blue-light);
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                7px 7px 0 rgba(147, 197, 253, 0.7);
-        }
-        .info-card .label {
-            color: var(--text-light);
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .info-card .value {
-            color: var(--text);
-            font-size: 15px;
-            margin-top: 4px;
-            text-shadow: 1px 1px 0 #ffffff;
-            line-height: 1.3;
-        }
-        .info-card .value a,
-        .info-card .value .highlight {
-            font-size: 22px;
-            line-height: 1;
-            display: inline-block;
-            margin-top: 2px;
-        }
-        .info-card .value .highlight {
-            color: var(--gold-dark);
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.3);
-        }
-        .info-card .value a {
-            color: var(--blue-dark);
-            text-decoration: none;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.2);
-        }
-        .info-card .value a:hover {
-            text-decoration: underline;
-        }
+/* ---------- 复制 IP ---------- */
+.copy-ip{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:22px 24px;
+  margin-bottom:18px;
+  text-align:center;
+  cursor:pointer;
+}
+.copy-ip .ip-main{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:6vw;
+  font-weight:700;
+  letter-spacing:.04em;
+  color:#f5f9fd;
+}
+.copy-ip .hint{
+  margin-top:6px;
+  font-size:12px;
+  letter-spacing:.10em;
+  color:#8ba0b6;
+}
 
-        .online-status {
-            color: var(--grass-dark);
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .online-status .dot {
-            display: inline-block;
-            width: 9px;
-            height: 9px;
-            background: #22c55e;
-            margin-right: 5px;
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.5),
-                inset -2px -2px 0 rgba(0, 100, 0, 0.3),
-                0 0 0 2px var(--white),
-                0 0 0 3px rgba(34, 197, 94, 0.4);
-        }
-        .online-status.offline { color: #b91c1c; }
-        .online-status.offline .dot {
-            background: #ef4444;
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.5),
-                inset -2px -2px 0 rgba(100, 0, 0, 0.3),
-                0 0 0 2px var(--white),
-                0 0 0 3px rgba(239, 68, 68, 0.4);
-        }
-        .online-status.unknown { color: var(--gold-dark); }
-        .online-status.unknown .dot {
-            background: #f59e0b;
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.5),
-                inset -2px -2px 0 rgba(100, 60, 0, 0.3),
-                0 0 0 2px var(--white),
-                0 0 0 3px rgba(245, 158, 11, 0.4);
-        }
-        .online-status .count {
-            font-size: 22px;
-            color: var(--blue-dark);
-            line-height: 1;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.2);
-            vertical-align: -2px;
-        }
+/* ---------- 信息网格 ---------- */
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-gap:12px;
+  gap:12px;
+  margin-bottom:18px;
+}
+.info-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px 14px;
+  min-height:94px;
+  text-align:center;
+}
+.info-card .label{
+  margin-bottom:8px;
+  font-size:12.5px;
+  letter-spacing:.05em;
+  color:#9aafc4;
+}
+.info-card .value{
+  font-size:4vw;
+  font-weight:600;
+  color:#f5f9fd;
+  word-break:break-word;
+}
+.info-card .value a{color:#f5f9fd;text-decoration:none}
 
-        /-* ===== 赞助卡片 ===== *-/
-        .sponsor-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fffdf5;
-            border: 4px solid var(--gold-dark);
-            padding: 12px 20px;
-            margin: 4px 0 0 0;
-            transition: all 0.08s linear;
-            text-decoration: none;
-            color: inherit;
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                inset -2px -2px 0 rgba(240, 169, 46, 0.2),
-                5px 5px 0 var(--gold);
-        }
-        .sponsor-card:hover {
-            background: #fef3d6;
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                inset -2px -2px 0 rgba(240, 169, 46, 0.25),
-                5px 5px 0 #e09b20;
-        }
-        .sponsor-card:active {
-            transform: translate(4px, 4px);
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                inset -2px -2px 0 rgba(240, 169, 46, 0.25),
-                1px 1px 0 #e09b20;
-        }
-        .sponsor-card .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .sponsor-card .left .icon {
-            font-size: 22px;
-            line-height: 1;
-        }
-        .sponsor-card .left .text {
-            display: flex;
-            flex-direction: column;
-        }
-        .sponsor-card .left .text .title {
-            color: var(--gold-dark);
-            font-size: 17px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.35);
-            line-height: 1;
-        }
-        .sponsor-card .left .text .desc {
-            color: #92701f;
-            font-size: 13px;
-            margin-top: 5px;
-            text-shadow: 1px 1px 0 #ffffff;
-            line-height: 1;
-        }
-        .sponsor-card .arrow {
-            color: var(--gold-dark);
-            font-size: 24px;
-            transition: transform 0.12s linear;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .sponsor-card:hover .arrow {
-            transform: translateX(4px);
-        }
+.online-status{display:inline-flex;align-items:center}
+.dot{
+  display:inline-block;
+  width:8px;height:8px;
+  margin-right:7px;
+  border-radius:50%;
+  background:#c0392b;
+  box-shadow:0 0 8px rgba(0,0,0,.4);
+}
+.online-status.online .dot{
+  background:#3fb950;
+  box-shadow:0 0 10px rgba(63,185,80,.55);
+}
+.online-status.offline .dot{background:#c0392b}
 
-        /-* ===== 特性标签 ===== *-/
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 18px 0 20px 0;
-        }
-        .features span {
-            padding: 5px 14px;
-            font-size: 15px;
-            letter-spacing: 1px;
-            border: 3px solid;
-            transition: all 0.08s linear;
-            text-shadow: 1px 1px 0 #ffffff;
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                inset -2px -2px 0 rgba(0, 0, 0, 0.06),
-                3px 3px 0 rgba(0, 0, 0, 0.06);
-        }
-        .features span:nth-child(1) {
-            color: var(--grass-dark);
-            border-color: var(--grass);
-            background: #e6f5dd;
-        }
-        .features span:nth-child(2) {
-            color: var(--diamond-dark);
-            border-color: var(--diamond);
-            background: #daf4f1;
-        }
-        .features span:nth-child(3) {
-            color: var(--gold-dark);
-            border-color: var(--gold);
-            background: #fdf0d5;
-        }
-        .features span:nth-child(4) {
-            color: var(--amethyst-dark);
-            border-color: var(--amethyst);
-            background: #efe3fc;
-        }
-        .features span:hover {
-            transform: translate(-2px, -2px);
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                inset -2px -2px 0 rgba(0, 0, 0, 0.06),
-                5px 5px 0 rgba(0, 0, 0, 0.1);
-        }
+/* ---------- 标签条 ---------- */
+.features{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-flex-wrap:wrap;
+          flex-wrap:wrap;
+  -webkit-justify-content:center;
+          justify-content:center;
+  -webkit-align-items:center;
+          align-items:center;
+  padding:10px;
+  margin-bottom:18px;
+}
+.features span{
+  display:inline-block;
+  margin:4px;
+  padding:7px 15px;
+  font-size:13px;
+  line-height:1.5;
+  white-space:nowrap;
+  border-radius:999px;
+  color:#d6e4f2;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.13);
+}
 
-        /-* ===== 描述区 ===== *-/
-        .description {
-            background: #f7fbff;
-            border: 3px solid var(--border);
-            border-left: 7px solid var(--grass);
-            padding: 16px 20px;
-            margin: 16px 0 20px 0;
-            color: #475569;
-            font-size: 15px;
-            line-height: 1.75;
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                5px 5px 0 rgba(219, 234, 254, 0.7);
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .description .welcome {
-            color: var(--grass-dark);
-            font-size: 17px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(106, 176, 76, 0.3);
-        }
-        .description strong {
-            color: var(--blue-dark);
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
-        }
+/* ---------- 入口卡片 ---------- */
+.link-card{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:space-between;
+          justify-content:space-between;
+  padding:20px 24px;
+  margin-bottom:14px;
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+}
+.link-card .left{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  min-width:0;
+}
+.link-card .icon{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:center;
+          justify-content:center;
+  -webkit-flex:0 0 auto;
+          flex:0 0 auto;
+  width:44px;height:44px;
+  margin-right:14px;
+  font-size:21px;
+  border-radius:14px;
+  background:rgba(255,255,255,.08);
+}
+.link-card .text{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-flex-direction:column;
+          flex-direction:column;
+  min-width:0;
+}
+.link-card .title{font-size:17px;font-weight:700;color:#f5f9fd}
+.link-card .desc{margin-top:2px;font-size:13px;color:#9aafc4}
+.link-card .arrow{
+  -webkit-flex:0 0 auto;
+          flex:0 0 auto;
+  margin-left:12px;
+  font-size:17px;
+  color:#8cc0ee;
+}
 
-        /-* ===== 相册 ===== *-/
-        .gallery {
-            margin: 26px 0 16px 0;
-            border-top: 4px dashed var(--blue-soft);
-            padding-top: 22px;
-        }
-        .gallery-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .gallery-title {
-            color: var(--blue-dark);
-            font-size: 17px;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 0 #ffffff, 3px 3px 0 rgba(59, 130, 246, 0.25);
-        }
-        .gallery-title .icon {
-            margin-right: 6px;
-        }
-        .gallery-badge {
-            background: #efe3fc;
-            border: 3px solid var(--amethyst);
-            color: var(--amethyst-dark);
-            font-size: 13px;
-            padding: 4px 12px;
-            letter-spacing: 1px;
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                3px 3px 0 rgba(155, 93, 229, 0.4);
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .gallery-item {
-            background: var(--white);
-            border: 3px solid var(--border);
-            overflow: hidden;
-            transition: all 0.12s linear;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow:
-                5px 5px 0 rgba(219, 234, 254, 0.7);
-        }
-        .gallery-item:hover {
-            transform: translate(-3px, -3px);
-            border-color: var(--blue-light);
-            box-shadow:
-                8px 8px 0 rgba(147, 197, 253, 0.7);
-        }
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            image-rendering: pixelated;
-            border-bottom: 3px solid var(--border);
-        }
-        .gallery-item .caption {
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8fbff;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .gallery-item .caption .text {
-            color: #475569;
-            font-size: 15px;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .gallery-item .caption .text .highlight {
-            color: var(--gold-dark);
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(240, 169, 46, 0.3);
-        }
-        .gallery-item .caption .date {
-            color: var(--diamond-dark);
-            font-size: 18px;
-            background: #daf4f1;
-            padding: 3px 12px;
-            border: 3px solid var(--diamond);
-            letter-spacing: 1px;
-            line-height: 1;
-            text-shadow: 1px 1px 0 #ffffff;
-            box-shadow:
-                inset 2px 2px 0 rgba(255, 255, 255, 0.9),
-                3px 3px 0 rgba(45, 184, 168, 0.4);
-        }
+/* ---------- 描述 ---------- */
+.description{
+  padding:24px 28px;
+  margin-bottom:18px;
+  font-size:15px;
+  line-height:1.9;
+  color:#c9d7e5;
+}
+.description strong{color:#f5f9fd}
+.description a{color:#8cc0ee;text-decoration:none}
+.description .welcome{
+  display:inline-block;
+  margin-bottom:6px;
+  font-size:16px;
+  font-weight:700;
+  color:#f5f9fd;
+}
 
-        /-* ===== 守则入口 ===== *-/
-        .rules-link {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8fbff;
-            border: 4px solid var(--blue-mid);
-            padding: 12px 20px;
-            margin: 4px 0 18px 0;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.08s linear;
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                5px 5px 0 rgba(147, 197, 253, 0.7);
-        }
-        .rules-link:hover {
-            background: var(--blue-bg);
-            border-color: var(--blue-dark);
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                5px 5px 0 var(--blue-mid);
-        }
-        .rules-link:active {
-            transform: translate(4px, 4px);
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                1px 1px 0 var(--blue-mid);
-        }
-        .rules-link .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .rules-link .left .icon { font-size: 22px; line-height: 1; }
-        .rules-link .left .text { display: flex; flex-direction: column; }
-        .rules-link .left .text .title {
-            color: var(--blue-dark);
-            font-size: 17px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
-            line-height: 1;
-        }
-        .rules-link .left .text .desc {
-            color: var(--text-light);
-            font-size: 13px;
-            margin-top: 5px;
-            text-shadow: 1px 1px 0 #ffffff;
-            line-height: 1;
-        }
-        .rules-link .arrow {
-            color: var(--blue-dark);
-            font-size: 24px;
-            transition: transform 0.12s linear;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .rules-link:hover .arrow { transform: translateX(4px); }
+/* ---------- 相册 ---------- */
+.gallery{padding:24px 28px;margin-bottom:18px}
+.gallery-header{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:space-between;
+          justify-content:space-between;
+  -webkit-flex-wrap:wrap;
+          flex-wrap:wrap;
+  padding-bottom:14px;
+  margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.gallery-title{
+  margin-right:10px;
+  font-size:18px;
+  font-weight:700;
+  color:#f5f9fd;
+}
+.gallery-badge{
+  padding:5px 13px;
+  font-size:12.5px;
+  border-radius:999px;
+  color:#b9c9d9;
+  background:rgba(255,255,255,.07);
+}
+.gallery-item{
+  overflow:hidden;
+  border-radius:16px;
+  background:rgba(0,0,0,.22);
+}
+.gallery-item img{display:block;width:100%;height:auto}
+.gallery-item .caption{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:space-between;
+          justify-content:space-between;
+  -webkit-flex-wrap:wrap;
+          flex-wrap:wrap;
+  padding:12px 16px;
+  font-size:13px;
+  color:#a8b8c8;
+}
+.gallery-item .caption .text{margin-right:10px}
+.gallery-item .highlight{color:#e8c878}
 
-        /-* ===== 公告 ===== *-/
-        .notice {
-            margin-top: 24px;
-            padding-top: 18px;
-            border-top: 4px dashed var(--blue-soft);
-        }
-        .notice-title {
-            color: var(--grass-dark);
-            font-size: 15px;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 0 #ffffff, 3px 3px 0 rgba(106, 176, 76, 0.3);
-        }
-        .notice-content {
-            background: #f8fbff;
-            border: 3px solid var(--border);
-            padding: 14px 18px;
-            color: #475569;
-            font-size: 15px;
-            line-height: 1.75;
-            min-height: 48px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            box-shadow:
-                inset 2px 2px 0 #ffffff,
-                5px 5px 0 rgba(219, 234, 254, 0.7);
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .notice-content .empty {
-            color: #94a3b8;
-            font-style: italic;
-        }
+/* ---------- 步骤 / 命令 / 加入 ---------- */
+.steps,.cmds,.join{padding:24px 28px;margin-bottom:18px}
+.steps-title,.cmds-title,.join-title{
+  font-size:18px;
+  font-weight:700;
+  color:#f5f9fd;
+  padding-bottom:14px;
+  margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.step{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:flex-start;
+          align-items:flex-start;
+  padding:14px 16px;
+  margin-bottom:8px;
+  border-radius:16px;
+  background:rgba(255,255,255,.05);
+}
+.step:last-child{margin-bottom:0}
+.step .num{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:center;
+          justify-content:center;
+  -webkit-flex:0 0 auto;
+          flex:0 0 auto;
+  width:28px;height:28px;
+  margin-right:14px;
+  font-size:14px;
+  font-weight:700;
+  color:#fff;
+  border-radius:50%;
+  background:linear-gradient(155deg,#6d9dc4,#35618a);
+  box-shadow:0 2px 8px rgba(31,58,82,.45);
+}
+.step .body{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-flex-direction:column;
+          flex-direction:column;
+  min-width:0;
+}
+.step .body > * + *{margin-top:5px}
+.step .t{font-size:15px;font-weight:600;color:#eef4fa}
+.step .d{font-size:13px;line-height:1.7;color:#9aafc4}
+.step .ip{
+  display:inline-block;
+  width:-webkit-fit-content;width:-moz-fit-content;width:fit-content;
+  padding:6px 14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;
+  border-radius:999px;
+  color:#cfe0f0;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.13);
+  cursor:pointer;
+}
 
-        /-* ===== 底部 ===== *-/
-        .footer {
-            text-align: center;
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 4px dashed var(--blue-soft);
-            color: var(--text-light);
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 0 #ffffff;
-        }
-        .footer span {
-            color: var(--blue-dark);
-            font-size: 18px;
-            letter-spacing: 2px;
-            vertical-align: -2px;
-            text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(59, 130, 246, 0.25);
-        }
+.cmd-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  grid-gap:8px;
+  gap:8px;
+}
+.cmd{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:space-between;
+          justify-content:space-between;
+  padding:12px 15px;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  cursor:pointer;
+}
+.cmd code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13.5px;
+  font-weight:600;
+  color:#8cc0ee;
+}
+.cmd .cn{
+  margin-left:10px;
+  font-size:12.5px;
+  color:#9aafc4;
+  white-space:nowrap;
+}
 
+.join-row{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-flex-wrap:wrap;
+          flex-wrap:wrap;
+  padding:14px 16px;
+  margin-bottom:8px;
+  border-radius:16px;
+  background:rgba(255,255,255,.05);
+}
+.join-row:last-child{margin-bottom:0}
+.join-row .k{
+  -webkit-flex:1 1 110px;
+          flex:1 1 110px;
+  margin-right:12px;
+  font-size:13.5px;
+  color:#9aafc4;
+}
+.join-row .v{
+  -webkit-flex:1 1 auto;
+          flex:1 1 auto;
+  margin-right:12px;
+  font-size:15px;
+  font-weight:600;
+  color:#f5f9fd;
+  word-break:break-all;
+}
+.join-row .v.blue{color:#8cc0ee}
+.join-row .v.gold{color:#e8c878}
+.join-row .act{
+  -webkit-flex:0 0 auto;
+          flex:0 0 auto;
+  padding:5px 15px;
+  font-size:12.5px;
+  border-radius:999px;
+  color:#cfe0f0;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.13);
+  cursor:pointer;
+}
+.join-row .avatar{
+  -webkit-flex:0 0 auto;
+          flex:0 0 auto;
+  width:32px;height:32px;
+  margin-right:12px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,255,255,.55);
+}
+.join-row .small{font-size:13px;color:#8296aa;font-weight:400}
 
-          /-* ===== 新手快速加入（三步） ===== *-/
-          .steps { margin-top: 22px; }
-          .steps-title {
-              color: var(--blue-dark);
-              font-size: 20px;
-              letter-spacing: 2px;
-              margin-bottom: 10px;
-              text-shadow: 1px 1px 0 #ffffff;
-          }
-          .step {
-              display: flex;
-              gap: 12px;
-              align-items: flex-start;
-              background: var(--white);
-              border: 3px solid var(--blue-soft);
-              padding: 12px 14px;
-              margin-bottom: 10px;
-              box-shadow: 4px 4px 0 rgba(219, 234, 254, 0.9);
-          }
-          .step .num {
-              flex: 0 0 30px;
-              height: 30px;
-              line-height: 30px;
-              text-align: center;
-              background: var(--blue);
-              color: #fff;
-              font-size: 20px;
-              border: 3px solid var(--blue-dark);
-              box-shadow: 2px 2px 0 rgba(37, 99, 235, 0.35);
-          }
-          .step .body { flex: 1; }
-          .step .body .t {
-              color: var(--text);
-              font-size: 19px;
-              letter-spacing: 1px;
-              display: block;
-              margin-bottom: 2px;
-          }
-          .step .body .d {
-              color: var(--text-light);
-              font-size: 13px;
-              display: block;
-          }
-          .step .body .ip {
-              display: inline-block;
-              margin-top: 6px;
-              background: var(--blue-bg);
-              border: 2px dashed var(--blue-light);
-              padding: 3px 10px;
-              color: var(--blue-dark);
-              font-size: 17px;
-              cursor: pointer;
-              user-select: none;
-          }
-          .step .body .ip:hover { background: var(--blue-soft); }
+/* ---------- 游戏内规则 ---------- */
+.rules{margin-bottom:18px}
+.rules-title{
+  font-size:19px;
+  font-weight:700;
+  color:#f5f9fd;
+  padding:0 2px 12px;
+  margin-bottom:14px;
+}
+.rules-title small{
+  margin-left:6px;
+  font-size:13px;
+  font-weight:400;
+  color:#8296aa;
+}
 
-          /-* ===== 常用命令 ===== *-/
-          .cmds { margin-top: 22px; }
-          .cmds-title {
-              color: var(--blue-dark);
-              font-size: 20px;
-              letter-spacing: 2px;
-              margin-bottom: 10px;
-              text-shadow: 1px 1px 0 #ffffff;
-          }
-          .cmd-list { display: flex; flex-wrap: wrap; gap: 8px; }
-          .cmd {
-              background: var(--white);
-              border: 3px solid var(--blue-soft);
-              padding: 6px 12px;
-              font-size: 14px;
-              color: var(--text);
-              box-shadow: 3px 3px 0 rgba(219, 234, 254, 0.9);
-              cursor: pointer;
-              user-select: none;
-              transition: transform .08s;
-          }
-          .cmd:hover { border-color: var(--blue-light); transform: translate(-1px, -1px); }
-          .cmd:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(219, 234, 254, 0.9); }
-          .cmd code { color: var(--blue-dark); font-weight: bold; }
-          .cmd .cn { color: var(--text-light); font-size: 12px; margin-left: 6px; }
+.law-note{
+  padding:16px 20px;
+  margin-bottom:12px;
+  font-size:14px;
+  border-radius:18px;
+  color:#c9d7e5;
+}
 
-          /-* ===== 加入我们 ===== *-/
-          .join { margin-top: 22px; }
-          .join-title {
-              color: var(--blue-dark);
-              font-size: 20px;
-              letter-spacing: 2px;
-              margin-bottom: 10px;
-              text-shadow: 1px 1px 0 #ffffff;
-          }
-          .join-row {
-              display: flex;
-              align-items: center;
-              gap: 12px;
-              background: var(--white);
-              border: 3px solid var(--blue-soft);
-              padding: 12px 14px;
-              margin-bottom: 8px;
-              box-shadow: 4px 4px 0 rgba(219, 234, 254, 0.9);
-          }
-          .join-row .k { color: var(--text-light); font-size: 14px; flex: 0 0 96px; }
-          .join-row .v { flex: 1; color: var(--text); font-size: 18px; letter-spacing: 1px; }
-          .join-row .v.gold { color: var(--gold-dark); }
-          .join-row .v.blue { color: var(--blue-dark); }
-          .join-row .act {
-              flex: 0 0 auto;
-              background: var(--blue-bg);
-              border: 2px solid var(--blue-light);
-              color: var(--blue-dark);
-              padding: 4px 10px;
-              font-size: 13px;
-              cursor: pointer;
-              user-select: none;
-          }
-          .join-row .act:hover { background: var(--blue-soft); }
-          .join-row.owner .v { font-size: 16px; }
-          .join-row .avatar {
-              width: 40px; height: 40px;
-              border: 3px solid var(--blue-soft);
-              image-rendering: pixelated;
-              object-fit: cover;
-          }
+.rule-group{
+  position:relative;
+  overflow:hidden;
+  margin-bottom:10px;
+  border-radius:16px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+}
+.rule-group .head{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:space-between;
+          justify-content:space-between;
+  padding:14px 20px;
+  cursor:pointer;
+  -webkit-user-select:none;
+     -moz-user-select:none;
+      -ms-user-select:none;
+          user-select:none;
+}
+.rule-group .head .lvl{font-size:16px;font-weight:700}
+.rule-group .head .lvl.light{color:#6fce7a}
+.rule-group .head .lvl.mid{color:#e8c264}
+.rule-group .head .lvl.heavy{color:#e8735e}
+.rule-group .head .tip{
+  margin-left:8px;
+  font-size:13px;
+  color:#9aafc4;
+}
+.rule-group .head .arrow{
+  -webkit-flex:0 0 auto;
+          flex:0 0 auto;
+  margin-left:12px;
+  font-size:12px;
+  color:#8cc0ee;
+  -webkit-transition:-webkit-transform .16s linear;
+          transition:transform .16s linear;
+}
+.rule-group.open .head .arrow{
+  -webkit-transform:rotate(90deg);
+          transform:rotate(90deg);
+}
 
-          /-* ===== 游戏内规则（分组） ===== *-/
-          .rules { margin-top: 22px; }
-          .rules-title {
-              color: var(--blue-dark);
-              font-size: 20px;
-              letter-spacing: 2px;
-              margin-bottom: 10px;
-              text-shadow: 1px 1px 0 #ffffff;
-          }
-          .law-note {
-              background: #fff7e6;
-              border: 3px solid #f5d08a;
-              color: var(--gold-dark);
-              padding: 10px 14px;
-              font-size: 15px;
-              margin-bottom: 10px;
-              box-shadow: 4px 4px 0 rgba(245, 208, 138, 0.5);
-          }
-          .rule-group {
-              background: var(--white);
-              border: 3px solid var(--blue-soft);
-              margin-bottom: 8px;
-              box-shadow: 4px 4px 0 rgba(219, 234, 254, 0.9);
-          }
-          .rule-group .head {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding: 11px 14px;
-              cursor: pointer;
-              user-select: none;
-          }
-          .rule-group .head:hover { background: var(--blue-bg); }
-          .rule-group .head .lvl { font-size: 18px; letter-spacing: 2px; }
-          .rule-group .head .lvl.light  { color: var(--grass-dark); }
-          .rule-group .head .lvl.mid    { color: var(--gold-dark); }
-          .rule-group .head .lvl.heavy  { color: var(--redstone); }
-          .rule-group .head .tip { color: var(--text-light); font-size: 14px; }
-          .rule-group .head .arrow {
-              color: var(--blue-light);
-              font-size: 18px;
-              transition: transform .15s;
-          }
-          .rule-group.open .head .arrow { transform: rotate(90deg); }
-          /-* 折叠动画：display 不能过渡，所以用 max-height + opacity *-/
-          .rule-group .items {
-              max-height: 0;
-              overflow: hidden;
-              opacity: 0;
-              padding: 0 16px;
-              border-top: 3px dashed transparent;
-              transition: max-height .34s cubic-bezier(.4, 0, .2, 1),
-                          opacity .26s ease,
-                          padding .34s cubic-bezier(.4, 0, .2, 1),
-                          border-color .34s ease;
-          }
-          .rule-group.open .items {
-              max-height: 1200px;   /-* 足够容纳最长那组（重度 8 条 + 说明） *-/
-              opacity: 1;
-              padding: 10px 16px 12px;
-              border-top-color: var(--blue-soft);
-          }
-          /-* 箭头旋转也给个动画，开合时更自然 *-/
-          .rule-group .head { transition: background .18s ease; }
-          .rule-group .items ol { padding-left: 22px; }
-          .rule-group .items li {
-              color: var(--text);
-              font-size: 14px;
-              line-height: 1.9;
-          }
-          .rule-group .items .ban {
-              margin-top: 8px;
-              color: var(--redstone);
-              font-size: 14px;
-          }
-          .rule-foot {
-              margin-top: 10px;
-              text-align: center;
-              font-size: 14px;
-              line-height: 2;
-          }
-          .rule-foot .warn { color: var(--amethyst-dark); }
-          .rule-foot .bless { color: var(--grass-dark); }
+.rule-group .items{display:none;padding:0 20px 18px}
+.rule-group.open .items{display:block}
+.rule-group .items ol{padding-left:22px;margin:0}
+.rule-group .items li{
+  margin-bottom:7px;
+  font-size:14px;
+  line-height:1.75;
+  color:#c9d7e5;
+}
+.rule-group .items li::marker{color:#5f93c4;font-weight:600}
+.rule-group .items .ban{
+  display:inline-block;
+  margin-top:12px;
+  padding:9px 15px;
+  font-size:13px;
+  font-weight:600;
+  border-radius:999px;
+  color:#f0a79a;
+  background:rgba(200,90,74,.14);
+  border:1px solid rgba(200,90,74,.28);
+}
 
-          /-* ===== 音乐播放器（右下角） ===== *-/
-          .music-box {
-              position: fixed;
-              right: 18px;
-              bottom: 18px;
-              z-index: 999;
-              display: flex;
-              gap: 6px;
-          }
-          .music-btn {
-              width: 44px; height: 44px;
-              background: var(--white);
-              border: 3px solid var(--blue);
-              color: var(--blue-dark);
-              font-size: 20px;
-              line-height: 1;
-              cursor: pointer;
-              box-shadow: 3px 3px 0 rgba(59, 130, 246, 0.35);
-              font-family: var(--pixel-font);
-          }
-          .music-btn:hover { background: var(--blue-bg); }
-          .music-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(59, 130, 246, 0.35); }
-          .music-btn.playing { background: var(--grass); border-color: var(--grass-dark); color: #fff; }
-          .music-btn.next { border-color: var(--amethyst); color: var(--amethyst-dark); }
-          .music-btn.next:hover { background: #f6efff; }
+.rule-foot{
+  padding:18px 20px;
+  margin-top:14px;
+  font-size:14px;
+  line-height:1.85;
+  border-radius:18px;
+  color:#c9d7e5;
+}
+.rule-foot .warn{color:#e8735e}
+.rule-foot .bless{color:#6fce7a}
 
+/* ---------- 音乐播放器 ---------- */
+.music-box{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  z-index:9000;
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  padding:7px;
+  border-radius:999px;
+}
+.music-btn{
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+          align-items:center;
+  -webkit-justify-content:center;
+          justify-content:center;
+  width:42px;height:42px;
+  padding:0;
+  font-size:17px;
+  line-height:1;
+  color:#dbe8f5;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  background:rgba(255,255,255,.12);
+  -webkit-tap-highlight-color:transparent;
+}
+.music-btn + .music-btn{margin-left:8px}
+.music-btn.next{color:#c3a5f0}
+.music-btn.playing{background:#2ea043;color:#fff}
 
-          /-* ===== 新增卡片的 hover 浮起（与 .info-card 同一套观感）=====
-             之前 .step / .join-row / .rule-group 都没有 hover 反馈，
-             鼠标移上去只有 .cmd 会动，看起来像坏了一半。 *-/
-          .step {
-              transition: all 0.12s linear;
-          }
-          .step:hover {
-              transform: translate(-2px, -2px);
-              border-color: var(--blue-light);
-              box-shadow:
-                  inset 2px 2px 0 #ffffff,
-                  7px 7px 0 rgba(147, 197, 253, 0.7);
-          }
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:30px;
+  z-index:9100;
+  padding:10px 20px;
+  font-size:13.5px;
+  border-radius:999px;
+  color:#e6edf5;
+  background:rgba(20,30,42,.95);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 6px 22px rgba(0,0,0,.45);
+  opacity:0;
+  pointer-events:none;
+  -webkit-transform:translate(-50%,14px);
+          transform:translate(-50%,14px);
+  -webkit-transition:opacity .2s linear,-webkit-transform .2s linear;
+          transition:opacity .2s linear,transform .2s linear;
+}
+.toast.show{
+  opacity:1;
+  -webkit-transform:translate(-50%,0);
+          transform:translate(-50%,0);
+}
 
-          .join-row {
-              transition: all 0.12s linear;
-          }
-          .join-row:hover {
-              transform: translate(-2px, -2px);
-              border-color: var(--blue-light);
-              box-shadow:
-                  inset 2px 2px 0 #ffffff,
-                  7px 7px 0 rgba(147, 197, 253, 0.7);
-          }
+/* ---------- 公告 ---------- */
+.notice{padding:20px 24px;margin-bottom:18px}
+.notice-title{
+  font-size:15.5px;
+  font-weight:700;
+  color:#f5f9fd;
+  margin-bottom:8px;
+}
+.notice-content{
+  font-size:14px;
+  line-height:1.85;
+  color:#b9c8d8;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
 
-          .rule-group {
-              transition: all 0.12s linear;
-          }
-          .rule-group:hover {
-              transform: translate(-2px, -2px);
-              border-color: var(--blue-light);
-              box-shadow:
-                  inset 2px 2px 0 #ffffff,
-                  7px 7px 0 rgba(147, 197, 253, 0.7);
-          }
+/* ---------- 页脚 ---------- */
+.footer{
+  padding:22px;
+  margin-top:6px;
+  text-align:center;
+  font-size:13px;
+  color:#8296aa;
+  border-radius:22px;
+}
+.footer span{color:#b9c9d9}
 
-          /-* 步骤里的"点击复制"地址块也一起浮 *-/
-          .step .body .ip {
-              transition: all 0.12s linear;
-          }
-          .step .body .ip:hover {
-              transform: translate(-2px, -2px);
-              box-shadow: 3px 3px 0 rgba(147, 197, 253, 0.7);
-          }
+/* =========================================================
+   悬停（仅指针设备）
+   ========================================================= */
+@media (hover:hover) and (pointer:fine){
+  .link-card,
+  .copy-ip,
+  .info-card,
+  .cmd,
+  .step,
+  .join-row{
+    -webkit-transition:background-color .16s linear,box-shadow .16s linear;
+            transition:background-color .16s linear,box-shadow .16s linear;
+  }
+  .link-card:hover{background-color:rgba(255,255,255,.045)}
+  .link-card .arrow{
+    -webkit-transition:-webkit-transform .16s linear;
+            transition:transform .16s linear;
+  }
+  .link-card:hover .arrow{
+    -webkit-transform:translateX(3px);
+            transform:translateX(3px);
+  }
+  .copy-ip:hover,
+  .info-card:hover{background-color:rgba(255,255,255,.04)}
+  .cmd:hover,
+  .step:hover,
+  .join-row:hover{background-color:rgba(255,255,255,.095)}
+  .music-btn{
+    -webkit-transition:background-color .16s linear;
+            transition:background-color .16s linear;
+  }
+  .music-btn:hover{background-color:rgba(255,255,255,.22)}
+}
 
-          /-* 加入我们的"按钮"保持按压感，但给个颜色变化 *-/
-          .join-row .act {
-              transition: all 0.12s linear;
-          }
-          .join-row .act:hover {
-              transform: translate(-1px, -1px);
-              box-shadow: 2px 2px 0 rgba(147, 197, 253, 0.7);
-          }
-          .join-row .act:active {
-              transform: translate(1px, 1px);
-              box-shadow: none;
-          }
+/* =========================================================
+   响应式
+   ========================================================= */
+@media (min-width:901px){
+  .header h1{font-size:84px}
+  .header .subtitle{font-size:18px}
+  .copy-ip .ip-main{font-size:26px}
+  .info-card .value{font-size:17px}
+}
+@media (max-width:900px){
+  .header h1{font-size:68px}
+  .header .subtitle{font-size:16px}
+  .copy-ip .ip-main{font-size:24px}
+  .info-card .value{font-size:16px}
+}
+@media (max-width:640px){
+  .header h1{font-size:52px}
+  .header .subtitle{font-size:14px}
+  .copy-ip .ip-main{font-size:21px}
+  .info-card .value{font-size:15px}
+}
+@media (max-width:920px){
+  body{padding:20px 12px 92px}
+  .header{padding:46px 20px 38px}
+  .info-grid{grid-template-columns:repeat(2,1fr)}
+  .cmd-list{grid-template-columns:1fr}
+  .description,
+  .gallery,
+  .steps,
+  .cmds,
+  .join,
+  .notice{padding:20px 18px}
+  .rule-group .head{padding:13px 16px}
+  .rule-group .items{padding:0 16px 16px}
+  .copy-ip{padding:20px 16px}
+}
+@media (max-width:480px){
+  body{padding:14px 8px 88px}
+  .header{padding:40px 14px 32px}
+  .header .subtitle{font-size:12.5px;letter-spacing:.04em}
+  .info-grid{grid-gap:10px;gap:10px}
+  .info-card{padding:16px 10px;min-height:84px}
+  .link-card{padding:16px 18px}
+  .link-card .icon{width:40px;height:40px;font-size:19px;margin-right:12px}
+  .features span{padding:6px 12px;font-size:12.5px}
+  .description,
+  .gallery,
+  .steps,
+  .cmds,
+  .join,
+  .notice{padding:18px 15px}
+  .cmd{padding:11px 13px}
+  .join-row{padding:12px 13px}
+  .join-row .k{
+    -webkit-flex:1 1 100%;
+            flex:1 1 100%;
+    margin-right:0;
+    margin-bottom:6px;
+  }
+  .rule-group .head .tip{font-size:12px}
+  .rule-group .items li{font-size:13.5px}
+  .gallery-item .caption{
+    -webkit-flex-direction:column;
+            flex-direction:column;
+    -webkit-align-items:flex-start;
+            align-items:flex-start;
+  }
+  .gallery-item .caption .text{margin-right:0;margin-bottom:4px}
+}
 
-          /-* ===== 轻提示 ===== *-/
-          .toast {
-              position: fixed;
-              left: 50%;
-              bottom: 84px;
-              transform: translateX(-50%);
-              background: var(--text);
-              color: #fff;
-              padding: 8px 16px;
-              font-size: 14px;
-              letter-spacing: 1px;
-              z-index: 1000;
-              opacity: 0;
-              pointer-events: none;
-              transition: opacity .18s;
-              box-shadow: 3px 3px 0 rgba(30, 41, 59, 0.3);
-          }
-          .toast.show { opacity: 1; }
-
-          @media (max-width: 700px) {
-              .join-row .k { flex: 0 0 72px; font-size: 13px; }
-              .join-row .v { font-size: 16px; }
-          }
-
-        /-* ===== 响应式 ===== *-/
-        @media (max-width: 700px) {
-            .container { padding: 26px 18px; }
-            .header h1 { font-size: 48px; letter-spacing: 4px; }
-            .info-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .copy-ip { font-size: 22px; padding: 10px 18px; }
-            .gallery-header { flex-direction: column; align-items: flex-start; }
-            .gallery-item .caption { flex-direction: column; align-items: flex-start; }
-            .sponsor-card { flex-direction: column; align-items: stretch; text-align: center; gap: 8px; }
-            .sponsor-card .left { justify-content: center; }
-            .sponsor-card .arrow { display: none; }
-        }
-
-        @media (max-width: 440px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .header h1 { font-size: 40px; letter-spacing: 3px; }
-        }
-    
+/* ---------- 省电 / 无障碍 ---------- */
+@media (prefers-reduced-motion:reduce){
+  .bg-glow{
+    -webkit-animation:none;
+            animation:none;
+  }
+  .g,.rule-group{
+    opacity:1 !important;
+    -webkit-transform:none !important;
+            transform:none !important;
+  }
+  *{
+    -webkit-transition-duration:.01ms !important;
+            transition-duration:.01ms !important;
+  }
+}
 
 
-*/</style>
-    <link rel="stylesheet" href="layout.css">
-    <link rel="stylesheet" href="liquid-glass.css">
-    <link rel="stylesheet" href="liquid-glass-tune.css">
-    <link rel="stylesheet" href="liquid-glass-text.css">
-    <link rel="stylesheet" href="liquid-glass-bg.css">
-    <link rel="stylesheet" href="liquid-glass-pages.css">
-    <link rel="stylesheet" href="liquid-glass-fix2.css">
-    <link rel="stylesheet" href="liquid-glass-home-rules.css">
-    <link rel="stylesheet" href="liquid-glass-music.css">
+/* =========================================================
+   壁纸分端：手机用竖版（1080x1920），桌面用横版（2560x1440）
+   只覆写 background-image 与 background-position，
+   彩色光晕、压暗层、视差结构全部沿用上面那一套。
+   ========================================================= */
+@media (max-width:920px){
+  .bg-static{
+    background-image:
+      radial-gradient(72% 54% at 10% 0%,
+        rgba(64,140,190,.26), rgba(64,140,190,0) 60%),
+      radial-gradient(64% 48% at 94% 6%,
+        rgba(138,90,190,.22), rgba(138,90,190,0) 62%),
+      radial-gradient(82% 58% at 84% 98%,
+        rgba(42,146,130,.22), rgba(42,146,130,0) 64%),
+      radial-gradient(58% 44% at 14% 90%,
+        rgba(190,116,72,.16), rgba(190,116,72,0) 66%),
+      radial-gradient(58% 46% at 48% 48%,
+        rgba(76,110,168,.15), rgba(76,110,168,0) 70%),
+      linear-gradient(160deg,
+        rgba(14,28,42,.28) 0%, rgba(10,20,30,.20) 46%, rgba(13,26,36,.28) 100%),
+      linear-gradient(rgba(8,16,26,.24), rgba(8,16,26,.36)),
+      url('bg-mobile.jpg');
+    /* 竖图顶部对齐，保住画面上部（人物头部） */
+    background-position:center,center,center,center,center,center,center,center top;
+  }
+}
+
+/* 小屏再换更小的那张，省流量 */
+@media (max-width:400px){
+  .bg-static{
+    background-image:
+      radial-gradient(72% 54% at 10% 0%,
+        rgba(64,140,190,.26), rgba(64,140,190,0) 60%),
+      radial-gradient(64% 48% at 94% 6%,
+        rgba(138,90,190,.22), rgba(138,90,190,0) 62%),
+      radial-gradient(82% 58% at 84% 98%,
+        rgba(42,146,130,.22), rgba(42,146,130,0) 64%),
+      radial-gradient(58% 44% at 14% 90%,
+        rgba(190,116,72,.16), rgba(190,116,72,0) 66%),
+      radial-gradient(58% 46% at 48% 48%,
+        rgba(76,110,168,.15), rgba(76,110,168,0) 70%),
+      linear-gradient(160deg,
+        rgba(14,28,42,.28) 0%, rgba(10,20,30,.20) 46%, rgba(13,26,36,.28) 100%),
+      linear-gradient(rgba(8,16,26,.24), rgba(8,16,26,.36)),
+      url('bg-mobile-small.jpg');
+    background-position:center,center,center,center,center,center,center,center top;
+  }
+}
+
+</style>
 </head>
 <body>
 
-<!-- ===== 液态玻璃折射滤镜 =====
-     这块 SVG 是"玻璃的厚度场"：它把背景按边缘梯度掰弯，
-     让它看起来像透过一块有弧边的玻璃看过去，而不是糊了一层白膜。
-     被 liquid-glass.css 里的 backdrop-filter: url(#...) 引用。
-     放在 body 开头，确保比样式生效更早。 -->
-<svg class="liquid-glass-defs" aria-hidden="true" focusable="false"
-     width="0" height="0"
-     style="position:absolute;width:0;height:0;overflow:hidden">
-    <defs>
-        <filter id="liquid-glass" x="0" y="0" width="100%" height="100%"
-                    color-interpolation-filters="sRGB">
-            <!-- 用元素自身形状糊出一个"厚度场" -->
-            <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="soft"/>
-            <!-- 左右各偏移一份再相减 → X 方向带符号梯度 -->
-            <feOffset in="soft" dx="8" dy="0" result="sxp"/>
-            <feOffset in="soft" dx="-8" dy="0" result="sxn"/>
-            <feComposite in="sxp" in2="sxn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
-            <!-- 上下各偏移一份再相减 → Y 方向带符号梯度 -->
-            <feOffset in="soft" dx="0" dy="8" result="syp"/>
-            <feOffset in="soft" dx="0" dy="-8" result="syn"/>
-            <feComposite in="syp" in2="syn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
-            <!-- X 梯度 → R 通道，Y 梯度 → G 通道，拼成位移贴图 -->
-            <feColorMatrix in="gx" type="matrix"
-                           values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
-            <feColorMatrix in="gy" type="matrix"
-                           values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
-            <feComposite in="mx" in2="my" operator="arithmetic"
-                         k1="0" k2="1" k3="1" k4="0" result="base_map"/>
-            <feComponentTransfer in="base_map" result="map">
-                <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
-                <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
-            </feComponentTransfer>
-            <!-- 三次不同强度的位移，分别取 R/G/B，再合成 → 边缘色散 -->
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="36"
-                               xChannelSelector="R" yChannelSelector="G" result="dispR"/>
-            <feColorMatrix in="dispR" type="matrix"
-                           values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="44"
-                               xChannelSelector="R" yChannelSelector="G" result="dispG"/>
-            <feColorMatrix in="dispG" type="matrix"
-                           values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="52"
-                               xChannelSelector="R" yChannelSelector="G" result="dispB"/>
-            <feColorMatrix in="dispB" type="matrix"
-                           values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
-            <feBlend in="onlyR" in2="onlyG" mode="screen" result="rg"/>
-            <feBlend in="rg" in2="onlyB" mode="screen"/>
-        </filter>
-        <filter id="liquid-glass-thick" x="0" y="0" width="100%" height="100%"
-                    color-interpolation-filters="sRGB">
-            <!-- 用元素自身形状糊出一个"厚度场" -->
-            <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="soft"/>
-            <!-- 左右各偏移一份再相减 → X 方向带符号梯度 -->
-            <feOffset in="soft" dx="8" dy="0" result="sxp"/>
-            <feOffset in="soft" dx="-8" dy="0" result="sxn"/>
-            <feComposite in="sxp" in2="sxn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
-            <!-- 上下各偏移一份再相减 → Y 方向带符号梯度 -->
-            <feOffset in="soft" dx="0" dy="8" result="syp"/>
-            <feOffset in="soft" dx="0" dy="-8" result="syn"/>
-            <feComposite in="syp" in2="syn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
-            <!-- X 梯度 → R 通道，Y 梯度 → G 通道，拼成位移贴图 -->
-            <feColorMatrix in="gx" type="matrix"
-                           values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
-            <feColorMatrix in="gy" type="matrix"
-                           values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
-            <feComposite in="mx" in2="my" operator="arithmetic"
-                         k1="0" k2="1" k3="1" k4="0" result="base_map"/>
-            <feComponentTransfer in="base_map" result="map">
-                <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
-                <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
-            </feComponentTransfer>
-            <!-- 三次不同强度的位移，分别取 R/G/B，再合成 → 边缘色散 -->
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="44"
-                               xChannelSelector="R" yChannelSelector="G" result="dispR"/>
-            <feColorMatrix in="dispR" type="matrix"
-                           values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="56"
-                               xChannelSelector="R" yChannelSelector="G" result="dispG"/>
-            <feColorMatrix in="dispG" type="matrix"
-                           values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="68"
-                               xChannelSelector="R" yChannelSelector="G" result="dispB"/>
-            <feColorMatrix in="dispB" type="matrix"
-                           values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
-            <feBlend in="onlyR" in2="onlyG" mode="screen" result="rg"/>
-            <feBlend in="rg" in2="onlyB" mode="screen"/>
-        </filter>
-        <filter id="liquid-glass-thin" x="0" y="0" width="100%" height="100%"
-                    color-interpolation-filters="sRGB">
-            <!-- 用元素自身形状糊出一个"厚度场" -->
-            <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="soft"/>
-            <!-- 左右各偏移一份再相减 → X 方向带符号梯度 -->
-            <feOffset in="soft" dx="8" dy="0" result="sxp"/>
-            <feOffset in="soft" dx="-8" dy="0" result="sxn"/>
-            <feComposite in="sxp" in2="sxn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
-            <!-- 上下各偏移一份再相减 → Y 方向带符号梯度 -->
-            <feOffset in="soft" dx="0" dy="8" result="syp"/>
-            <feOffset in="soft" dx="0" dy="-8" result="syn"/>
-            <feComposite in="syp" in2="syn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
-            <!-- X 梯度 → R 通道，Y 梯度 → G 通道，拼成位移贴图 -->
-            <feColorMatrix in="gx" type="matrix"
-                           values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
-            <feColorMatrix in="gy" type="matrix"
-                           values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
-            <feComposite in="mx" in2="my" operator="arithmetic"
-                         k1="0" k2="1" k3="1" k4="0" result="base_map"/>
-            <feComponentTransfer in="base_map" result="map">
-                <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
-                <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
-            </feComponentTransfer>
-            <!-- 三次不同强度的位移，分别取 R/G/B，再合成 → 边缘色散 -->
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="14"
-                               xChannelSelector="R" yChannelSelector="G" result="dispR"/>
-            <feColorMatrix in="dispR" type="matrix"
-                           values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="18"
-                               xChannelSelector="R" yChannelSelector="G" result="dispG"/>
-            <feColorMatrix in="dispG" type="matrix"
-                           values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="22"
-                               xChannelSelector="R" yChannelSelector="G" result="dispB"/>
-            <feColorMatrix in="dispB" type="matrix"
-                           values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
-            <feBlend in="onlyR" in2="onlyG" mode="screen" result="rg"/>
-            <feBlend in="rg" in2="onlyB" mode="screen"/>
-        </filter>
-    </defs>
-</svg>
+<!-- 背景两层视差 -->
+<div class="bg-layer bg-static-layer"><div class="bg-static"></div></div>
+<div class="bg-layer bg-glow-layer"><div class="bg-glow"></div></div>
 
-    <div class="container">
-        <!-- 头部 -->
-        <div class="header">
-            <h1>Nalxer</h1>
-            <div class="subtitle">✦ 粘液生存服务器 ✦</div>
-            <div class="version">📌 Minecraft 1.12.2</div>
-        </div>
+<div class="container">
 
-        <!-- IP 复制 -->
-        <div class="copy-ip-wrap">
-            <div class="copy-ip" id="ipDisplay" onclick="copyIP()">
-                <span id="ipText">📋 nalxer.top</span>
-                <span class="hint" id="ipHint">点击复制</span>
-            </div>
-        </div>
+  <!-- 头部 -->
+  <header class="header g">
+    <h1>Nalxer</h1>
+    <div class="subtitle">✦ 粘液生存服务器 ✦</div>
+    <div class="version">📌 Minecraft 1.12.2</div>
+  </header>
 
-        <!-- 信息网格 -->
-        <div class="info-grid">
-            <div class="info-card">
-                <div class="label">📡 地址</div>
-                <div class="value"><a href="minecraft://nalxer.top">nalxer.top</a></div>
-            </div>
-            <div class="info-card">
-                <div class="label">💬 QQ群</div>
-                <div class="value"><span class="highlight">839126641</span></div>
-            </div>
-            <div class="info-card">
-                <div class="label">🎮 玩法</div>
-                <div class="value">粘液 · 生存 · 建筑</div>
-            </div>
-            <div class="info-card">
-                <div class="label">📊 状态</div>
-                <div class="value" id="statusDisplay">
-                    <span id="statusText" class="online-status unknown">
-                        <span class="dot"></span> 加载中
-                    </span>
-                </div>
-            </div>
-        </div>
+  <!-- IP 复制 -->
+  <div class="copy-ip g" data-copy="nalxer.top">
+    <span class="ip-main">📋 nalxer.top</span>
+    <span class="hint">点击复制</span>
+  </div>
 
-        <!-- 补充信息 -->
-        <div class="features">
-            <span>🧩 粘液科技</span>
-            <span>🏠 领地保护</span>
-            <span>🚪 多家园传送</span>
-            <span>💎 客户端 1.12 - 1.20.4 可进</span>
-            <span>🗺️ 地图永久保存</span>
-        </div>
+  <!-- 信息网格 -->
+  <div class="info-grid">
+    <div class="info-card g">
+      <div class="label">📡 地址</div>
+      <div class="value"><a href="minecraft://nalxer.top">nalxer.top</a></div>
+    </div>
+    <div class="info-card g">
+      <div class="label">💬 QQ群</div>
+      <div class="value" style="color:#e8c878">839126641</div>
+    </div>
+    <div class="info-card g">
+      <div class="label">🎮 玩法</div>
+      <div class="value">粘液 · 生存 · 建筑</div>
+    </div>
+    <div class="info-card g">
+      <div class="label">📊 状态</div>
+      <div class="value">
+        <span id="statusText" class="online-status online">
+          <span class="dot"></span>在线
+        </span>
+      </div>
+    </div>
+  </div>
 
-        <!-- 服务器守则入口 -->
-        <a href="rules.html" class="rules-link">
-            <div class="left">
-                <span class="icon">📜</span>
-                <div class="text">
-                    <span class="title">服务器守则</span>
-                    <span class="desc">六条核心规则 · 违规处理与申诉方式</span>
-                </div>
-            </div>
-            <span class="arrow">→</span>
-        </a>
+  <!-- 特性标签 1 -->
+  <div class="features g">
+    <span>🧩 粘液科技</span>
+    <span>🏠 领地保护</span>
+    <span>🚪 多家园传送</span>
+    <span>💎 客户端 1.12 - 1.20.4 可进</span>
+    <span>🗺️ 地图永久保存</span>
+  </div>
 
-        <!-- 赞助 -->
-        <a href="pay.html" class="sponsor-card">
-            <div class="left">
-                <span class="icon">💛</span>
-                <div class="text">
-                    <span class="title">赞助服务器</span>
-                    <span class="desc">你的支持，让 Nalxer 走得更远</span>
-                </div>
-            </div>
-            <span class="arrow">→</span>
-        </a>
+  <!-- 服务器守则入口 -->
+  <a href="rules.html" class="link-card g">
+    <div class="left">
+      <span class="icon">📜</span>
+      <div class="text">
+        <span class="title">服务器守则</span>
+        <span class="desc">六条核心规则 · 违规处理与申诉方式</span>
+      </div>
+    </div>
+    <span class="arrow">→</span>
+  </a>
 
-        <!-- 特性标签 -->
-        <div class="features">
-            <span>🏠 自由建筑</span>
-            <span>⚙️ 粘液科技</span>
-            <span>🤝 友好社区</span>
-            <span>🔮 长期开放</span>
-        </div>
+  <!-- 赞助 -->
+  <a href="pay.html" class="link-card g">
+    <div class="left">
+      <span class="icon">💛</span>
+      <div class="text">
+        <span class="title">赞助服务器</span>
+        <span class="desc">你的支持，让 Nalxer 走得更远</span>
+      </div>
+    </div>
+    <span class="arrow">→</span>
+  </a>
 
-        <!-- 描述 -->
-        <div class="description">
-            <span class="welcome">▸ 欢迎来到 Nalxer</span><br>
-            Nalxer 是一个以 <strong>粘液生存</strong> 为核心的 Minecraft 服务器。
-            基于粘液科技插件，在生存的基础上加入丰富的科技玩法与自动化系统，
-            同时保留原版生存、建筑与探索的乐趣。
-            <br><br>
-            📖 服务器守则：尊重他人 · 禁止作弊 · 和谐共建
-            &nbsp;<a href="rules.html" style="color: var(--blue-dark); text-decoration: none; text-shadow: 1px 1px 0 #ffffff;">查看完整规则 →</a>
-        </div>
+  <!-- 特性标签 2 -->
+  <div class="features g">
+    <span>🏠 自由建筑</span>
+    <span>⚙️ 粘液科技</span>
+    <span>🤝 友好社区</span>
+    <span>🔮 长期开放</span>
+  </div>
 
-        <!-- 相册 -->
-        <div class="gallery">
-            <div class="gallery-header">
-                <span class="gallery-title"><span class="icon">📸</span> 服务器相册</span>
-                <span class="gallery-badge">✦ 记录 Nalxer 的每一刻</span>
-            </div>
-            <div class="gallery-item">
-                <img src="x.png" alt="Nalxer PVP大赛合影" loading="lazy" width="1200" height="600">
-                <div class="caption">
-                    <span class="text">🏆 <span class="highlight">2026 PVP 大赛</span> · 合影留念</span>
-                    <span class="date">2026.7.29</span>
-                </div>
-            </div>
-        </div>
+  <!-- 描述 -->
+  <div class="description g">
+    <span class="welcome">▸ 欢迎来到 Nalxer</span><br>
+    Nalxer 是一个以 <strong>粘液生存</strong> 为核心的 Minecraft 服务器。
+    基于粘液科技插件，在生存的基础上加入丰富的科技玩法与自动化系统，
+    同时保留原版生存、建筑与探索的乐趣。
+    <br><br>
+    📖 服务器守则：尊重他人 · 禁止作弊 · 和谐共建
+    &nbsp;<a href="rules.html">查看完整规则 →</a>
+  </div>
 
+  <!-- 相册 -->
+  <div class="gallery g">
+    <div class="gallery-header">
+      <span class="gallery-title">📸 服务器相册</span>
+      <span class="gallery-badge">✦ 记录 Nalxer 的每一刻</span>
+    </div>
+    <div class="gallery-item">
+      <img src="x.jpg" alt="Nalxer PVP大赛合影"
+           width="1200" height="600" loading="lazy" decoding="async">
+      <div class="caption">
+        <span class="text">🏆 <span class="highlight">2026 PVP 大赛</span> · 合影留念</span>
+        <span class="date">2026.7.29</span>
+      </div>
+    </div>
+  </div>
 
-          <!-- 新手快速加入 -->
-          <div class="steps">
-              <div class="steps-title">🚀 新手快速加入</div>
+  <!-- 新手快速加入 -->
+  <div class="steps g">
+    <div class="steps-title">🚀 新手快速加入</div>
 
-              <div class="step">
-                  <div class="num">1</div>
-                  <div class="body">
-                      <span class="t">打开 Minecraft 1.12.2 客户端</span>
-                      <span class="d">推荐 1.12.2 版本；兼容 1.12 ~ 1.20.4 客户端进入</span>
-                  </div>
-              </div>
-
-              <div class="step">
-                  <div class="num">2</div>
-                  <div class="body">
-                      <span class="t">添加服务器</span>
-                      <span class="d">点击「多人游戏」→「添加服务器」，在地址栏填入：</span>
-                      <span class="ip" onclick="copyIP()">📋 nalxer.top（点击复制）</span>
-                  </div>
-              </div>
-
-              <div class="step">
-                  <div class="num">3</div>
-                  <div class="body">
-                      <span class="t">进入服务器开始冒险</span>
-                      <span class="d">双击服务器列表中的 Nalxer，即可进入游戏开始生存之旅</span>
-                  </div>
-              </div>
-          </div>
-
-          <!-- 常用命令 -->
-          <div class="cmds">
-              <div class="cmds-title">⌨️ 常用命令</div>
-              <div class="cmd-list">
-                  <div class="cmd" onclick="copyCmd('/spawn')"><code>/spawn</code><span class="cn">回出生点</span></div>
-                  <div class="cmd" onclick="copyCmd('/home')"><code>/home</code><span class="cn">回家</span></div>
-                  <div class="cmd" onclick="copyCmd('/sethome')"><code>/sethome</code><span class="cn">设置家</span></div>
-                  <div class="cmd" onclick="copyCmd('/menu')"><code>/menu</code><span class="cn">打开菜单</span></div>
-                  <div class="cmd" onclick="copyCmd('/tpa')"><code>/tpa 玩家名</code><span class="cn">传送请求</span></div>
-                  <div class="cmd" onclick="copyCmd('/warp')"><code>/warp 地点</code><span class="cn">传送到地标</span></div>
-                  <div class="cmd" onclick="copyCmd('/money')"><code>/money</code><span class="cn">查余额</span></div>
-                  <div class="cmd" onclick="copyCmd('/help')"><code>/help</code><span class="cn">帮助</span></div>
-              </div>
-          </div>
-
-          <!-- 加入我们 -->
-          <div class="join">
-              <div class="join-title">💬 加入我们</div>
-
-              <div class="join-row">
-                  <span class="k">服务器地址</span>
-                  <span class="v blue">nalxer.top</span>
-                  <span class="act" onclick="copyIP()">点击复制</span>
-              </div>
-
-              <div class="join-row">
-                  <span class="k">QQ 交流群</span>
-                  <span class="v gold">839126641</span>
-                  <span class="act" onclick="copyText('839126641','QQ群号')">点击复制</span>
-              </div>
-
-              <div class="join-row owner">
-                  <span class="k">服主</span>
-                  <img class="avatar" src="avatar1.jpg" alt="服主 fs1">
-                  <span class="v">fs1 <span style="color:var(--text-light);font-size:14px;">2913264323</span></span>
-                  <span class="act" onclick="copyText('2913264323','fs1 的 QQ')">查看</span>
-              </div>
-
-              <div class="join-row owner">
-                  <span class="k">服主</span>
-                  <img class="avatar" src="avatar2.jpg" alt="服主 Windows Defender">
-                  <span class="v">Windows Defender <span style="color:var(--text-light);font-size:14px;">2703441387</span></span>
-                  <span class="act" onclick="copyText('2703441387','Windows Defender 的 QQ')">查看</span>
-              </div>
-
-              <div class="join-row">
-                  <span class="k">客户端兼容</span>
-                  <span class="v">1.12 — 1.20.4</span>
-              </div>
-
-              <div class="join-row">
-                  <span class="k">游戏模式</span>
-                  <span class="v">生存 / 粘液科技</span>
-              </div>
-          </div>
-
-          <!-- 游戏内规则 -->
-          <div class="rules">
-              <div class="rules-title">📜 游戏内规则 <span style="font-size:13px;color:var(--text-light);">— Linux 编辑</span></div>
-
-              <div class="law-note">⚖️ 请遵守中华人民共和国宪法、刑法等法律</div>
-
-              <div class="rule-group" onclick="toggleRule(this)">
-                  <div class="head">
-                      <span><span class="lvl light">轻度</span> <span class="tip">违反封禁 1-7 天</span></span>
-                      <span class="arrow">▶</span>
-                  </div>
-                  <div class="items">
-                      <ol>
-                          <li>禁止盗窃其他玩家物品</li>
-                          <li>禁止一直击杀其他玩家（PVP 等除外）</li>
-                          <li>禁止损坏服务器主城周围地形</li>
-                      </ol>
-                      <div class="ban">以上条例违反封禁 1-7 天不等</div>
-                  </div>
-              </div>
-
-              <div class="rule-group" onclick="toggleRule(this)">
-                  <div class="head">
-                      <span><span class="lvl mid">中度</span> <span class="tip">违反封禁 7-30 天</span></span>
-                      <span class="arrow">▶</span>
-                  </div>
-                  <div class="items">
-                      <ol start="4">
-                          <li>禁止毁坏玩家建筑</li>
-                          <li>禁止毁坏公共建筑</li>
-                          <li>禁止使用 TNT 等毁坏服务器地形</li>
-                          <li>禁止在其他玩家建筑物中使用幸运方块</li>
-                          <li>禁止盗取服务器地图画</li>
-                          <li>禁止持有违规道具（如 32k）</li>
-                          <li>禁止大量刷珍贵物品刷货币</li>
-                          <li>请尊重其他玩家领地，禁止毁坏其他玩家的领地</li>
-                      </ol>
-                      <div class="ban">以上条例违反封禁 7-30 天不等</div>
-                  </div>
-              </div>
-
-              <div class="rule-group" onclick="toggleRule(this)">
-                  <div class="head">
-                      <span><span class="lvl heavy">重度</span> <span class="tip">违反封禁 30 天-永久（ID+IP）</span></span>
-                      <span class="arrow">▶</span>
-                  </div>
-                  <div class="items">
-                      <ol start="12">
-                          <li>非 OP 持有命令方块，且拒不归还</li>
-                          <li>使用一系列手段攻击服务器</li>
-                          <li>制造大型卡服机、禁人塔等</li>
-                          <li>盗取服务器 OP 权限</li>
-                          <li>绕过服务器登录、服务器领地插件限制</li>
-                          <li>盗取他人账号</li>
-                          <li>使用外挂</li>
-                          <li>其他违规行为，且态度恶劣，拒不改正</li>
-                      </ol>
-                      <div class="ban">以上条例封禁 30 天 - 永久（ID+IP 封禁）</div>
-                      <div class="ban">★ 第 12-18 条一旦触犯，直接永久封禁（ID+IP 封禁）</div>
-                  </div>
-              </div>
-
-              <div class="rule-foot">
-                  <span class="warn"># 此规则对 fs1 可能无效！！！</span><br>
-                  <span class="bless">祝愿正常玩家玩得开心！！！</span>
-              </div>
-          </div>
-
-          <!-- 音乐播放器 -->
-          <div class="music-box">
-              <button class="music-btn" id="musicBtn" title="音乐开关"><span id="musicIcon">♪</span></button>
-              <button class="music-btn next" id="nextBtn" title="切下一首">»</button>
-          </div>
-          <div class="toast" id="toast"></div>
-          <video id="bgMusic" loop playsinline style="width:1px;height:1px;opacity:0;position:fixed;bottom:0;left:0;pointer-events:none;"></video>
-
-        <!-- 公告 -->
-        <div class="notice">
-            <div class="notice-title">📢 服务器公告</div>
-            <div class="notice-content" id="noticeContent"><span class="empty">加载中...</span></div>
-        </div>
-
-        <div class="footer">&copy; 2026 <span>Nalxer</span> Server &nbsp;·&nbsp; 运行于 Paper 1.12.2</div>
+    <div class="step">
+      <div class="num">1</div>
+      <div class="body">
+        <span class="t">打开 Minecraft 1.12.2 客户端</span>
+        <span class="d">推荐 1.12.2 版本；兼容 1.12 ~ 1.20.4 客户端进入</span>
+      </div>
     </div>
 
-    <script>
-        function fetchWithTimeout(url, options = {}, timeout = 5000) {
-            return Promise.race([
-                fetch(url, options),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
-            ]);
+    <div class="step">
+      <div class="num">2</div>
+      <div class="body">
+        <span class="t">添加服务器</span>
+        <span class="d">点击「多人游戏」→「添加服务器」，在地址栏填入：</span>
+        <span class="ip" data-copy="nalxer.top">📋 nalxer.top（点击复制）</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div class="body">
+        <span class="t">进入服务器开始冒险</span>
+        <span class="d">双击服务器列表中的 Nalxer，即可进入游戏开始生存之旅</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 常用命令 -->
+  <div class="cmds g">
+    <div class="cmds-title">⌨️ 常用命令</div>
+    <div class="cmd-list">
+      <div class="cmd" data-copy="/spawn"><code>/spawn</code><span class="cn">回出生点</span></div>
+      <div class="cmd" data-copy="/home"><code>/home</code><span class="cn">回家</span></div>
+      <div class="cmd" data-copy="/sethome"><code>/sethome</code><span class="cn">设置家</span></div>
+      <div class="cmd" data-copy="/menu"><code>/menu</code><span class="cn">打开菜单</span></div>
+      <div class="cmd" data-copy="/tpa 玩家名"><code>/tpa 玩家名</code><span class="cn">传送请求</span></div>
+      <div class="cmd" data-copy="/warp 地点"><code>/warp 地点</code><span class="cn">传送到地标</span></div>
+      <div class="cmd" data-copy="/money"><code>/money</code><span class="cn">查余额</span></div>
+      <div class="cmd" data-copy="/help"><code>/help</code><span class="cn">帮助</span></div>
+    </div>
+  </div>
+
+  <!-- 加入我们 -->
+  <div class="join g">
+    <div class="join-title">💬 加入我们</div>
+
+    <div class="join-row" data-copy="nalxer.top">
+      <span class="k">服务器地址</span>
+      <span class="v blue">nalxer.top</span>
+      <span class="act">点击复制</span>
+    </div>
+
+    <div class="join-row" data-copy="839126641">
+      <span class="k">QQ 交流群</span>
+      <span class="v gold">839126641</span>
+      <span class="act">点击复制</span>
+    </div>
+
+    <div class="join-row">
+      <span class="k">服主</span>
+      <img class="avatar" src="avatar1.jpg" alt="服主 fs1"
+           loading="lazy" decoding="async" width="32" height="32">
+      <span class="v">fs1 <span class="small">2913264323</span></span>
+    </div>
+
+    <div class="join-row">
+      <span class="k">服主</span>
+      <img class="avatar" src="avatar2-opt.jpg" alt="服主 Windows Defender"
+           loading="lazy" decoding="async" width="32" height="32">
+      <span class="v">Windows Defender <span class="small">2703441387</span></span>
+    </div>
+
+    <div class="join-row">
+      <span class="k">客户端兼容</span>
+      <span class="v">1.12 — 1.20.4</span>
+    </div>
+
+    <div class="join-row">
+      <span class="k">游戏模式</span>
+      <span class="v">生存 / 粘液科技</span>
+    </div>
+  </div>
+
+  <!-- 游戏内规则 -->
+  <div class="rules">
+    <div class="rules-title">📜 游戏内规则 <small>— Linux 编辑</small></div>
+
+    <div class="law-note g">⚖️ 请遵守中华人民共和国宪法、刑法等法律</div>
+
+    <div class="rule-group">
+      <div class="head">
+        <span><span class="lvl light">轻度</span><span class="tip">违反封禁 1-7 天</span></span>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="items">
+        <ol>
+          <li>禁止盗窃其他玩家物品</li>
+          <li>禁止一直击杀其他玩家（PVP 等除外）</li>
+          <li>禁止损坏服务器主城周围地形</li>
+        </ol>
+        <div class="ban">以上条例违反封禁 1-7 天不等</div>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="head">
+        <span><span class="lvl mid">中度</span><span class="tip">违反封禁 7-30 天</span></span>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="items">
+        <ol start="4">
+          <li>禁止毁坏玩家建筑</li>
+          <li>禁止毁坏公共建筑</li>
+          <li>禁止使用 TNT 等毁坏服务器地形</li>
+          <li>禁止在其他玩家建筑物中使用幸运方块</li>
+          <li>禁止盗取服务器地图画</li>
+          <li>禁止持有违规道具（如 32k）</li>
+          <li>禁止大量刷珍贵物品刷货币</li>
+          <li>请尊重其他玩家领地，禁止毁坏其他玩家的领地</li>
+        </ol>
+        <div class="ban">以上条例违反封禁 7-30 天不等</div>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="head">
+        <span><span class="lvl heavy">重度</span><span class="tip">违反封禁 30 天-永久（ID+IP）</span></span>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="items">
+        <ol start="12">
+          <li>非 OP 持有命令方块，且拒不归还</li>
+          <li>使用一系列手段攻击服务器</li>
+          <li>制造大型卡服机、禁人塔等</li>
+          <li>盗取服务器 OP 权限</li>
+          <li>绕过服务器登录、服务器领地插件限制</li>
+          <li>盗取他人账号</li>
+          <li>使用外挂</li>
+          <li>其他违规行为，且态度恶劣，拒不改正</li>
+        </ol>
+        <div class="ban">以上条例封禁 30 天 - 永久（ID+IP 封禁）</div>
+        <div class="ban">★ 第 12-18 条一旦触犯，直接永久封禁（ID+IP 封禁）</div>
+      </div>
+    </div>
+
+    <div class="rule-foot g">
+      <span class="warn"># 此规则对 fs1 可能无效！！！</span><br>
+      <span class="bless">祝愿正常玩家玩得开心！！！</span>
+    </div>
+  </div>
+
+  <!-- 公告 -->
+  <div class="notice g">
+    <div class="notice-title">📢 服务器公告</div>
+    <div class="notice-content">【公告】2026-09-25
+服务器正常开放，欢迎新玩家加入。
+完整服务器守则与处罚说明见 rules.html（主页有入口）。
+
+━━━━━━━━━━━━━━━━━━━━
+
+【基础玩法】
+- 版本：1.12.2
+- 支持客户端：1.12-1.20.4
+- 类型：纯生存 · 养老 · 建筑
+- 特色：无模组，但拥有丰富插件功能：
+  · 疯狂附魔：自定义强力附魔，突破原版限制
+  · 快捷菜单：右键钟打开菜单，一键传送、查看信息
+  · 领地系统：使用木锄圈地保护你的建筑与财产
+  · 家园系统：设置多个家，随时传送
+- 长期开放，地图永久保存
+
+【服务器规则】
+1. 互相尊重：不辱骂、不挑衅、不人身攻击
+2. 禁止作弊：禁止使用外挂、透视、连点器、自动脚本等违规作弊方式
+3. 禁止偷窃：未经允许不得拿取他人物品
+4. 禁止破坏：不得恶意破坏他人建筑、红石设备、地形
+5. 禁止高频红石与刷物品：卡服行为将被处理
+6. 禁止恶意加载新区块与数据包攻击
+
+【联系方式】
+- 服务器地址：nalxer.top
+- QQ群：839126641
+- 服主：fs1、Linux582021
+
+祝你游戏愉快！</div>
+  </div>
+
+  <div class="footer g">© 2026 <span>Nalxer</span> Server &nbsp;·&nbsp; 运行于 Paper 1.12.2</div>
+
+</div>
+
+<!-- 音乐播放器 -->
+<div class="music-box g">
+  <button class="music-btn" id="musicBtn" title="音乐开关" aria-label="音乐开关">
+    <span id="musicIcon">♪</span>
+  </button>
+  <button class="music-btn next" id="nextBtn" title="切下一首" aria-label="下一首">»</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<video id="bgMusic" loop playsinline webkit-playsinline preload="none"
+       style="width:1px;height:1px;opacity:0;position:fixed;bottom:0;left:0;pointer-events:none;"></video>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     1. 背景视差
+     - 静态层系数 0.06
+     - 光晕层系数 0.14
+     - rAF 节流，只改 transform，零重绘
+     ========================================================= */
+  (function(){
+    var bgStatic = document.querySelector('.bg-static-layer');
+    var bgGlow   = document.querySelector('.bg-glow-layer');
+    if(!bgStatic && !bgGlow) return;
+
+    var doc = document.documentElement;
+    var ticking = false;
+    var maxOffset = 0;
+
+    function recalc(){
+      var vh = window.innerHeight || doc.clientHeight || 600;
+      /* 容器上下各留 30% 视口高的余量，取一半更安全 */
+      maxOffset = vh * 0.28;
+    }
+
+    function update(){
+      ticking = false;
+      var y = window.pageYOffset || doc.scrollTop || 0;
+
+      if(bgStatic){
+        var s = -y * 0.06;
+        if(s < -maxOffset) s = -maxOffset;
+        bgStatic.style.webkitTransform =
+        bgStatic.style.transform = 'translate3d(0,' + s.toFixed(1) + 'px,0)';
+      }
+      if(bgGlow){
+        var g = -y * 0.14;
+        if(g < -maxOffset) g = -maxOffset;
+        bgGlow.style.webkitTransform =
+        bgGlow.style.transform = 'translate3d(0,' + g.toFixed(1) + 'px,0)';
+      }
+    }
+
+    function onScroll(){
+      if(!ticking){
+        ticking = true;
+        if(window.requestAnimationFrame){
+          window.requestAnimationFrame(update);
+        } else {
+          setTimeout(update, 16);
         }
+      }
+    }
 
-        function copyIP() {
-            const ip = 'nalxer.top';
-            const ipText = document.getElementById('ipText');
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(ip).then(() => {
-                    ipText.textContent = '✅ 已复制：' + ip;
-                    setTimeout(() => {
-                        ipText.textContent = '📋 nalxer.top';
-                    }, 2000);
-                }).catch(() => fallbackCopy(ip));
-            } else {
-                fallbackCopy(ip);
-            }
+    recalc();
+    if(window.addEventListener){
+      window.addEventListener('resize', recalc, false);
+      window.addEventListener('scroll', onScroll, false);
+      window.addEventListener('orientationchange', function(){
+        setTimeout(recalc, 200);
+      }, false);
+    }
+  })();
+
+  /* =========================================================
+     2. 涌现入场
+     - 首屏元素同步入场，避免首帧空白
+     - 其余交给 IntersectionObserver，触发即播放，只播一次
+     - 无 IO 时直接全部入场
+     ========================================================= */
+  (function(){
+    var list = [];
+    var all  = document.querySelectorAll('.g, .rule-group');
+    var i;
+
+    for(i = 0; i < all.length; i++){
+      /* 音乐盒固定定位，不参与 */
+      if((' ' + all[i].className + ' ').indexOf(' music-box ') > -1) continue;
+      list.push(all[i]);
+    }
+    if(!list.length) return;
+
+    function addIn(el){
+      if((' ' + el.className + ' ').indexOf(' in ') > -1) return;
+      el.className = el.className ? (el.className + ' in') : 'in';
+    }
+
+    var hasIO = ('IntersectionObserver' in window);
+    var vh = window.innerHeight || document.documentElement.clientHeight || 600;
+    var pending = [];
+
+    /* 先处理首屏：立即给 in，避免闪一下空白 */
+    for(i = 0; i < list.length; i++){
+      var el = list[i];
+      var r = el.getBoundingClientRect();
+      if(r.top < vh * 1.05){
+        addIn(el);
+      } else if(hasIO){
+        pending.push(el);
+      } else {
+        addIn(el);
+      }
+    }
+
+    if(!hasIO || !pending.length) return;
+
+    /* 底部扩张 90px：元素还没完全进视口就开始播放动画 */
+    var io = new IntersectionObserver(function(entries){
+      var j, e;
+      for(j = 0; j < entries.length; j++){
+        e = entries[j];
+        if(e.isIntersecting){
+          addIn(e.target);
+          io.unobserve(e.target);
         }
+      }
+    }, {rootMargin: '0px 0px 90px 0px', threshold: 0.01});
 
-        function fallbackCopy(text) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.left = '-9999px';
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); } catch (e) {}
-            document.body.removeChild(ta);
-            const ipText = document.getElementById('ipText');
-            ipText.textContent = '✅ 已复制：' + text;
-            setTimeout(() => {
-                ipText.textContent = '📋 nalxer.top';
-            }, 2000);
+    for(i = 0; i < pending.length; i++){
+      io.observe(pending[i]);
+    }
+  })();
+
+  /* =========================================================
+     3. Toast + 复制 + 折叠
+     ========================================================= */
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.className = 'toast show';
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){
+      toastEl.className = 'toast';
+    }, 1500);
+  }
+
+  function legacyCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly','');
+    ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    try { ta.setSelectionRange(0, text.length); } catch(e){}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function doCopy(text){
+    function ok(){ toast('已复制：' + text); }
+    function fail(){ toast('复制失败，请长按手动复制'); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok, function(){
+        if(legacyCopy(text)){ ok(); } else { fail(); }
+      });
+    } else {
+      if(legacyCopy(text)){ ok(); } else { fail(); }
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!t || !t.closest) return;
+
+    var copyEl = t.closest('[data-copy]');
+    if(copyEl){
+      e.preventDefault();
+      doCopy(copyEl.getAttribute('data-copy'));
+      return;
+    }
+
+    var head = t.closest('.rule-group .head');
+    if(head){
+      var group = head.parentNode;
+      if((' ' + group.className + ' ').indexOf(' open ') > -1){
+        group.className = group.className.replace(/\s*\bopen\b/g, '');
+      } else {
+        group.className += ' open';
+      }
+      return;
+    }
+  }, false);
+
+  /* =========================================================
+     4. 鼠标跟随光斑（仅桌面指针设备）
+     ========================================================= */
+  (function(){
+    var fine = false;
+    if(window.matchMedia){
+      try {
+        fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      } catch(err){ fine = false; }
+    }
+    if(!fine || !window.requestAnimationFrame) return;
+
+    var cards = document.querySelectorAll('.g');
+    var i;
+
+    function attach(el){
+      var rafId = 0, lx = 0, ly = 0;
+      function flush(){
+        rafId = 0;
+        if(el.style.setProperty){
+          el.style.setProperty('--mx', lx + 'px');
+          el.style.setProperty('--my', ly + 'px');
         }
+      }
+      el.addEventListener('mousemove', function(e){
+        var r = el.getBoundingClientRect();
+        lx = e.clientX - r.left;
+        ly = e.clientY - r.top;
+        if(!rafId) rafId = window.requestAnimationFrame(flush);
+      }, false);
+    }
 
-        function loadNotice() {
-            const container = document.getElementById('noticeContent');
-            fetchWithTimeout('mb.txt', {}, 4000)
-                .then(res => {
-                    if (!res.ok) throw new Error('not ok');
-                    return res.text();
-                })
-                .then(text => {
-                    const t = (text || '').trim();
-                    if (t) container.textContent = t;
-                    else container.innerHTML = '<span class="empty">暂无公告</span>';
-                })
-                .catch(() => {
-                    container.innerHTML = '<span class="empty">暂无公告</span>';
-                });
-        }
+    for(i = 0; i < cards.length; i++){
+      attach(cards[i]);
+    }
+  })();
 
-        function setStatusOnline(count, maxCount) {
-            const statusText = document.getElementById('statusText');
-            statusText.className = 'online-status online';
-            statusText.textContent = '';
-            const dot = document.createElement('span');
-            dot.className = 'dot';
-            statusText.appendChild(dot);
-            statusText.appendChild(document.createTextNode(' 在线 · '));
-            const countEl = document.createElement('span');
-            countEl.className = 'count';
-            countEl.textContent = String(count);
-            statusText.appendChild(countEl);
-            statusText.appendChild(document.createTextNode(' 人'));
-            if (maxCount) {
-                statusText.appendChild(document.createTextNode(' / '));
-                const maxEl = document.createElement('span');
-                maxEl.className = 'count';
-                maxEl.textContent = String(maxCount);
-                statusText.appendChild(maxEl);
-            }
-        }
+  /* =========================================================
+     5. 音乐播放器
+     ========================================================= */
+  var video   = document.getElementById('bgMusic');
+  var mBtn    = document.getElementById('musicBtn');
+  var nBtn    = document.getElementById('nextBtn');
+  var mIcon   = document.getElementById('musicIcon');
 
-        function setStatusOffline() {
-            const statusText = document.getElementById('statusText');
-            statusText.className = 'online-status offline';
-            statusText.textContent = '';
-            const dot = document.createElement('span');
-            dot.className = 'dot';
-            statusText.appendChild(dot);
-            statusText.appendChild(document.createTextNode(' 离线'));
-        }
+  var tracks  = ['bgm1.mp4', 'bgm2.mp4', 'bgm3.mp4'];
+  var ti      = 0;
+  var tries   = 0;
+  var playing = false;
 
-        function setStatusUnknown() {
-            const statusText = document.getElementById('statusText');
-            statusText.className = 'online-status unknown';
-            statusText.textContent = '';
-            const dot = document.createElement('span');
-            dot.className = 'dot';
-            statusText.appendChild(dot);
-            statusText.appendChild(document.createTextNode(' 未知'));
-        }
+  function setIcon(on){
+    mIcon.textContent = on ? '❚❚' : '♪';
+    mBtn.className = on ? 'music-btn playing' : 'music-btn';
+  }
+  function playIt(){
+    var p;
+    try { p = video.play(); } catch(err){ p = null; }
+    if(p && typeof p.then === 'function'){
+      p.then(function(){ playing = true; setIcon(true); },
+             function(){ playing = false; setIcon(false); });
+    } else {
+      playing = true;
+      setIcon(true);
+    }
+  }
+  function pauseIt(){
+    try { video.pause(); } catch(err){}
+    playing = false;
+    setIcon(false);
+  }
+  function loadTrack(index, autoplay){
+    var n = tracks.length;
+    ti = ((index % n) + n) % n;
+    video.setAttribute('src', tracks[ti]);
+    try { video.load(); } catch(err){}
+    if(autoplay) playIt();
+  }
 
-        function fetchServerStatus() {
-            const api = 'https://api.mcsrvstat.us/3/nalxer.top';
-            fetchWithTimeout(api, {}, 5000)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.online) {
-                        const players = data.players && data.players.online ? data.players.online : 0;
-                        const maxCount = data.players && data.players.max ? data.players.max : 0;
-                        setStatusOnline(players, maxCount);
-                    } else {
-                        setStatusOffline();
-                    }
-                })
-                .catch(() => {
-                    setStatusUnknown();
-                });
-        }
+  video.addEventListener('error', function(){
+    if(tries >= tracks.length){
+      playing = false;
+      setIcon(false);
+      toast('暂时没有可播放的音乐');
+      return;
+    }
+    tries++;
+    loadTrack(ti + 1, playing);
+  }, false);
 
+  mBtn.addEventListener('click', function(){
+    if(video.paused){
+      if(!video.getAttribute('src')) loadTrack(0, false);
+      tries = 0;
+      playIt();
+    } else {
+      pauseIt();
+    }
+  }, false);
 
-          /* ---------- 轻提示 ---------- */
-          let toastTimer = null;
-          function toast(msg) {
-              const el = document.getElementById('toast');
-              if (!el) return;
-              el.textContent = msg;
-              el.classList.add('show');
-              clearTimeout(toastTimer);
-              toastTimer = setTimeout(() => el.classList.remove('show'), 1600);
-          }
+  nBtn.addEventListener('click', function(){
+    tries = 0;
+    var wasPlaying = playing || !video.paused;
+    loadTrack(ti + 1, wasPlaying);
+    if(wasPlaying) toast('下一首');
+  }, false);
 
-          /* ---------- 复制文本（通用） ---------- */
-          function copyText(text, label) {
-              if (navigator.clipboard && navigator.clipboard.writeText) {
-                  navigator.clipboard.writeText(text)
-                      .then(() => toast('已复制' + (label ? ' ' + label : '') + '：' + text))
-                      .catch(() => fallbackCopyText(text, label));
-              } else {
-                  fallbackCopyText(text, label);
-              }
-          }
-          function fallbackCopyText(text, label) {
-              const ta = document.createElement('textarea');
-              ta.value = text;
-              ta.style.position = 'fixed';
-              ta.style.left = '-9999px';
-              document.body.appendChild(ta);
-              ta.select();
-              try { document.execCommand('copy'); } catch (e) {}
-              document.body.removeChild(ta);
-              toast('已复制' + (label ? ' ' + label : '') + '：' + text);
-          }
-          function copyCmd(cmd) { copyText(cmd, '命令'); }
-
-          /* ---------- 规则分组折叠 ---------- */
-          function toggleRule(el) {
-              if (!el) return;
-              el.classList.toggle('open');
-          }
-          // ★ 默认全部收起（服主要求不再默认展开"轻度"）
-
-          /* ---------- 多首背景音乐（用视频文件当音源） ---------- */
-          // ★ 为什么用 <video> 而不是 <audio>：
-          //   音源文件是 .mp4，audio 标签在部分浏览器不认 mp4 容器，
-          //   而 video 标签能只播声音（元素尺寸设成 1px 且 opacity:0）。
-          //   这也是 nalxer官网 的做法，保持一致方便以后换曲子。
-          const playlist = [
-              { file: 'bgm1.mp4', name: '第一首 BGM' },
-              { file: 'bgm2.mp4', name: '第二首 BGM' },
-              { file: 'bgm3.mp4', name: '第三首 BGM' },
-          ];
-          let currentTrack = 0;
-          let musicPlaying = false;
-          const bgMusic   = document.getElementById('bgMusic');
-          const musicBtn  = document.getElementById('musicBtn');
-          const musicIcon = document.getElementById('musicIcon');
-          const nextBtn   = document.getElementById('nextBtn');
-          let musicReady = false;
-
-          function loadTrack(i) {
-              currentTrack = ((i % playlist.length) + playlist.length) % playlist.length;
-              bgMusic.src = playlist[currentTrack].file;
-              bgMusic.load();
-          }
-          function playMusic() {
-              bgMusic.play().then(() => {
-                  musicPlaying = true;
-                  musicBtn.classList.add('playing');
-                  musicIcon.textContent = '♫';
-              }).catch(() => {
-                  musicPlaying = false;
-                  musicBtn.classList.remove('playing');
-                  musicIcon.textContent = '♪';
-                  toast('音乐需要先点击页面一次才能播放');
-              });
-          }
-          function stopMusic() {
-              bgMusic.pause();
-              musicPlaying = false;
-              musicBtn.classList.remove('playing');
-              musicIcon.textContent = '♪';
-          }
-          if (bgMusic) {
-              musicBtn.onclick = function () {
-                  if (musicPlaying) { stopMusic(); toast('音乐已暂停'); }
-                  else { playMusic(); }
-              };
-              nextBtn.onclick = function () {
-                  loadTrack(currentTrack + 1);
-                  if (musicPlaying) { playMusic(); }
-                  else { toast('已切换到：' + playlist[currentTrack].name); }
-              };
-              // 一首播完自动下一首
-              bgMusic.addEventListener('ended', function () {
-                  loadTrack(currentTrack + 1);
-                  playMusic();
-              });
-              // 手机上滑屏/切后台容易把音乐断掉，这里自动续上
-              bgMusic.addEventListener('pause', function () {
-                  if (musicPlaying) bgMusic.play().catch(() => {});
-              });
-              loadTrack(0);
-              musicReady = true;
-          }
-
-
-        loadNotice();
-        fetchServerStatus();
-        setInterval(fetchServerStatus, 6000);
-    </script>
+})();
+</script>
+    <script src="site-anim.js" defer></script>
 </body>
 </html>

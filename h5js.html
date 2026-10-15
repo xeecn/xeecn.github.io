@@ -259,153 +259,23 @@
 
 */</style>
     <link rel="stylesheet" href="layout.css">
-    <link rel="stylesheet" href="liquid-glass.css">
-    <link rel="stylesheet" href="liquid-glass-tune.css">
-    <link rel="stylesheet" href="liquid-glass-text.css">
-    <link rel="stylesheet" href="liquid-glass-bg.css">
-    <link rel="stylesheet" href="liquid-glass-pages.css">
-    <link rel="stylesheet" href="liquid-glass-fix2.css">
-    <link rel="stylesheet" href="liquid-glass-home-rules.css">
-    <link rel="stylesheet" href="liquid-glass-music.css">
+    <link rel="stylesheet" href="site-theme.css">
 </head>
 <body>
 
-<!-- ===== 液态玻璃折射滤镜 =====
-     这块 SVG 是"玻璃的厚度场"：它把背景按边缘梯度掰弯，
-     让它看起来像透过一块有弧边的玻璃看过去，而不是糊了一层白膜。
-     被 liquid-glass.css 里的 backdrop-filter: url(#...) 引用。
-     放在 body 开头，确保比样式生效更早。 -->
-<svg class="liquid-glass-defs" aria-hidden="true" focusable="false"
-     width="0" height="0"
-     style="position:absolute;width:0;height:0;overflow:hidden">
-    <defs>
-        <filter id="liquid-glass" x="0" y="0" width="100%" height="100%"
-                    color-interpolation-filters="sRGB">
-            <!-- 用元素自身形状糊出一个"厚度场" -->
-            <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="soft"/>
-            <!-- 左右各偏移一份再相减 → X 方向带符号梯度 -->
-            <feOffset in="soft" dx="8" dy="0" result="sxp"/>
-            <feOffset in="soft" dx="-8" dy="0" result="sxn"/>
-            <feComposite in="sxp" in2="sxn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
-            <!-- 上下各偏移一份再相减 → Y 方向带符号梯度 -->
-            <feOffset in="soft" dx="0" dy="8" result="syp"/>
-            <feOffset in="soft" dx="0" dy="-8" result="syn"/>
-            <feComposite in="syp" in2="syn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
-            <!-- X 梯度 → R 通道，Y 梯度 → G 通道，拼成位移贴图 -->
-            <feColorMatrix in="gx" type="matrix"
-                           values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
-            <feColorMatrix in="gy" type="matrix"
-                           values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
-            <feComposite in="mx" in2="my" operator="arithmetic"
-                         k1="0" k2="1" k3="1" k4="0" result="base_map"/>
-            <feComponentTransfer in="base_map" result="map">
-                <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
-                <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
-            </feComponentTransfer>
-            <!-- 三次不同强度的位移，分别取 R/G/B，再合成 → 边缘色散 -->
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="36"
-                               xChannelSelector="R" yChannelSelector="G" result="dispR"/>
-            <feColorMatrix in="dispR" type="matrix"
-                           values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="44"
-                               xChannelSelector="R" yChannelSelector="G" result="dispG"/>
-            <feColorMatrix in="dispG" type="matrix"
-                           values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="52"
-                               xChannelSelector="R" yChannelSelector="G" result="dispB"/>
-            <feColorMatrix in="dispB" type="matrix"
-                           values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
-            <feBlend in="onlyR" in2="onlyG" mode="screen" result="rg"/>
-            <feBlend in="rg" in2="onlyB" mode="screen"/>
-        </filter>
-        <filter id="liquid-glass-thick" x="0" y="0" width="100%" height="100%"
-                    color-interpolation-filters="sRGB">
-            <!-- 用元素自身形状糊出一个"厚度场" -->
-            <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="soft"/>
-            <!-- 左右各偏移一份再相减 → X 方向带符号梯度 -->
-            <feOffset in="soft" dx="8" dy="0" result="sxp"/>
-            <feOffset in="soft" dx="-8" dy="0" result="sxn"/>
-            <feComposite in="sxp" in2="sxn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
-            <!-- 上下各偏移一份再相减 → Y 方向带符号梯度 -->
-            <feOffset in="soft" dx="0" dy="8" result="syp"/>
-            <feOffset in="soft" dx="0" dy="-8" result="syn"/>
-            <feComposite in="syp" in2="syn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
-            <!-- X 梯度 → R 通道，Y 梯度 → G 通道，拼成位移贴图 -->
-            <feColorMatrix in="gx" type="matrix"
-                           values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
-            <feColorMatrix in="gy" type="matrix"
-                           values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
-            <feComposite in="mx" in2="my" operator="arithmetic"
-                         k1="0" k2="1" k3="1" k4="0" result="base_map"/>
-            <feComponentTransfer in="base_map" result="map">
-                <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
-                <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
-            </feComponentTransfer>
-            <!-- 三次不同强度的位移，分别取 R/G/B，再合成 → 边缘色散 -->
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="44"
-                               xChannelSelector="R" yChannelSelector="G" result="dispR"/>
-            <feColorMatrix in="dispR" type="matrix"
-                           values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="56"
-                               xChannelSelector="R" yChannelSelector="G" result="dispG"/>
-            <feColorMatrix in="dispG" type="matrix"
-                           values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="68"
-                               xChannelSelector="R" yChannelSelector="G" result="dispB"/>
-            <feColorMatrix in="dispB" type="matrix"
-                           values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
-            <feBlend in="onlyR" in2="onlyG" mode="screen" result="rg"/>
-            <feBlend in="rg" in2="onlyB" mode="screen"/>
-        </filter>
-        <filter id="liquid-glass-thin" x="0" y="0" width="100%" height="100%"
-                    color-interpolation-filters="sRGB">
-            <!-- 用元素自身形状糊出一个"厚度场" -->
-            <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="soft"/>
-            <!-- 左右各偏移一份再相减 → X 方向带符号梯度 -->
-            <feOffset in="soft" dx="8" dy="0" result="sxp"/>
-            <feOffset in="soft" dx="-8" dy="0" result="sxn"/>
-            <feComposite in="sxp" in2="sxn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
-            <!-- 上下各偏移一份再相减 → Y 方向带符号梯度 -->
-            <feOffset in="soft" dx="0" dy="8" result="syp"/>
-            <feOffset in="soft" dx="0" dy="-8" result="syn"/>
-            <feComposite in="syp" in2="syn" operator="arithmetic"
-                         k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
-            <!-- X 梯度 → R 通道，Y 梯度 → G 通道，拼成位移贴图 -->
-            <feColorMatrix in="gx" type="matrix"
-                           values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
-            <feColorMatrix in="gy" type="matrix"
-                           values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
-            <feComposite in="mx" in2="my" operator="arithmetic"
-                         k1="0" k2="1" k3="1" k4="0" result="base_map"/>
-            <feComponentTransfer in="base_map" result="map">
-                <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
-                <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
-            </feComponentTransfer>
-            <!-- 三次不同强度的位移，分别取 R/G/B，再合成 → 边缘色散 -->
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="14"
-                               xChannelSelector="R" yChannelSelector="G" result="dispR"/>
-            <feColorMatrix in="dispR" type="matrix"
-                           values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="18"
-                               xChannelSelector="R" yChannelSelector="G" result="dispG"/>
-            <feColorMatrix in="dispG" type="matrix"
-                           values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
-            <feDisplacementMap in="SourceGraphic" in2="map" scale="22"
-                               xChannelSelector="R" yChannelSelector="G" result="dispB"/>
-            <feColorMatrix in="dispB" type="matrix"
-                           values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
-            <feBlend in="onlyR" in2="onlyG" mode="screen" result="rg"/>
-            <feBlend in="rg" in2="onlyB" mode="screen"/>
-        </filter>
-    </defs>
+<!-- 背景柔化滤镜：只作用于 body::before 那一层（见 site-theme.css） -->
+<svg class="bg-filter-defs" aria-hidden="true" focusable="false"
+     width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <filter id="bg-soften" x="0" y="0" width="100%" height="100%"
+            color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+  </defs>
 </svg>
 
-    <div class="container">
+
+<div class="container">
         <header>
             <h1>H5/JS 项目集</h1>
             <p class="site-desc">探索精选的HTML5与JavaScript项目集合，包含原创开发与优质转载内容。所有项目完全免费并提供便捷下载。</p>
@@ -444,5 +314,6 @@
             <p>xeecn | 创新体验，无限可能 | 请确保启用JavaScript以获得完整功能</p>
         </footer>
     </div>
+    <script src="site-anim.js" defer></script>
 </body>
 </html>
